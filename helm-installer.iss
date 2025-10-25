@@ -27,8 +27,8 @@ Name: "english"; MessagesFile: "compiler:Default.isl"
 Name: "french"; MessagesFile: "compiler:Languages\French.isl"
 
 [Types]
-Name: "full"; Description: "Installation complète"
-Name: "custom"; Description: "Installation personnalisée"; Flags: iscustom
+Name: "full"; Description: "Installation complï¿½te"
+Name: "custom"; Description: "Installation personnalisï¿½e"; Flags: iscustom
 
 [Components]
 Name: "standalone"; Description: "Application standalone"; Types: full custom; Flags: fixed
@@ -49,32 +49,34 @@ Name: "{commondocs}\Helm\Patches"; Flags: uninsneveruninstall
 Source: "build\HelmStandalone_artefacts\Release\helm.exe"; DestDir: "{app}"; Components: standalone; Flags: ignoreversion
 
 ; Plugin VST3
-Source: "build\HelmPlugin_artefacts\Release\VST3\Helm.vst3\*"; DestDir: "{commoncf}\VST3\Helm.vst3"; Components: vst3; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "G:\git\helm\build\HelmPlugin_artefacts\Release\VST3\helm.vst3\Contents\x86_64-win\helm.vst3"; DestDir: "{commoncf}\VST3\Helm.vst3"; Components: vst3; Flags: ignoreversion
 
 ; Plugin LV2
 Source: "build\HelmPlugin_artefacts\Release\LV2\Helm.lv2\*"; DestDir: "{commoncf}\LV2\Helm.lv2"; Components: lv2; Flags: ignoreversion recursesubdirs createallsubdirs
 
 ; Documentation et licence
-Source: "README.md"; DestDir: "{app}"; Flags: ignoreversion
-Source: "COPYING"; DestDir: "{app}"; Flags: ignoreversion
-Source: "changelog"; DestDir: "{app}"; Flags: ignoreversion
+Source: "README.md"; DestDir: "{commondocs}\Helm"; Flags: ignoreversion
+Source: "COPYING"; DestDir: "{commondocs}\Helm"; Flags: ignoreversion
+Source: "changelog"; DestDir: "{commondocs}\Helm"; Flags: ignoreversion
+Source: "docs\helm_manual.pdf"; DestDir: "{commondocs}\Helm"; Flags: ignoreversion 
 
-; Factory Presets (répertoire public pour les plugins)
+; Factory Presets (rï¿½pertoire public pour les plugins)
 Source: "patches\Factory Presets\*"; DestDir: "{commondocs}\Helm\Patches\Factory Presets"; Components: patches\factory; Flags: ignoreversion recursesubdirs createallsubdirs
 
-; New Factory Presets (répertoire public pour les plugins)
+; New Factory Presets (rï¿½pertoire public pour les plugins)
 Source: "patches\New Factory Presets\*"; DestDir: "{commondocs}\Helm\Patches\New Factory Presets"; Components: patches\newfactory; Flags: ignoreversion recursesubdirs createallsubdirs
 
-; Factory Presets (répertoire utilisateur pour le standalone)
+; Factory Presets (rï¿½pertoire utilisateur pour le standalone)
 Source: "patches\Factory Presets\*"; DestDir: "{userdocs}\Helm\Patches\Factory Presets"; Components: patches\factory; Flags: ignoreversion recursesubdirs createallsubdirs; Check: not IsAdminInstallMode
 
-; New Factory Presets (répertoire utilisateur pour le standalone)
+; New Factory Presets (rï¿½pertoire utilisateur pour le standalone)
 Source: "patches\New Factory Presets\*"; DestDir: "{userdocs}\Helm\Patches\New Factory Presets"; Components: patches\newfactory; Flags: ignoreversion recursesubdirs createallsubdirs; Check: not IsAdminInstallMode
 
 [Icons]
 Name: "{group}\Helm Synthesizer"; Filename: "{app}\helm.exe"; Components: standalone
-Name: "{group}\Helm Manual"; Filename: "{app}\README.md"
-Name: "{group}\Helm License"; Filename: "{app}\COPYING"
+Name: "{group}\Helm Manual"; Filename: "{commondocs}\Helm\README.md"
+Name: "{group}\Helm License"; Filename: "{commondocs}\Helm\COPYING"
+Name: "{group}\Original Helm Manual"; Filename: "{commondocs}\Helm\helm_manual.pdf"
 Name: "{group}\{cm:UninstallProgram,Helm}"; Filename: "{uninstallexe}"
 Name: "{autodesktop}\Helm Synthesizer"; Filename: "{app}\helm.exe"; Components: standalone; Tasks: desktopicon
 
@@ -95,9 +97,9 @@ var
 
 procedure InitializeWizard;
 begin
-  // Page personnalisée pour les composants
+  // Page personnalisï¿½e pour les composants
   ComponentsPage := CreateCustomPage(wpSelectComponents,
-    'Sélection des composants', 'Choisissez les composants à installer.');
+    'Sï¿½lection des composants', 'Choisissez les composants ï¿½ installer.');
 
   // Checkbox pour standalone
   StandaloneCheckBox := TNewCheckBox.Create(ComponentsPage);
@@ -108,7 +110,7 @@ begin
   StandaloneCheckBox.Width := ComponentsPage.SurfaceWidth;
   StandaloneCheckBox.Height := ScaleY(17);
   StandaloneCheckBox.Checked := True;
-  StandaloneCheckBox.Enabled := False; // Toujours installé
+  StandaloneCheckBox.Enabled := False; // Toujours installï¿½
 
   // Checkbox pour VST3
   VST3CheckBox := TNewCheckBox.Create(ComponentsPage);
@@ -139,7 +141,7 @@ begin
   FactoryPatchesCheckBox.Width := ComponentsPage.SurfaceWidth;
   FactoryPatchesCheckBox.Height := ScaleY(17);
   FactoryPatchesCheckBox.Checked := True;
-  FactoryPatchesCheckBox.Enabled := False; // Toujours installé
+  FactoryPatchesCheckBox.Enabled := False; // Toujours installï¿½
 
   // Checkbox pour New Factory Presets
   NewFactoryPatchesCheckBox := TNewCheckBox.Create(ComponentsPage);
@@ -150,12 +152,12 @@ begin
   NewFactoryPatchesCheckBox.Width := ComponentsPage.SurfaceWidth;
   NewFactoryPatchesCheckBox.Height := ScaleY(17);
   NewFactoryPatchesCheckBox.Checked := True;
-  NewFactoryPatchesCheckBox.Enabled := False; // Toujours installé
+  NewFactoryPatchesCheckBox.Enabled := False; // Toujours installï¿½
 end;
 
 function ShouldSkipPage(PageID: Integer): Boolean;
 begin
-  // Skip la page des composants par défaut car nous avons notre page personnalisée
+  // Skip la page des composants par dï¿½faut car nous avons notre page personnalisï¿½e
   Result := (PageID = wpSelectComponents);
 end;
 
@@ -165,7 +167,7 @@ begin
 
   if CurPageID = ComponentsPage.ID then
   begin
-    // Mettre à jour les composants sélectionnés
+    // Mettre ï¿½ jour les composants sï¿½lectionnï¿½s
     if StandaloneCheckBox.Checked then
       WizardSelectComponents('standalone');
     if VST3CheckBox.Checked then
@@ -183,7 +185,7 @@ procedure CurStepChanged(CurStep: TSetupStep);
 begin
   if CurStep = ssPostInstall then
   begin
-    // Copier les patches dans le répertoire utilisateur même en mode admin
+    // Copier les patches dans le rï¿½pertoire utilisateur mï¿½me en mode admin
     if IsAdminInstallMode then
     begin
       // En mode admin, installer aussi dans le profil utilisateur actuel pour le standalone
@@ -194,7 +196,7 @@ begin
           CreateDir(ExpandConstant('{userdocs}\Helm\Patches\Factory Presets'));
           if CopyFile(ExpandConstant('{commondocs}\Helm\Patches\Factory Presets\*'),
                      ExpandConstant('{userdocs}\Helm\Patches\Factory Presets\'), False) then
-            Log('Factory Presets copiés vers le profil utilisateur');
+            Log('Factory Presets copiï¿½s vers le profil utilisateur');
         end;
       end;
 
@@ -205,7 +207,7 @@ begin
           CreateDir(ExpandConstant('{userdocs}\Helm\Patches\New Factory Presets'));
           if CopyFile(ExpandConstant('{commondocs}\Helm\Patches\New Factory Presets\*'),
                      ExpandConstant('{userdocs}\Helm\Patches\New Factory Presets\'), False) then
-            Log('New Factory Presets copiés vers le profil utilisateur');
+            Log('New Factory Presets copiï¿½s vers le profil utilisateur');
         end;
       end;
     end;
@@ -214,11 +216,11 @@ end;
 
 [Messages]
 english.WelcomeLabel2=This will install [name/ver] on your computer.%n%nHelm is a free, cross-platform, polyphonic synthesizer featuring 21 different waveforms, powerful modulation, and professional effects.%n%nThis version includes 8 new waveforms: Pulse variations, hybrid waves, and textured oscillations for expanded sonic possibilities.
-french.WelcomeLabel2=Ceci installera [name/ver] sur votre ordinateur.%n%nHelm est un synthétiseur polyphonique gratuit et multiplateforme avec 21 formes d'ondes différentes, une modulation puissante et des effets professionnels.%n%nCette version inclut 8 nouvelles formes d'ondes : variations de pulse, ondes hybrides et oscillations texturées pour des possibilités sonores étendues.
+french.WelcomeLabel2=Ceci installera [name/ver] sur votre ordinateur.%n%nHelm est un synthï¿½tiseur polyphonique gratuit et multiplateforme avec 21 formes d'ondes diffï¿½rentes, une modulation puissante et des effets professionnels.%n%nCette version inclut 8 nouvelles formes d'ondes : variations de pulse, ondes hybrides et oscillations texturï¿½es pour des possibilitï¿½s sonores ï¿½tendues.
 
-; Messages personnalisés pour la licence
+; Messages personnalisï¿½s pour la licence
 english.LicenseLabel=Please read the following License Agreement. Helm is distributed under the GNU General Public License v3.
-french.LicenseLabel=Veuillez lire le contrat de licence suivant. Helm est distribué sous la licence GNU General Public License v3.
+french.LicenseLabel=Veuillez lire le contrat de licence suivant. Helm est distribuï¿½ sous la licence GNU General Public License v3.
 english.LicenseLabel3=If you accept the terms of the agreement, click I accept the agreement to continue. You must accept the agreement to install [name].
 french.LicenseLabel3=Si vous acceptez les termes du contrat, cliquez sur J'accepte le contrat pour continuer. Vous devez accepter le contrat pour installer [name].
 english.LicenseAccepted=&I accept the agreement
