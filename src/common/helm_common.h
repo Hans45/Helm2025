@@ -151,6 +151,14 @@ namespace mopo {
       "9 pyramid",
       "sample and hold",
       "sample and glide",
+      "pulse 25%",
+      "pulse 10%",
+      "saw+square",
+      "tri+square",
+      "skewed sine",
+      "folded sine",
+      "super saw",
+      "chirp",
     };
 
     const std::string synced_frequencies[] = {

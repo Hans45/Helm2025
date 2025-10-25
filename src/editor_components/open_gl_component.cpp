@@ -17,11 +17,23 @@
 #include "open_gl_component.h"
 #include "full_interface.h"
 
+#ifndef NOMINMAX
+// Prevent windows.h from defining the macros 'min' and 'max' which break
+// std::min/std::max and other symbol names (they can also cause parsing
+// errors such as unexpected tokens '::('). Define NOMINMAX before
+// including <windows.h> to avoid these collisions.
+#define NOMINMAX
+#endif
+#include <windows.h>
+#include <juce_opengl/juce_opengl.h>
+
+using namespace ::juce::gl;
+
 void OpenGLComponent::setViewPort(OpenGLContext& open_gl_context) {
   float scale = open_gl_context.getRenderingScale();
   FullInterface* parent = findParentComponentOfClass<FullInterface>();
-  Rectangle<int> top_level_bounds = parent->getBounds();
-  Rectangle<int> global_bounds = parent->getLocalArea(this, getLocalBounds());
+  juce::Rectangle<int> top_level_bounds = parent->getBounds();
+  juce::Rectangle<int> global_bounds = parent->getLocalArea(this, getLocalBounds());
 
   glViewport(scale * global_bounds.getX(),
              scale * (top_level_bounds.getHeight() - global_bounds.getBottom()),

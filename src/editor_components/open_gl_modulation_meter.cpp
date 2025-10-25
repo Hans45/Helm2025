@@ -16,6 +16,18 @@
 
 #include "open_gl_modulation_meter.h"
 
+#ifndef NOMINMAX
+// Prevent windows.h from defining the macros 'min' and 'max' which break
+// std::min/std::max and other symbol names (they can also cause parsing
+// errors such as unexpected tokens '::('). Define NOMINMAX before
+// including <windows.h> to avoid these collisions.
+#define NOMINMAX
+#endif
+#include <windows.h>
+#include <juce_opengl/juce_opengl.h>
+
+using namespace ::juce::gl;
+
 #include "mopo.h"
 #include "synth_gui_interface.h"
 #include "shaders.h"
@@ -92,8 +104,8 @@ void OpenGLModulationMeter::setVisible(bool should_be_visible) {
 }
 
 void OpenGLModulationMeter::setVertices() {
-  Rectangle<int> parent_bounds = getParentComponent()->getBounds();
-  Rectangle<int> bounds = getBounds();
+  juce::Rectangle<int> parent_bounds = getParentComponent()->getBounds();
+  juce::Rectangle<int> bounds = getBounds();
   float left = bounds.getX();
   float right = bounds.getRight();
   float top = parent_bounds.getHeight() - bounds.getY();

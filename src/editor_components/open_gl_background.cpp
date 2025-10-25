@@ -19,6 +19,18 @@
 #include "common.h"
 #include "shaders.h"
 
+#ifndef NOMINMAX
+// Prevent windows.h from defining the macros 'min' and 'max' which break
+// std::min/std::max and other symbol names (they can also cause parsing
+// errors such as unexpected tokens '::('). Define NOMINMAX before
+// including <windows.h> to avoid these collisions.
+#define NOMINMAX
+#endif
+#include <windows.h>
+#include <juce_opengl/juce_opengl.h>
+
+using namespace ::juce::gl;
+
 OpenGLBackground::OpenGLBackground() {
   new_background_ = false;
 }

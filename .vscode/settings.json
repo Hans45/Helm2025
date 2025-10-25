@@ -1,0 +1,30 @@
+{
+    "terminal.integrated.defaultProfile.windows": "PowerShell 7 Bypass",
+    "terminal.integrated.automationProfile.windows": {
+        "path": "C:\\Program Files\\PowerShell\\7\\pwsh.exe",
+        "args": ["-ExecutionPolicy", "RemoteSigned", "-NoProfile"]
+    },
+    "terminal.integrated.profiles.windows": {
+        "PowerShell 7": {
+            "path": "C:\\Program Files\\PowerShell\\7\\pwsh.exe",
+            "args": ["-ExecutionPolicy", "RemoteSigned", "-NoProfile"]
+        },
+        "PowerShell 7 Bypass": {
+            "path": "C:\\Program Files\\PowerShell\\7\\pwsh.exe",
+            "args": ["-ExecutionPolicy", "Bypass", "-NoProfile"]
+        },
+        "PowerShell": {
+            "source": "PowerShell",
+            "args": ["-ExecutionPolicy", "RemoteSigned", "-NoProfile"]
+        },
+        "Command Prompt": {
+            "path": [
+                "${env:windir}\\Sysnative\\cmd.exe",
+                "${env:windir}\\System32\\cmd.exe"
+            ]
+        },
+        "Git Bash": {
+            "source": "Git Bash"
+        }
+    }
+}

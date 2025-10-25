@@ -39,6 +39,14 @@ class WaveSelector : public SynthSlider {
     void resizeDownSaw(float x, float y, float width, float height);
     void resizeUpSaw(float x, float y, float width, float height);
     void resizeNoise(float x, float y, float width, float height);
+    void resizePulse25(float x, float y, float width, float height);
+    void resizePulse10(float x, float y, float width, float height);
+    void resizeSawSquare(float x, float y, float width, float height);
+    void resizeTriangleSquare(float x, float y, float width, float height);
+    void resizeSkewedSine(float x, float y, float width, float height);
+    void resizeFoldedSine(float x, float y, float width, float height);
+    void resizeSuperSaw(float x, float y, float width, float height);
+    void resizeChirp(float x, float y, float width, float height);
 
     Path sine_;
     Path triangle_;
@@ -52,6 +60,14 @@ class WaveSelector : public SynthSlider {
     Path five_pyramid_;
     Path nine_pyramid_;
     Path noise_;
+    Path pulse25_;
+    Path pulse10_;
+    Path saw_square_;
+    Path triangle_square_;
+    Path skewed_sine_;
+    Path folded_sine_;
+    Path super_saw_;
+    Path chirp_;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(WaveSelector)
 };

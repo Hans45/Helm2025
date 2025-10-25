@@ -36,7 +36,7 @@ namespace mopo {
 
       Alias();
 
-      virtual Processor* clone() const override { return new Alias(*this); }
+      MOPO_DECLARE_CLONE(Alias)
       virtual void process() override;
 
       void tick(int i) {

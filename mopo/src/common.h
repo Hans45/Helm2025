@@ -21,6 +21,19 @@
 // Utilities.
 #define UNUSED(x) (void)(x)
 
+// Processor cloning macro (resolves TODO in processor.h)
+#define MOPO_DECLARE_CLONE(ClassName) \
+  virtual Processor* clone() const override { \
+    return new ClassName(*this); \
+  }
+
+// C++17 modernization helpers
+#if __cplusplus >= 201703L
+  #define MOPO_CONSTEXPR inline constexpr
+#else
+  #define MOPO_CONSTEXPR static const
+#endif
+
 // Debugging.
 #if DEBUG
 #include <cassert>
@@ -39,19 +52,19 @@
 
 namespace mopo {
 
-  typedef double mopo_float;
+  using mopo_float = double;  // C++11 alias instead of typedef
 
-  const mopo_float PI = 3.1415926535897932384626433832795;
-  const int MAX_BUFFER_SIZE = 256;
-  const int DEFAULT_BUFFER_SIZE = 256;
-  const int DEFAULT_SAMPLE_RATE = 44100;
-  const int MAX_SAMPLE_RATE = 192000;
-  const int MIDI_SIZE = 128;
-  const int MAX_POLYPHONY = 33;
+  MOPO_CONSTEXPR mopo_float PI = 3.1415926535897932384626433832795;
+  MOPO_CONSTEXPR int MAX_BUFFER_SIZE = 256;
+  MOPO_CONSTEXPR int DEFAULT_BUFFER_SIZE = 256;
+  MOPO_CONSTEXPR int DEFAULT_SAMPLE_RATE = 44100;
+  MOPO_CONSTEXPR int MAX_SAMPLE_RATE = 192000;
+  MOPO_CONSTEXPR int MIDI_SIZE = 128;
+  MOPO_CONSTEXPR int MAX_POLYPHONY = 33;
 
-  const int PPQ = 960; // Pulses per quarter note.
-  const mopo_float VOICE_KILL_TIME = 0.02;
-  const int NUM_MIDI_CHANNELS = 16;
+  MOPO_CONSTEXPR int PPQ = 960; // Pulses per quarter note.
+  MOPO_CONSTEXPR mopo_float VOICE_KILL_TIME = 0.02;
+  MOPO_CONSTEXPR int NUM_MIDI_CHANNELS = 16;
 
   // Common types of events across different Processors.
   enum VoiceEvent {

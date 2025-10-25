@@ -46,7 +46,7 @@ class UpdateCheckSection : public Component, public Button::Listener {
 
     void checkUpdate();
 
-    Rectangle<int> getUpdateCheckRect();
+  juce::Rectangle<int> getUpdateCheckRect();
 
   private:
     std::unique_ptr<TextButton> download_button_;

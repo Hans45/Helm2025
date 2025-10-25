@@ -16,6 +16,18 @@
 
 #include "open_gl_wave_viewer.h"
 
+#ifndef NOMINMAX
+// Prevent windows.h from defining the macros 'min' and 'max' which break
+// std::min/std::max and other symbol names (they can also cause parsing
+// errors such as unexpected tokens '::('). Define NOMINMAX before
+// including <windows.h> to avoid these collisions.
+#define NOMINMAX
+#endif
+#include <windows.h>
+#include <juce_opengl/juce_opengl.h>
+
+using namespace ::juce::gl;
+
 #include "colors.h"
 #include "synth_gui_interface.h"
 #include "utils.h"
@@ -206,7 +218,14 @@ void OpenGLWaveViewer::resetWavePath() {
 
   mopo::Wave::Type type = static_cast<mopo::Wave::Type>(static_cast<int>(wave_slider_->getValue()));
 
-  if (type < mopo::Wave::kWhiteNoise) {
+  if (type == mopo::Wave::kSampleAndHold || type == mopo::Wave::kWhiteNoise) {
+    drawRandom();
+  }
+  else if (type == mopo::Wave::kSampleAndGlide) {
+    drawSmoothRandom();
+  }
+  else {
+    // All deterministic waveforms (original + new ones)
     wave_path_.startNewSubPath(0, getHeight() / 2.0f);
     for (int i = 1; i < resolution_ - 1; ++i) {
       float t = (1.0f * i) / resolution_;
@@ -216,11 +235,7 @@ void OpenGLWaveViewer::resetWavePath() {
 
     wave_path_.lineTo(getWidth(), getHeight() / 2.0f);
   }
-  else if (type == mopo::Wave::kWhiteNoise)
-    drawRandom();
-  else
-    drawSmoothRandom();
-  
+
   paintBackground();
 }
 

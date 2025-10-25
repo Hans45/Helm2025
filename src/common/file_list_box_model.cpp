@@ -34,8 +34,14 @@ void FileListBoxModel::paintListBoxItem(int row_number, Graphics& g,
   }
 
   g.setFont(Fonts::instance()->monospace().withPointHeight(12.0f));
-  g.drawText(files_[row_number].getFileNameWithoutExtension(),
-             5, 0, width, height,
+  String display_name = files_[row_number].getFileNameWithoutExtension();
+
+  // Si les catégories sont regroupées, ajouter une indication visuelle
+  if (categories_grouped_) {
+    display_name += " (All)";
+  }
+
+  g.drawText(display_name, 5, 0, width, height,
              Justification::centredLeft, true);
 
   g.setColour(Colour(0x88000000));
@@ -63,17 +69,51 @@ void FileListBoxModel::rescanFiles(const Array<File>& folders,
                                    bool find_files) {
   static const FileSorterAscending file_sorter;
   files_.clear();
+  categories_grouped_ = false;
 
-  for (File folder : folders) {
-    if (folder.isDirectory()) {
-      Array<File> child_folders;
-      if (find_files)
-        folder.findChildFiles(child_folders, File::findFiles, false, search);
-      else
+  if (!find_files && folders.size() > 1) {
+    // Si on scanne plusieurs banques pour les dossiers (catégories),
+    // regrouper les catégories ayant le même nom
+    StringArray category_names;
+    HashMap<String, File> category_map;
+
+    for (File folder : folders) {
+      if (folder.isDirectory()) {
+        Array<File> child_folders;
         folder.findChildFiles(child_folders, File::findDirectories, false);
 
-      child_folders.sort(file_sorter);
-      files_.addArray(child_folders);
+        for (File child : child_folders) {
+          String category_name = child.getFileName();
+          if (!category_names.contains(category_name)) {
+            category_names.add(category_name);
+            category_map.set(category_name, child);
+          }
+        }
+      }
+    }
+
+    // Trier les noms de catégories et ajouter les fichiers correspondants
+    category_names.sort(true);
+    for (String category_name : category_names) {
+      if (category_map.contains(category_name)) {
+        files_.add(category_map[category_name]);
+      }
+    }
+    categories_grouped_ = true;
+  } else {
+    // Comportement normal pour les autres cas
+    categories_grouped_ = false;
+    for (File folder : folders) {
+      if (folder.isDirectory()) {
+        Array<File> child_folders;
+        if (find_files)
+          folder.findChildFiles(child_folders, File::findFiles, false, search);
+        else
+          folder.findChildFiles(child_folders, File::findDirectories, false);
+
+        child_folders.sort(file_sorter);
+        files_.addArray(child_folders);
+      }
     }
   }
 }

@@ -39,6 +39,13 @@ class PatchBrowser : public Overlay,
         virtual void newPatchSelected(File patch) = 0;
     };
 
+    class VisibilityListener {
+      public:
+        virtual ~VisibilityListener() { }
+
+        virtual void browserVisibilityChanged(bool is_visible) = 0;
+    };
+
     PatchBrowser();
     ~PatchBrowser();
 
@@ -66,6 +73,7 @@ class PatchBrowser : public Overlay,
     void externalPatchLoaded(File file);
 
     void setListener(PatchSelectedListener* listener) { listener_ = listener; }
+    void setVisibilityListener(VisibilityListener* visibility_listener) { visibility_listener_ = visibility_listener; }
     void setSaveSection(SaveSection* save_section);
     void setDeleteSection(DeleteSection* delete_section);
 
@@ -93,6 +101,7 @@ class PatchBrowser : public Overlay,
     std::unique_ptr<TextEditor> search_box_;
 
     PatchSelectedListener* listener_;
+    VisibilityListener* visibility_listener_;
     std::unique_ptr<HyperlinkButton> cc_license_link_;
     std::unique_ptr<HyperlinkButton> gpl_license_link_;
 

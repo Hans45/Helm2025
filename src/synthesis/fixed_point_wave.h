@@ -42,7 +42,17 @@ namespace mopo {
         kThreePyramid,
         kFivePyramid,
         kNinePyramid,
-        kWhiteNoise,
+        kSampleAndHold,    // index 11
+        kSampleAndGlide,   // index 12
+        kPulse25,          // index 13
+        kPulse10,          // index 14
+        kSawSquare,        // index 15
+        kTriangleSquare,   // index 16
+        kSkewedSine,       // index 17
+        kFoldedSine,       // index 18
+        kSuperSaw,         // index 19
+        kChirp,            // index 20
+        kWhiteNoise,       // Keep for backward compatibility
         kNumFixedPointWaveforms
       };
 
@@ -69,6 +79,14 @@ namespace mopo {
       void preprocessStep(wave_type buffer);
       template<size_t steps>
       void preprocessPyramid(wave_type buffer);
+      void preprocessPulse25();
+      void preprocessPulse10();
+      void preprocessSawSquare();
+      void preprocessTriangleSquare();
+      void preprocessSkewedSine();
+      void preprocessFoldedSine();
+      void preprocessSuperSaw();
+      void preprocessChirp();
       void preprocessDiffs(wave_type wave);
 
       mopo_float sin_[HARMONICS + 1][2 * FIXED_LOOKUP_SIZE];
@@ -82,6 +100,14 @@ namespace mopo {
       mopo_float three_pyramid_[HARMONICS + 1][2 * FIXED_LOOKUP_SIZE];
       mopo_float five_pyramid_[HARMONICS + 1][2 * FIXED_LOOKUP_SIZE];
       mopo_float nine_pyramid_[HARMONICS + 1][2 * FIXED_LOOKUP_SIZE];
+      mopo_float pulse25_[HARMONICS + 1][2 * FIXED_LOOKUP_SIZE];
+      mopo_float pulse10_[HARMONICS + 1][2 * FIXED_LOOKUP_SIZE];
+      mopo_float saw_square_[HARMONICS + 1][2 * FIXED_LOOKUP_SIZE];
+      mopo_float triangle_square_[HARMONICS + 1][2 * FIXED_LOOKUP_SIZE];
+      mopo_float skewed_sine_[HARMONICS + 1][2 * FIXED_LOOKUP_SIZE];
+      mopo_float folded_sine_[HARMONICS + 1][2 * FIXED_LOOKUP_SIZE];
+      mopo_float super_saw_[HARMONICS + 1][2 * FIXED_LOOKUP_SIZE];
+      mopo_float chirp_[HARMONICS + 1][2 * FIXED_LOOKUP_SIZE];
 
       wave_type waves_[kNumFixedPointWaveforms];
   };

@@ -16,6 +16,8 @@
 
 #include "load_save.h"
 #include <JuceHeader.h>
+#include <memory>
+#include <functional>
 #include "helm_common.h"
 #include "midi_manager.h"
 #include "synth_base.h"
@@ -712,7 +714,12 @@ File LoadSave::getFactoryBankDirectory() {
 
 File LoadSave::getBankDirectory() {
   if (!isInstalled())
+#ifdef HELM_LV2GEN_FACTORY_PRESET_PATH
     return File(HELM_LV2GEN_FACTORY_PRESET_PATH);
+#else
+    // Fallback when the build system hasn't provided a preset path definition.
+    return File("patches");
+#endif
 
   File patch_dir = File("");
 #ifdef LINUX
@@ -750,32 +757,117 @@ File LoadSave::getDidPayInitiallyFile() {
   return bank_dir.getChildFile(DID_PAY_FILE);
 }
 
-void LoadSave::exportBank(String bank_name) {
+void LoadSave::exportBank(String bank_name, std::function<void()> success_callback) {
+  DBG("ExportBank function called with bank: " + bank_name);
+  AlertWindow::showMessageBoxAsync(AlertWindow::InfoIcon, "Debug", "ExportBank function called with bank: " + bank_name);
   File banks_dir = getBankDirectory();
   File bank = banks_dir.getChildFile(bank_name);
   Array<File> patches;
   bank.findChildFiles(patches, File::findFiles, true, String("*.") + mopo::PATCH_EXTENSION);
-  ZipFile::Builder zip_builder;
+  DBG("Found " + String(patches.size()) + " patches in bank");
+  // ZipFile::Builder is non-copyable; store it in a shared_ptr so we can
+  // capture it by value into the async callback safely.
+  std::shared_ptr<ZipFile::Builder> zip_builder = std::make_shared<ZipFile::Builder>();
 
   for (File patch : patches)
-    zip_builder.addFile(patch, 2, patch.getRelativePathFrom(banks_dir));
+    zip_builder->addFile(patch, 2, patch.getRelativePathFrom(banks_dir));
 
-  FileChooser save_box("Export Bank As", File::getSpecialLocation(File::userHomeDirectory),
-                       String("*.") + EXPORTED_BANK_EXTENSION);
-  if (save_box.browseForFileToSave(true)) {
-    FileOutputStream out_stream(save_box.getResult().withFileExtension(EXPORTED_BANK_EXTENSION));
-    double *progress = nullptr;
-    zip_builder.writeToStream(out_stream, progress);
-  }
+  auto chooser = std::make_shared<FileChooser>("Export Bank As", File::getSpecialLocation(File::userHomeDirectory),
+                                               String("*.") + EXPORTED_BANK_EXTENSION);
+  // Capture zip_builder by value since the callback runs asynchronously.
+  chooser->launchAsync(FileBrowserComponent::saveMode,
+                       [chooser, zip_builder, success_callback](const FileChooser& fc) {
+                         File file = fc.getResult();
+                         if (!file.exists()) {
+                           // User cancelled - silent return, no error message
+                           return;
+                         }
+
+                         File out_file = file.withFileExtension(EXPORTED_BANK_EXTENSION);
+                         FileOutputStream out_stream(out_file);
+                         double* progress = nullptr;
+                         try {
+                             zip_builder->writeToStream(out_stream, progress);
+                             out_stream.flush();
+                           }
+                           catch (...) {
+                             MessageManager::callAsync([]() {
+                               AlertWindow::showMessageBoxAsync(AlertWindow::WarningIcon,
+                                                                 TRANS("Export Failed"),
+                                                                 TRANS("An unexpected error occurred while exporting the bank."));
+                             });
+                             return;
+                           }
+
+                           // Basic validation: file should exist and be non-empty.
+                           if (!out_file.exists() || out_file.getSize() == 0) {
+                             MessageManager::callAsync([]() {
+                               AlertWindow::showMessageBoxAsync(AlertWindow::WarningIcon,
+                                                                 TRANS("Export Failed"),
+                                                                 TRANS("Failed to export bank. The file was not created or is empty."));
+                             });
+                           }
+                           else {
+                             MessageManager::callAsync([success_callback]() {
+                               AlertWindow::showMessageBoxAsync(AlertWindow::InfoIcon,
+                                                                 TRANS("Export Successful"),
+                                                                 TRANS("Bank exported successfully."));
+                               if (success_callback)
+                                 success_callback();
+                             });
+                           }
+                       });
 }
 
-void LoadSave::importBank() {
-  FileChooser open_box("Import Bank", File::getSpecialLocation(File::userHomeDirectory),
-                       String("*.") + EXPORTED_BANK_EXTENSION);
-  if (open_box.browseForFileToOpen()) {
-    ZipFile zip_file(open_box.getResult());
-    zip_file.uncompressTo(getBankDirectory());
-  }
+void LoadSave::importBank(std::function<void()> success_callback) {
+  DBG("ImportBank function called");
+  AlertWindow::showMessageBoxAsync(AlertWindow::InfoIcon, "Debug", "ImportBank function called");
+
+  auto chooser = std::make_shared<FileChooser>("Import Bank",
+                                              File::getSpecialLocation(File::userHomeDirectory),
+                                              String("*.") + EXPORTED_BANK_EXTENSION);
+
+  // No instance pointer is captured. Use the static API to get the bank
+  // directory so the async callback doesn't rely on an object's lifetime.
+  chooser->launchAsync(FileBrowserComponent::openMode,
+                       [chooser, success_callback](const FileChooser& fc) {
+                         File file = fc.getResult();
+                         if (!file.exists()) {
+                           // User cancelled - silent return
+                           return;
+                         }
+                         if (file.existsAsFile()) {
+                           try {
+                             ZipFile zip_file(file);
+                             bool ok = zip_file.uncompressTo(LoadSave::getBankDirectory());
+                             if (!ok) {
+                               // Show an alert on the message thread.
+                               MessageManager::callAsync([]() {
+                                 AlertWindow::showMessageBoxAsync(AlertWindow::WarningIcon,
+                                                                   TRANS("Import Failed"),
+                                                                   TRANS("Failed to import bank. The archive may be corrupted."));
+                               });
+                             }
+                             else {
+                               // Import successful
+                               MessageManager::callAsync([success_callback]() {
+                                 AlertWindow::showMessageBoxAsync(AlertWindow::InfoIcon,
+                                                                   TRANS("Import Successful"),
+                                                                   TRANS("Bank imported successfully."));
+                                 if (success_callback)
+                                   success_callback();
+                               });
+                             }
+                           }
+                           catch (...) {
+                             MessageManager::callAsync([]() {
+                               AlertWindow::showMessageBoxAsync(AlertWindow::WarningIcon,
+                                                                 TRANS("Import Failed"),
+                                                                 TRANS("An unexpected error occurred while importing the bank."));
+                             });
+                           }
+                         }
+                       });
 }
 
 int LoadSave::compareVersionStrings(String a, String b) {

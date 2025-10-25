@@ -36,7 +36,7 @@ namespace mopo {
 
       BitCrush();
 
-      virtual Processor* clone() const override { return new BitCrush(*this); }
+      MOPO_DECLARE_CLONE(BitCrush)
       virtual void process() override;
 
       void tick(int i) {

@@ -26,11 +26,24 @@
 #include <fenv.h>
 #endif
 
-#define MAX_DELAY_SAMPLES 300000
+namespace {
+  constexpr int MAX_DELAY_SAMPLES = 300000;
+  constexpr double DEFAULT_SMOOTH_TIME = 1.0;
+  constexpr double VOLUME_SMOOTH_TIME = 0.0;
+  constexpr double CLAMP_MIN = -2.1;
+  constexpr double CLAMP_MAX = 2.1;
+}
 
 namespace mopo {
 
-  HelmEngine::HelmEngine() : was_playing_arp_(false) {
+  HelmEngine::HelmEngine() 
+    : was_playing_arp_(false)
+    , voice_handler_(nullptr)
+    , arpeggiator_(nullptr)
+    , lfo_1_(nullptr)
+    , lfo_2_(nullptr)
+    , peak_meter_(nullptr)
+    , step_sequencer_(nullptr) {
     init();
     bps_ = controls_["beats_per_minute"];
   }
@@ -285,7 +298,7 @@ namespace mopo {
     HelmModule::init();
   }
 
-  void HelmEngine::connectModulation(ModulationConnection* connection) {
+  void HelmEngine::connectModulation(ModulationConnection* connection) noexcept {
     Output* source = getModulationSource(connection->source);
     bool source_poly = source->owner->isPolyphonic();
     MOPO_ASSERT(source != nullptr);
@@ -309,17 +322,17 @@ namespace mopo {
     mod_connections_.insert(connection);
   }
 
-  bool HelmEngine::isModulationActive(ModulationConnection* connection) {
+  bool HelmEngine::isModulationActive(ModulationConnection* connection) const noexcept {
     return mod_connections_.count(connection);
   }
 
-  CircularQueue<mopo_float>& HelmEngine::getPressedNotes() {
+  CircularQueue<mopo_float>& HelmEngine::getPressedNotes() noexcept {
     if (arp_on_->value())
       return arpeggiator_->getPressedNotes();
     return voice_handler_->getPressedNotes();
   }
 
-  void HelmEngine::disconnectModulation(ModulationConnection* connection) {
+  void HelmEngine::disconnectModulation(ModulationConnection* connection) noexcept {
     Output* source = getModulationSource(connection->source);
     bool source_poly = source->owner->isPolyphonic();
 
@@ -344,15 +357,15 @@ namespace mopo {
     mod_connections_.erase(connection);
   }
 
-  int HelmEngine::getNumActiveVoices() {
+  int HelmEngine::getNumActiveVoices() const noexcept {
     return voice_handler_->getNumActiveVoices();
   }
 
-  mopo_float HelmEngine::getLastActiveNote() const {
+  mopo_float HelmEngine::getLastActiveNote() const noexcept {
     return voice_handler_->getLastActiveNote();
   }
 
-  void HelmEngine::process() {
+  void HelmEngine::process() noexcept {
     bool playing_arp = arp_on_->value();
     if (was_playing_arp_ != playing_arp)
       arpeggiator_->allNotesOff();
@@ -367,56 +380,56 @@ namespace mopo {
     }
   }
 
-  void HelmEngine::setBufferSize(int buffer_size) {
+  void HelmEngine::setBufferSize(int buffer_size) noexcept {
     ProcessorRouter::setBufferSize(buffer_size);
     arpeggiator_->setBufferSize(buffer_size);
   }
 
-  void HelmEngine::setSampleRate(int sample_rate) {
+  void HelmEngine::setSampleRate(int sample_rate) noexcept {
     ProcessorRouter::setSampleRate(sample_rate);
     arpeggiator_->setSampleRate(sample_rate);
   }
 
-  void HelmEngine::allNotesOff(int sample) {
+  void HelmEngine::allNotesOff(int sample) noexcept {
     arpeggiator_->allNotesOff(sample);
   }
 
-  void HelmEngine::noteOn(mopo_float note, mopo_float velocity, int sample, int channel) {
+  void HelmEngine::noteOn(mopo_float note, mopo_float velocity, int sample, int channel) noexcept {
     if (arp_on_->value())
       arpeggiator_->noteOn(note, velocity, sample);
     else
       voice_handler_->noteOn(note, velocity, sample, channel);
   }
 
-  VoiceEvent HelmEngine::noteOff(mopo_float note, int sample) {
+  VoiceEvent HelmEngine::noteOff(mopo_float note, int sample) noexcept {
     if (arp_on_->value())
       return arpeggiator_->noteOff(note, sample);
     return voice_handler_->noteOff(note, sample);
   }
 
-  void HelmEngine::setModWheel(mopo_float value, int channel) {
+  void HelmEngine::setModWheel(mopo_float value, int channel) noexcept {
     voice_handler_->setModWheel(value, channel);
   }
 
-  void HelmEngine::setPitchWheel(mopo_float value, int channel) {
+  void HelmEngine::setPitchWheel(mopo_float value, int channel) noexcept {
     voice_handler_->setPitchWheel(value, channel);
   }
 
-  void HelmEngine::setAftertouch(mopo_float note, mopo_float value, int sample) {
+  void HelmEngine::setAftertouch(mopo_float note, mopo_float value, int sample) noexcept {
     voice_handler_->setAftertouch(note, value, sample);
   }
 
-  void HelmEngine::setChannelAftertouch(int channel, mopo_float value, int sample) {
+  void HelmEngine::setChannelAftertouch(int channel, mopo_float value, int sample) noexcept {
     voice_handler_->setChannelAftertouch(channel, value, sample);
   }
 
-  void HelmEngine::setBpm(mopo_float bpm) {
+  void HelmEngine::setBpm(mopo_float bpm) noexcept {
     mopo_float bps = bpm / 60.0;
     if (bps_->value() != bps)
       bps_->set(bps);
   }
 
-  void HelmEngine::correctToTime(mopo_float samples) {
+  void HelmEngine::correctToTime(mopo_float samples) noexcept {
     HelmModule::correctToTime(samples);
     if (lfo_1_retrigger_->value() == 2.0)
       lfo_1_->correctToTime(samples);
@@ -425,11 +438,11 @@ namespace mopo {
     step_sequencer_->correctToTime(samples);
   }
 
-  void HelmEngine::sustainOn() {
+  void HelmEngine::sustainOn() noexcept {
     voice_handler_->sustainOn();
   }
 
-  void HelmEngine::sustainOff() {
+  void HelmEngine::sustainOff() noexcept {
     voice_handler_->sustainOff();
   }
 } // namespace mopo

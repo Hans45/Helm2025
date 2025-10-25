@@ -30,11 +30,25 @@ namespace mopo {
     preprocessPyramid<3>(three_pyramid_);
     preprocessPyramid<5>(five_pyramid_);
     preprocessPyramid<9>(nine_pyramid_);
+    preprocessPulse25();
+    preprocessPulse10();
+    preprocessSawSquare();
+    preprocessTriangleSquare();
+    preprocessSkewedSine();
+    preprocessFoldedSine();
+    preprocessSuperSaw();
+    preprocessChirp();
 
     wave_type waves[kNumFixedPointWaveforms] =
         { sin_, triangle_, square_, down_saw_, up_saw_,
           three_step_, four_step_, eight_step_,
-          three_pyramid_, five_pyramid_, nine_pyramid_ };
+          three_pyramid_, five_pyramid_, nine_pyramid_,
+          sin_,  // kSampleAndHold - placeholder for random values
+          sin_,  // kSampleAndGlide - placeholder for smooth random values
+          pulse25_, pulse10_, saw_square_, triangle_square_,
+          skewed_sine_, folded_sine_, super_saw_, chirp_,
+          sin_   // kWhiteNoise - placeholder for white noise
+        };
 
     memcpy(waves_, waves, kNumFixedPointWaveforms * sizeof(wave_type));
   }
@@ -164,6 +178,141 @@ namespace mopo {
     }
 
     preprocessDiffs(buffer);
+  }
+
+  void FixedPointWaveLookup::preprocessPulse25() {
+    for (int i = 0; i < FIXED_LOOKUP_SIZE; ++i) {
+      pulse25_[0][i] = (i < FIXED_LOOKUP_SIZE / 4) ? 1.0 : -1.0;
+
+      int p = i;
+      mopo_float scale = 4.0 / PI;
+      pulse25_[HARMONICS][i] = scale * sin_[0][p];
+
+      for (int h = 1; h < HARMONICS; ++h) {
+        p = (p + i) % FIXED_LOOKUP_SIZE;
+        pulse25_[HARMONICS - h][i] = pulse25_[HARMONICS - h + 1][i];
+
+        mopo_float harmonic_mult = sin((h + 1) * PI / 4.0) / (h + 1);
+        pulse25_[HARMONICS - h][i] += 2.0 * scale * harmonic_mult * sin_[0][p];
+      }
+    }
+    preprocessDiffs(pulse25_);
+  }
+
+  void FixedPointWaveLookup::preprocessPulse10() {
+    for (int i = 0; i < FIXED_LOOKUP_SIZE; ++i) {
+      pulse10_[0][i] = (i < FIXED_LOOKUP_SIZE / 10) ? 1.0 : -1.0;
+
+      int p = i;
+      mopo_float scale = 4.0 / PI;
+      pulse10_[HARMONICS][i] = scale * sin_[0][p];
+
+      for (int h = 1; h < HARMONICS; ++h) {
+        p = (p + i) % FIXED_LOOKUP_SIZE;
+        pulse10_[HARMONICS - h][i] = pulse10_[HARMONICS - h + 1][i];
+
+        mopo_float harmonic_mult = sin((h + 1) * PI / 10.0) / (h + 1);
+        pulse10_[HARMONICS - h][i] += 2.0 * scale * harmonic_mult * sin_[0][p];
+      }
+    }
+    preprocessDiffs(pulse10_);
+  }
+
+  void FixedPointWaveLookup::preprocessSawSquare() {
+    for (int h = 0; h < HARMONICS + 1; ++h) {
+      for (int i = 0; i < FIXED_LOOKUP_SIZE; ++i) {
+        saw_square_[h][i] = 0.6 * down_saw_[h][i] + 0.4 * square_[h][i];
+      }
+    }
+    preprocessDiffs(saw_square_);
+  }
+
+  void FixedPointWaveLookup::preprocessTriangleSquare() {
+    for (int h = 0; h < HARMONICS + 1; ++h) {
+      for (int i = 0; i < FIXED_LOOKUP_SIZE; ++i) {
+        triangle_square_[h][i] = 0.7 * triangle_[h][i] + 0.3 * square_[h][i];
+      }
+    }
+    preprocessDiffs(triangle_square_);
+  }
+
+  void FixedPointWaveLookup::preprocessSkewedSine() {
+    for (int i = 0; i < FIXED_LOOKUP_SIZE; ++i) {
+      mopo_float t = (1.0 * i) / FIXED_LOOKUP_SIZE;
+      // Asymmetric sine wave with different rise/fall times
+      mopo_float skewed_t = t < 0.5 ? t * t * 2.0 : 1.0 - (1.0 - t) * (1.0 - t) * 2.0;
+      skewed_sine_[0][i] = sin(2 * PI * skewed_t);
+
+      int p = i;
+      mopo_float scale = 1.0;
+      skewed_sine_[HARMONICS][i] = scale * sin_[0][p];
+
+      for (int h = 1; h < HARMONICS; ++h) {
+        p = (p + i) % FIXED_LOOKUP_SIZE;
+        skewed_sine_[HARMONICS - h][i] = skewed_sine_[HARMONICS - h + 1][i];
+
+        mopo_float harmonic_mult = 1.0 / ((h + 1) * (h + 1));
+        skewed_sine_[HARMONICS - h][i] += scale * harmonic_mult * sin_[0][p];
+      }
+    }
+    preprocessDiffs(skewed_sine_);
+  }
+
+  void FixedPointWaveLookup::preprocessFoldedSine() {
+    for (int i = 0; i < FIXED_LOOKUP_SIZE; ++i) {
+      mopo_float t = (1.0 * i) / FIXED_LOOKUP_SIZE;
+      mopo_float sine_val = sin(2 * PI * t);
+      // Wave folding effect
+      folded_sine_[0][i] = sine_val > 0.5 ? 1.0 - sine_val : (sine_val < -0.5 ? -1.0 - sine_val : sine_val);
+
+      int p = i;
+      mopo_float scale = 1.0;
+      folded_sine_[HARMONICS][i] = scale * sin_[0][p];
+
+      for (int h = 1; h < HARMONICS; ++h) {
+        p = (p + i) % FIXED_LOOKUP_SIZE;
+        folded_sine_[HARMONICS - h][i] = folded_sine_[HARMONICS - h + 1][i];
+        folded_sine_[HARMONICS - h][i] += scale * sin_[0][p] / (h + 1);
+      }
+    }
+    preprocessDiffs(folded_sine_);
+  }
+
+  void FixedPointWaveLookup::preprocessSuperSaw() {
+    for (int h = 0; h < HARMONICS + 1; ++h) {
+      for (int i = 0; i < FIXED_LOOKUP_SIZE; ++i) {
+        super_saw_[h][i] = 0.0;
+        // Superposition of 7 slightly detuned saw waves
+        for (int voice = 0; voice < 7; ++voice) {
+          mopo_float detune = (voice - 3) * 0.1; // Small detuning
+          int phase_offset = (int)(detune * FIXED_LOOKUP_SIZE);
+          int offset_index = (i + phase_offset) % FIXED_LOOKUP_SIZE;
+          if (offset_index < 0) offset_index += FIXED_LOOKUP_SIZE;
+          super_saw_[h][i] += down_saw_[h][offset_index] / 7.0;
+        }
+      }
+    }
+    preprocessDiffs(super_saw_);
+  }
+
+  void FixedPointWaveLookup::preprocessChirp() {
+    for (int i = 0; i < FIXED_LOOKUP_SIZE; ++i) {
+      mopo_float t = (1.0 * i) / FIXED_LOOKUP_SIZE;
+      // Frequency sweep from low to high
+      mopo_float frequency_mult = 1.0 + 4.0 * t; // 1x to 5x frequency
+      chirp_[0][i] = sin(2 * PI * t * frequency_mult);
+
+      int p = i;
+      mopo_float scale = 1.0;
+      chirp_[HARMONICS][i] = scale * sin_[0][p];
+
+      for (int h = 1; h < HARMONICS; ++h) {
+        p = (p + i) % FIXED_LOOKUP_SIZE;
+        chirp_[HARMONICS - h][i] = chirp_[HARMONICS - h + 1][i];
+        chirp_[HARMONICS - h][i] += scale * sin_[0][p] / (h + 1);
+      }
+    }
+    preprocessDiffs(chirp_);
   }
 
   void FixedPointWaveLookup::preprocessDiffs(wave_type wave) {

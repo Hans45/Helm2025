@@ -113,25 +113,25 @@ void MidiManager::processMidiMessage(const MidiMessage& midi_message, int sample
   else if (midi_message.isNoteOff())
     engine_->noteOff(midi_message.getNoteNumber());
   else if (midi_message.isAllNotesOff())
-    engine_->allNotesOff();
+    (void)engine_->allNotesOff();
   else if (midi_message.isSustainPedalOn())
-    engine_->sustainOn();
+    (void)engine_->sustainOn();
   else if (midi_message.isSustainPedalOff())
-    engine_->sustainOff();
+    (void)engine_->sustainOff();
   else if (midi_message.isAftertouch()) {
     mopo::mopo_float note = midi_message.getNoteNumber();
     mopo::mopo_float value = (1.0 * midi_message.getAfterTouchValue()) / mopo::MIDI_SIZE;
-    engine_->setAftertouch(note, value);
+    (void)engine_->setAftertouch(note, value);
   }
   else if (midi_message.isChannelPressure()) {
     int channel = midi_message.getChannel();
     mopo::mopo_float value = midi_message.getChannelPressureValue() / (mopo::MIDI_SIZE - 1.0f);
-    engine_->setChannelAftertouch(channel, value);
+    (void)engine_->setChannelAftertouch(channel, value);
   }
   else if (midi_message.isPitchWheel()) {
     double percent = (1.0 * midi_message.getPitchWheelValue()) / PITCH_WHEEL_RESOLUTION;
     double value = 2 * percent - 1.0;
-    engine_->setPitchWheel(value, midi_message.getChannel());
+    (void)engine_->setPitchWheel(value, midi_message.getChannel());
   }
   else if (midi_message.isController()) {
     int controller_number = midi_message.getControllerNumber();
@@ -155,4 +155,3 @@ void MidiManager::handleIncomingMidiMessage(MidiInput *source,
 void MidiManager::replaceKeyboardMessages(MidiBuffer& buffer, int num_samples) {
   keyboard_state_->processNextMidiBuffer(buffer, 0, num_samples, true);
 }
-

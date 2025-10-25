@@ -22,7 +22,7 @@
 #include "patch_browser.h"
 #include "synth_section.h"
 
-class PatchSelector : public SynthSection, public PatchBrowser::PatchSelectedListener {
+class PatchSelector : public SynthSection, public PatchBrowser::PatchSelectedListener, public PatchBrowser::VisibilityListener {
   public:
     PatchSelector();
     ~PatchSelector();
@@ -33,11 +33,13 @@ class PatchSelector : public SynthSection, public PatchBrowser::PatchSelectedLis
     void mouseUp(const MouseEvent& event) override;
     void buttonClicked(Button* buttonThatWasClicked) override;
     void newPatchSelected(File patch) override;
+    void browserVisibilityChanged(bool is_visible) override;
     void setModified(bool modified);
     void setSaveSection(SaveSection* save_section) { save_section_ = save_section; }
     void setBrowser(PatchBrowser* browser) {
       browser_ = browser;
       browser_->setListener(this);
+      browser_->setVisibilityListener(this);
     }
     int getBrowseHeight();
 
@@ -45,6 +47,7 @@ class PatchSelector : public SynthSection, public PatchBrowser::PatchSelectedLis
 
   private:
     void loadFromFile(File& patch);
+    void updateBrowseButtonText(bool browser_visible);
 
     String folder_text_;
     String patch_text_;

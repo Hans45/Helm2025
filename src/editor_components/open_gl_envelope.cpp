@@ -20,6 +20,18 @@
 #include "synth_gui_interface.h"
 #include "utils.h"
 
+#ifndef NOMINMAX
+// Prevent windows.h from defining the macros 'min' and 'max' which break
+// std::min/std::max and other symbol names (they can also cause parsing
+// errors such as unexpected tokens '::('). Define NOMINMAX before
+// including <windows.h> to avoid these collisions.
+#define NOMINMAX
+#endif
+#include <windows.h>
+#include <juce_opengl/juce_opengl.h>
+
+using namespace ::juce::gl;
+
 namespace {
   const float ATTACK_RANGE_PERCENT = 0.33f;
   const float DECAY_RANGE_PERCENT = 0.33f;

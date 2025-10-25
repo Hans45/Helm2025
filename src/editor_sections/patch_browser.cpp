@@ -75,6 +75,7 @@ namespace {
 
 PatchBrowser::PatchBrowser() : Overlay("patch_browser") {
   listener_ = nullptr;
+  visibility_listener_ = nullptr;
   save_section_ = nullptr;
   delete_section_ = nullptr;
 
@@ -290,6 +291,10 @@ void PatchBrowser::visibilityChanged() {
     cc_license_link_->setVisible(isPatchSelected() && is_cc);
     gpl_license_link_->setVisible(isPatchSelected() && !is_cc);
   }
+
+  // Notifier le listener de changement de visibilité
+  if (visibility_listener_)
+    visibility_listener_->browserVisibilityChanged(isVisible());
 }
 
 void PatchBrowser::selectedFilesChanged(FileListBoxModel* model) {
@@ -354,13 +359,30 @@ void PatchBrowser::buttonClicked(Button* clicked_button) {
   else if (clicked_button == hide_button_.get() || clicked_button == done_button_.get())
     setVisible(false);
   else if (clicked_button == import_bank_button_.get()) {
-    LoadSave::importBank();
-    scanAll();
+    DBG("Import Bank button clicked");
+    AlertWindow::showMessageBoxAsync(AlertWindow::InfoIcon, "Debug", "Import Bank button clicked");
+    LoadSave::importBank([this]() {
+      DBG("Import Bank completed successfully");
+      AlertWindow::showMessageBoxAsync(AlertWindow::InfoIcon, "Debug", "Import Bank completed successfully");
+      scanAll();
+    });
   }
   else if (clicked_button == export_bank_button_.get()) {
+    DBG("Export Bank button clicked");
+    AlertWindow::showMessageBoxAsync(AlertWindow::InfoIcon, "Debug", "Export Bank button clicked");
     Array<File> banks = getFoldersToScan(banks_view_.get(), banks_model_.get());
-    if (banks.size())
-      LoadSave::exportBank(banks[0].getFileName());
+    if (banks.size()) {
+      DBG("Found " + String(banks.size()) + " banks, exporting: " + banks[0].getFileName());
+      AlertWindow::showMessageBoxAsync(AlertWindow::InfoIcon, "Debug", "Found " + String(banks.size()) + " banks, exporting: " + banks[0].getFileName());
+      LoadSave::exportBank(banks[0].getFileName(), [this]() {
+        DBG("Export Bank completed successfully");
+        AlertWindow::showMessageBoxAsync(AlertWindow::InfoIcon, "Debug", "Export Bank completed successfully");
+        scanAll();
+      });
+    } else {
+      DBG("No banks found for export");
+      AlertWindow::showMessageBoxAsync(AlertWindow::InfoIcon, "Debug", "No banks found for export");
+    }
   }
 }
 
@@ -501,6 +523,28 @@ void PatchBrowser::scanFolders() {
 void PatchBrowser::scanPatches() {
   Array<File> folders = getFoldersToScan(folders_view_.get(), folders_model_.get());
   Array<File> patches_selected = getSelectedFolders(patches_view_.get(), patches_model_.get());
+
+  // Si les catégories sont regroupées et qu'une catégorie est sélectionnée,
+  // il faut collecter tous les dossiers de cette catégorie à travers toutes les banques
+  if (folders_model_->areCategoriesGrouped() && folders_view_->getSelectedRows().size() > 0) {
+    Array<File> selected_categories = getSelectedFolders(folders_view_.get(), folders_model_.get());
+    Array<File> expanded_folders;
+
+    // Pour chaque catégorie sélectionnée
+    for (File selected_category : selected_categories) {
+      String category_name = selected_category.getFileName();
+
+      // Chercher tous les dossiers ayant ce nom dans toutes les banques
+      Array<File> all_banks = getFoldersToScan(banks_view_.get(), banks_model_.get());
+      for (File bank : all_banks) {
+        File category_in_bank = bank.getChildFile(category_name);
+        if (category_in_bank.isDirectory()) {
+          expanded_folders.add(category_in_bank);
+        }
+      }
+    }
+    folders = expanded_folders;
+  }
 
   String search = "*" + search_box_->getText() + "*." + mopo::PATCH_EXTENSION;
   patches_model_->rescanFiles(folders, search, true);

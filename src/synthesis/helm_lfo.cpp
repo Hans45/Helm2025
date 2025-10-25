@@ -56,17 +56,17 @@ namespace mopo {
 
     output(kOscPhase)->buffer[0] = phased_offset;
 
-    if (waveform < Wave::kWhiteNoise)
+    if (waveform != Wave::kSampleAndHold && waveform != Wave::kSampleAndGlide && waveform != Wave::kWhiteNoise)
       output(kValue)->buffer[0] = Wave::wave(waveform, phased_offset);
     else {
       if (offset_integral) {
         last_random_value_ = current_random_value_;
         current_random_value_ = randomLfoValue();
       }
-      if (waveform == Wave::kWhiteNoise)
+      if (waveform == Wave::kWhiteNoise || waveform == Wave::kSampleAndHold)
         output(kValue)->buffer[0] = current_random_value_;
       else {
-        // Smooth random value.
+        // Smooth random value for kSampleAndGlide.
         mopo_float t = (1.0 - cos(PI * phased_offset)) / 2.0;
         output(kValue)->buffer[0] = utils::interpolate(last_random_value_,
                                                        current_random_value_, t);

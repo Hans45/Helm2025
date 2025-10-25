@@ -96,24 +96,44 @@ class HelmApplication : public JUCEApplication {
 
       void open() {
         File active_file = editor_->getActiveFile();
-        FileChooser open_box("Open Patch", File(),
+        auto open_box = std::make_shared<FileChooser>("Open Patch", File(),
                              String("*.") + mopo::PATCH_EXTENSION);
-        if (open_box.browseForFileToOpen())
-          loadFile(open_box.getResult());
+        
+        open_box->launchAsync(FileBrowserComponent::openMode, [this, open_box](const FileChooser& fc) {
+          File result = fc.getResult();
+          if (result.exists()) {
+            MessageManager::callAsync([this, result]() {
+              loadFile(result);
+              grabKeyboardFocus();
+              editor_->setFocus();
+            });
+          }
+        });
       }
 
       bool perform(const InvocationInfo& info) override {
         if (info.commandID == kSave) {
-          if (!editor_->saveToActiveFile())
-            editor_->exportToFile();
-          grabKeyboardFocus();
-          editor_->setFocus();
+          if (!editor_->saveToActiveFile()) {
+            editor_->exportToFileAsync([this, editor = editor_](bool ok) {
+              // After save completes, restore focus on the UI thread.
+              MessageManager::callAsync([this, editor]() {
+                grabKeyboardFocus();
+                if (editor) editor->setFocus();
+              });
+            });
+          } else {
+            grabKeyboardFocus();
+            editor_->setFocus();
+          }
           return true;
         }
         if (info.commandID == kSaveAs) {
-          editor_->exportToFile();
-          grabKeyboardFocus();
-          editor_->setFocus();
+          editor_->exportToFileAsync([this, editor = editor_](bool ok) {
+            MessageManager::callAsync([this, editor]() {
+              grabKeyboardFocus();
+              if (editor) editor->setFocus();
+            });
+          });
           return true;
         }
         if (info.commandID == kOpen) {

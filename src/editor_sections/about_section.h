@@ -28,7 +28,7 @@ class AboutSection : public Overlay, public Button::Listener {
     void paint(Graphics& g) override;
     void resized() override;
 
-    Rectangle<int> getInfoRect();
+  juce::Rectangle<int> getInfoRect();
 
     void mouseUp(const MouseEvent& e) override;
     void setVisible(bool should_be_visible) override;

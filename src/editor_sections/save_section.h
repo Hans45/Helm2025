@@ -43,8 +43,8 @@ class SaveSection : public Overlay, public TextEditor::Listener,
     void buttonClicked(Button* clicked_button) override;
     void mouseUp(const MouseEvent& e) override;
 
-    Rectangle<int> getSaveRect();
-    void setSaveRect(Rectangle<int> rectangle) { active_rect_ = rectangle; }
+  juce::Rectangle<int> getSaveRect();
+  void setSaveRect(juce::Rectangle<int> rectangle) { active_rect_ = rectangle; }
 
     void setListener(Listener* listener) { listener_ = listener; }
 
@@ -70,7 +70,7 @@ class SaveSection : public Overlay, public TextEditor::Listener,
     std::unique_ptr<TextButton> add_bank_button_;
     std::unique_ptr<TextButton> add_folder_button_;
 
-    Rectangle<int> active_rect_;
+  juce::Rectangle<int> active_rect_;
 
     Listener* listener_;
 

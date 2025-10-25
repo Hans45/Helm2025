@@ -52,7 +52,7 @@ class ContributeSection : public Overlay, public Button::Listener, CustomAmountE
     void paint(Graphics& g) override;
     void resized() override;
 
-    Rectangle<int> getInfoRect();
+  juce::Rectangle<int> getInfoRect();
 
     void mouseUp(const MouseEvent& e) override;
     void buttonClicked(Button* clicked_button) override;

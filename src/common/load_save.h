@@ -18,6 +18,7 @@
 #define LOAD_SAVE_H
 
 #include <JuceHeader.h>
+#include <functional>
 
 #include "helm_engine.h"
 
@@ -59,7 +60,7 @@ class LoadSave {
                               const NamedValueSet& properties);
 
     static void initSynth(SynthBase* synth, std::map<std::string, String>& save_info);
-  
+
     static void varToState(SynthBase* synth,
                            std::map<std::string, String>& save_info,
                            var state);
@@ -95,8 +96,8 @@ class LoadSave {
     static File getBankDirectory();
     static File getUserBankDirectory();
     static File getDidPayInitiallyFile();
-    static void exportBank(String bank_name);
-    static void importBank();
+    static void exportBank(String bank_name, std::function<void()> success_callback = nullptr);
+    static void importBank(std::function<void()> success_callback = nullptr);
     static int compareVersionStrings(String a, String b);
 
     static int getNumPatches();

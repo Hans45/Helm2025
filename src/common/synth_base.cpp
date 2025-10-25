@@ -20,6 +20,8 @@
 #include "startup.h"
 #include "synth_gui_interface.h"
 #include "utils.h"
+#include <future>
+#include <thread>
 
 #define OUTPUT_WINDOW_MIN_NOTE 16.0
 
@@ -47,6 +49,25 @@ void SynthBase::valueChanged(const std::string& name, mopo::mopo_float value) {
 void SynthBase::valueChangedInternal(const std::string& name, mopo::mopo_float value) {
   valueChanged(name, value);
   setValueNotifyHost(name, value);
+}
+
+void SynthBase::exportToFileAsync(std::function<void(bool)> callback) {
+  auto chooser = std::make_shared<FileChooser>("Export Patch", File(), String("*.") + mopo::PATCH_EXTENSION);
+
+  chooser->launchAsync(FileBrowserComponent::saveMode, [this, chooser, callback](const FileChooser& fc) {
+    File result = fc.getResult();
+    if (!result.exists()) {
+      // User cancelled or invalid file
+      MessageManager::callAsync([callback]() { callback(false); });
+      return;
+    }
+
+    // Ensure saveToFile runs on the message thread, then invoke the callback.
+    MessageManager::callAsync([this, result, callback]() {
+      bool ok = saveToFile(result);
+      callback(ok);
+    });
+  });
 }
 
 void SynthBase::valueChangedThroughMidi(const std::string& name, mopo::mopo_float value) {
@@ -181,15 +202,7 @@ bool SynthBase::loadFromFile(File patch) {
   return false;
 }
 
-bool SynthBase::exportToFile() {
-  File active_file = getActiveFile();
-  FileChooser save_box("Export Patch", File(), String("*.") + mopo::PATCH_EXTENSION);
-  if (!save_box.browseForFileToSave(true))
-    return false;
-
-  saveToFile(save_box.getResult());
-  return true;
-}
+// The synchronous exportToFile was removed in favor of exportToFileAsync.
 
 bool SynthBase::saveToFile(File patch) {
   if (patch.getFileExtension() != String(mopo::PATCH_EXTENSION))

@@ -147,16 +147,21 @@ void PatchSelector::buttonClicked(Button* clicked_button) {
 
   if (clicked_button == save_.get() && save_section_)
     save_section_->setVisible(true);
-  else if (clicked_button == browse_.get())
-    browser_->setVisible(!browser_->isVisible());
+  else if (clicked_button == browse_.get()) {
+    bool will_be_visible = !browser_->isVisible();
+    browser_->setVisible(will_be_visible);
+    updateBrowseButtonText(will_be_visible);
+  }
   else if (clicked_button == export_.get()) {
     SynthGuiInterface* parent = findParentComponentOfClass<SynthGuiInterface>();
     if (parent == nullptr)
       return;
 
     SynthBase* synth = parent->getSynth();
-    synth->exportToFile();
-    parent->externalPatchLoaded(synth->getActiveFile());
+    synth->exportToFileAsync([parent, synth](bool ok) {
+      if (ok)
+        parent->externalPatchLoaded(synth->getActiveFile());
+    });
   }
   else if (clicked_button == prev_patch_.get())
     browser_->loadPrevPatch();
@@ -174,6 +179,19 @@ void PatchSelector::setModified(bool modified) {
 
   modified_ = modified;
   repaint();
+}
+
+void PatchSelector::updateBrowseButtonText(bool browser_visible) {
+  if (browse_) {
+    if (browser_visible)
+      browse_->setButtonText(TRANS("EDIT"));
+    else
+      browse_->setButtonText(TRANS("BROWSE"));
+  }
+}
+
+void PatchSelector::browserVisibilityChanged(bool is_visible) {
+  updateBrowseButtonText(is_visible);
 }
 
 void PatchSelector::loadFromFile(File& patch) {

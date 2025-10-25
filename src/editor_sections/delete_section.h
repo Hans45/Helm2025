@@ -40,7 +40,7 @@ class DeleteSection : public Overlay, public Button::Listener {
 
     void setFileToDelete(File file) { file_ = file; }
 
-    Rectangle<int> getDeleteRect();
+  juce::Rectangle<int> getDeleteRect();
 
     void addDeleteListener(Listener* listener) { listeners_.add(listener); }
     void removeDeleteListener(Listener* listener) { listeners_.removeAllInstancesOf(listener); }

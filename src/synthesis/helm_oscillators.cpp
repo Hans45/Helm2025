@@ -137,8 +137,8 @@ namespace mopo {
 
     int wave1 = static_cast<int>(input(kOscillator1Waveform)->source->buffer[0] + 0.5);
     int wave2 = static_cast<int>(input(kOscillator2Waveform)->source->buffer[0] + 0.5);
-    wave1 = utils::iclamp(wave1, 0, FixedPointWaveLookup::kWhiteNoise - 1);
-    wave2 = utils::iclamp(wave2, 0, FixedPointWaveLookup::kWhiteNoise - 1);
+    wave1 = utils::iclamp(wave1, 0, FixedPointWaveLookup::kNumFixedPointWaveforms - 1);
+    wave2 = utils::iclamp(wave2, 0, FixedPointWaveLookup::kNumFixedPointWaveforms - 1);
 
     prepareBuffers(wave_buffers1_, detune_diffs1_, oscillator1_phase_diffs_, wave1);
     prepareBuffers(wave_buffers2_, detune_diffs2_, oscillator2_phase_diffs_, wave2);

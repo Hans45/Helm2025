@@ -203,7 +203,7 @@ void WaveViewer::resetWavePath() {
 
   mopo::Wave::Type type = static_cast<mopo::Wave::Type>(static_cast<int>(wave_slider_->getValue()));
 
-  if (type < mopo::Wave::kWhiteNoise) {
+  if (type != mopo::Wave::kSampleAndHold && type != mopo::Wave::kSampleAndGlide && type != mopo::Wave::kWhiteNoise) {
     wave_path_.startNewSubPath(0, getHeight() / 2.0f);
     for (int i = 1; i < resolution_ - 1; ++i) {
       float t = (1.0f * i) / resolution_;
@@ -213,10 +213,10 @@ void WaveViewer::resetWavePath() {
 
     wave_path_.lineTo(getWidth(), getHeight() / 2.0f);
   }
-  else if (type == mopo::Wave::kWhiteNoise)
+  else if (type == mopo::Wave::kWhiteNoise || type == mopo::Wave::kSampleAndHold)
     drawRandom();
   else
-    drawSmoothRandom();
+    drawSmoothRandom(); // For kSampleAndGlide
 
   auto *display = Desktop::getInstance().getDisplays().getPrimaryDisplay();
   jassert(display != nullptr);

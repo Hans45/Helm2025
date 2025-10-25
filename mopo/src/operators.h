@@ -62,7 +62,7 @@ namespace mopo {
       Clamp(mopo_float min = -1, mopo_float max = 1) : Operator(1, 1),
                                                        min_(min), max_(max) { }
 
-      virtual Processor* clone() const override { return new Clamp(*this); }
+      MOPO_DECLARE_CLONE(Clamp)
 
       void process() override;
 
@@ -572,7 +572,7 @@ namespace mopo {
         inline void bufferTick(mopo_float* dest, const mopo_float* source, int i) {
           dest[i] = utils::max(source[i], min_);
         }
-        
+
       private:
         mopo_float min_;
     };
@@ -595,7 +595,7 @@ namespace mopo {
         inline void bufferTick(mopo_float* dest, const mopo_float* source, int i) {
           dest[i] = utils::min(source[i], max_);
         }
-        
+
       private:
         mopo_float max_;
     };
@@ -725,7 +725,7 @@ namespace mopo {
         inline void bufferTick(mopo_float* dest, const mopo_float* source, int i) {
           dest[i] = sqrt(source[i]) + offset_;
         }
-        
+
       private:
         mopo_float offset_;
     };

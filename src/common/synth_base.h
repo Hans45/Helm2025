@@ -53,7 +53,9 @@ class SynthBase : public MidiManager::Listener {
 
     void loadInitPatch();
     bool loadFromFile(File patch);
-    bool exportToFile();
+  // Asynchronous export. The callback is invoked on the
+  // message thread with 'true' if a file was saved, 'false' otherwise.
+  void exportToFileAsync(std::function<void(bool)> callback);
     bool saveToFile(File patch);
     bool saveToActiveFile();
     File getActiveFile() { return active_file_; }

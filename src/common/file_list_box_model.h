@@ -30,7 +30,7 @@ class FileListBoxModel : public ListBoxModel {
         virtual void selectedFilesChanged(FileListBoxModel* model) = 0;
     };
 
-    FileListBoxModel() : listener_(nullptr), sort_ascending_(true), delete_section_(nullptr) { }
+    FileListBoxModel() : listener_(nullptr), sort_ascending_(true), delete_section_(nullptr), categories_grouped_(false) { }
 
     int getNumRows() override;
     void paintListBoxItem(int row_number, Graphics& g,
@@ -44,12 +44,14 @@ class FileListBoxModel : public ListBoxModel {
     void setListener(Listener* listener) { listener_ = listener; }
     Array<File> getAllFiles() { return files_; }
     void setDeleteSection(DeleteSection* delete_section) { delete_section_ = delete_section; }
+    bool areCategoriesGrouped() const { return categories_grouped_; }
 
   private:
     Array<File> files_;
     Listener* listener_;
     bool sort_ascending_;
     DeleteSection* delete_section_;
+    bool categories_grouped_;
 };
 
 #endif // FILE_LIST_BOX_MODEL_H

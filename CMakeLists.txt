@@ -18,10 +18,30 @@ project(HELM
   LANGUAGES CXX)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+
+# Enable SIMD optimizations
+include(CheckCXXCompilerFlag)
+if(MSVC)
+    check_cxx_compiler_flag("/arch:AVX2" COMPILER_SUPPORTS_AVX2)
+    if(COMPILER_SUPPORTS_AVX2)
+        add_compile_options("/arch:AVX2")
+    endif()
+else()
+    check_cxx_compiler_flag("-mavx2" COMPILER_SUPPORTS_AVX2)
+    if(COMPILER_SUPPORTS_AVX2)
+        add_compile_options("-mavx2")
+    endif()
+endif()
 
 # It's "bad form" to set this globally, but it's convenient.
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
+set(VST3_SDK_PATH "G:/VST_SDK/vst3sdk")
+set(JUCE_VST3_SDK "${VST3_SDK_PATH}")
+set(JUCE_ASIO_SDK "G:/ASIOSDK")
 # ==================================================
 
 add_subdirectory(concurrentqueue)
@@ -33,8 +53,6 @@ juce_add_binary_data(HelmData SOURCES
   fonts/Roboto-Regular.ttf
   fonts/Roboto-Light.ttf
   fonts/Roboto-Thin.ttf
-  images/helm_icon_16_1x.png
-  images/helm_icon_16_2x.png
   images/helm_icon_32_1x.png
   images/helm_icon_32_2x.png
   images/helm_icon_128_1x.png
@@ -43,14 +61,10 @@ juce_add_binary_data(HelmData SOURCES
   images/helm_icon_256_2x.png
   images/helm_icon_512_1x.png
   images/helm_icon_512_2x.png
-  images/modulation_selected_active_1x.png
-  images/modulation_selected_active_2x.png
-  images/modulation_selected_inactive_1x.png
-  images/modulation_selected_inactive_2x.png
-  images/modulation_unselected_active_1x.png
-  images/modulation_unselected_active_2x.png
-  images/modulation_unselected_inactive_1x.png
-  images/modulation_unselected_inactive_2x.png)
+  images/modulation_selected_active.png
+  images/modulation_selected_inactive.png
+  images/modulation_unselected_active.png
+  images/modulation_unselected_inactive.png)
 
 # ==================================================
 
@@ -65,16 +79,19 @@ juce_add_plugin(HelmPlugin
   EDITOR_WANTS_KEYBOARD_FOCUS TRUE
 
   PRODUCT_NAME "helm"
-  COMPANY_NAME "Matt Tytel"
+  COMPANY_NAME "MattTytel"
+  BUNDLE_ID "com.matttytel.helm"
   PLUGIN_MANUFACTURER_CODE "Tyte"
   FORMATS VST3 AU LV2
 
-  LV2_URI "http://tytel.org/helm"
+  LV2URI "http://tytel.org/plugins/helm"
   LV2_WANTS_LATENCY FALSE)
 
 juce_generate_juce_header(HelmPlugin)
 
 target_sources(HelmPlugin PRIVATE
+  src/synthesis/helm_engine_simd.h
+  src/plugin/helm_plugin_simd.h
   src/common/border_bounds_constrainer.cpp
   src/common/file_list_box_model.cpp
   src/common/helm_common.cpp
@@ -158,6 +175,7 @@ target_sources(HelmPlugin PRIVATE
   src/synthesis/fixed_point_wave.cpp
   src/synthesis/gate.cpp
   src/synthesis/helm_engine.cpp
+  src/synthesis/helm_midi_handler.cpp
   src/synthesis/helm_lfo.cpp
   src/synthesis/helm_module.cpp
   src/synthesis/helm_oscillators.cpp
@@ -178,13 +196,19 @@ target_include_directories(HelmPlugin PUBLIC
 
 target_compile_definitions(HelmPlugin PUBLIC
   # Helm tries to detect at runtime whether it's actually installed,
-  # or whether it's just being queried for its factory presets by
+  # whether it's just being queried for its factory presets by
   # the LV2 .ttl generator. If it's the latter, Helm needs to know
   # where its factory presets are on the developer's disk. Not ideal
   # for a number of reasons, but it'll have to do for now.
-  HELM_LV2GEN_FACTORY_PRESET_PATH="${CMAKE_SOURCE_DIR}/patches"
+  HELM_LV2GEN_FACTORY_PRESET_PATH="${CMAKE_CURRENT_SOURCE_DIR}/patches/Factory Presets"
 
-  JUCE_DISPLAY_SPLASH_SCREEN=0
+  # Enable SIMD optimizations
+  MOPO_USE_SIMD=1
+
+  # Enable other optimizations
+  MOPO_USE_CACHE=1
+  MOPO_ALIGNED_MALLOC=1
+
   JUCE_VST3_CAN_REPLACE_VST2=0
   JUCE_WEB_BROWSER=0
   JUCE_USE_CURL=0
@@ -222,7 +246,8 @@ juce_add_gui_app(HelmStandalone
   ICON_SMALL images/helm_icon_128_2x.png
 
   PRODUCT_NAME "helm"
-  COMPANY_NAME "Matt Tytel")
+  COMPANY_NAME "MattTytel"
+  BUNDLE_ID "com.matttytel.helm.standalone")
 
 juce_generate_juce_header(HelmStandalone)
 
@@ -232,14 +257,43 @@ target_sources(HelmStandalone PRIVATE
   src/standalone/main.cpp)
 
 target_include_directories(HelmStandalone PRIVATE
-  src/standalone)
+  src/standalone
+  "G:/ASIOSDK/common"
+  "G:/ASIOSDK/host")
 
 target_compile_definitions(HelmStandalone PRIVATE
   JUCE_WASAPI=1
   JUCE_DIRECTSOUND=1
-  JUCE_ALSA=1
-  JUCE_JACK=1
+  JUCE_ASIO=1
+  JUCE_ASIO_SDK="G:/ASIOSDK"
+  JUCE_JACK=0
+  JUCE_ALSA=0
   JUCE_JACK_CLIENT_NAME="Helm"
   JUCE_ALSA_MIDI_NAME="Helm")
 
 target_link_libraries(HelmStandalone PRIVATE HelmPlugin)
+
+# Unit tests
+if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/tests")
+  add_executable(parameter_interpolator_test
+    tests/test_parameter_interpolator.cpp)
+
+  target_include_directories(parameter_interpolator_test PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}/src
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/synthesis)
+
+  target_compile_features(parameter_interpolator_test PRIVATE cxx_std_17)
+
+  # Link nothing heavy; test only includes header-only code
+endif()
+
+if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/tests")
+  add_executable(parameter_batch_interpolator_test
+    tests/test_parameter_batch_interpolator.cpp)
+
+  target_include_directories(parameter_batch_interpolator_test PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}/src
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/synthesis)
+
+  target_compile_features(parameter_batch_interpolator_test PRIVATE cxx_std_17)
+endif()

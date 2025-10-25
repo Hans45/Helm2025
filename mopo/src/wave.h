@@ -174,7 +174,17 @@ namespace mopo {
         kThreePyramid,
         kFivePyramid,
         kNinePyramid,
-        kWhiteNoise,
+        kSampleAndHold,    // index 11 - corresponds to "sample and hold"
+        kSampleAndGlide,   // index 12 - corresponds to "sample and glide"
+        kPulse25,          // index 13 - corresponds to "pulse 25%"
+        kPulse10,          // index 14 - corresponds to "pulse 10%"
+        kSawSquare,        // index 15 - corresponds to "saw+square"
+        kTriangleSquare,   // index 16 - corresponds to "tri+square"
+        kSkewedSine,       // index 17 - corresponds to "skewed sine"
+        kFoldedSine,       // index 18 - corresponds to "folded sine"
+        kSuperSaw,         // index 19 - corresponds to "super saw"
+        kChirp,            // index 20 - corresponds to "chirp"
+        kWhiteNoise,       // Keep for backward compatibility but not used in UI
         kNumWaveforms
       };
 
@@ -210,6 +220,19 @@ namespace mopo {
             return lookup->pyramid<5>(t, harmonics);
           case Wave::kNinePyramid:
             return lookup->pyramid<9>(t, harmonics);
+          case Wave::kSampleAndHold:
+          case Wave::kSampleAndGlide:
+          case Wave::kWhiteNoise:
+          case Wave::kPulse25:
+          case Wave::kPulse10:
+          case Wave::kSawSquare:
+          case Wave::kTriangleSquare:
+          case Wave::kSkewedSine:
+          case Wave::kFoldedSine:
+          case Wave::kSuperSaw:
+          case Wave::kChirp:
+            // For new waveforms, fall back to non-bandlimited version for now
+            return Wave::wave(waveform, t);
           default:
             return Wave::wave(waveform, t);
         }
@@ -239,8 +262,26 @@ namespace mopo {
             return pyramid<5>(t);
           case kNinePyramid:
             return pyramid<9>(t);
-          case kWhiteNoise:
-            return whitenoise();
+          case kSampleAndHold:
+            return whitenoise();  // Sample and hold uses random values
+          case kSampleAndGlide:
+            return whitenoise();  // Sample and glide uses smooth random values
+          case kPulse25:
+            return pulse25(t);
+          case kPulse10:
+            return pulse10(t);
+          case kSawSquare:
+            return 0.6 * downsaw(t) + 0.4 * square(t);
+          case kTriangleSquare:
+            return 0.7 * triangle(t) + 0.3 * square(t);
+          case kSkewedSine:
+            return skewedSine(t);
+          case kFoldedSine:
+            return foldedSine(t);
+          case kSuperSaw:
+            return superSaw(t);
+          case kChirp:
+            return chirp(t);
           default:
             return 0;
         }
@@ -277,6 +318,46 @@ namespace mopo {
 
       static inline mopo_float hannwave(mopo_float t) {
         return 0.5 * (1.0 - cosf(2.0 * PI * t));
+      }
+
+      static inline mopo_float pulse25(mopo_float t) {
+        return t < 0.25 ? 1 : -1;
+      }
+
+      static inline mopo_float pulse10(mopo_float t) {
+        return t < 0.1 ? 1 : -1;
+      }
+
+      static inline mopo_float skewedSine(mopo_float t) {
+        // Asymmetric sine wave with different rise/fall times
+        mopo_float skewed_t = t < 0.5 ? t * t * 2.0 : 1.0 - (1.0 - t) * (1.0 - t) * 2.0;
+        return utils::quickSin1(skewed_t);
+      }
+
+      static inline mopo_float foldedSine(mopo_float t) {
+        mopo_float sine_val = utils::quickSin1(t);
+        // Wave folding effect
+        return sine_val > 0.5 ? 1.0 - sine_val : (sine_val < -0.5 ? -1.0 - sine_val : sine_val);
+      }
+
+      static inline mopo_float superSaw(mopo_float t) {
+        mopo_float sum = 0.0;
+        // Superposition of 7 slightly detuned saw waves
+        for (int voice = 0; voice < 7; ++voice) {
+          mopo_float detune = (voice - 3) * 0.01; // Small detuning
+          mopo_float detuned_t = t + detune;
+          // Normalize to [0,1]
+          mopo_float integral;
+          detuned_t = utils::mod(detuned_t, &integral);
+          sum += upsaw(detuned_t) / 7.0;
+        }
+        return sum;
+      }
+
+      static inline mopo_float chirp(mopo_float t) {
+        // Frequency sweep from low to high
+        mopo_float frequency_mult = 1.0 + 4.0 * t; // 1x to 5x frequency
+        return utils::quickSin1(t * frequency_mult);
       }
 
       template<size_t steps>

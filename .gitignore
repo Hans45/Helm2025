@@ -28,3 +28,7 @@ build
 *.tar.gz
 Debug
 Release
+
+# Custom ignores
+JUCE_backup/
+installer/

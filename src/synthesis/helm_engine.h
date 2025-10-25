@@ -20,6 +20,8 @@
 
 #include "mopo.h"
 #include "helm_common.h"
+#include "midi_event.h"
+#include "midi_queue.h"
 #include "helm_module.h"
 
 namespace mopo {
@@ -31,44 +33,48 @@ namespace mopo {
   class ValueSwitch;
 
   // The overall helm engine. All audio processing is contained in here.
-  class HelmEngine : public HelmModule, public NoteHandler {
+  class HelmEngine final : public HelmModule, public NoteHandler, public MidiEventHandler {
     public:
+      using ModConnectionSet = std::set<ModulationConnection*>;
+      using EventQueue = MidiEventQueue;
+
       HelmEngine();
-      virtual ~HelmEngine();
+      ~HelmEngine() override;
 
       void init() override;
+      void process() noexcept override;
+      void setBufferSize(int buffer_size) noexcept override;
+      void setSampleRate(int sample_rate) noexcept override;
 
-      void process() override;
-      void setBufferSize(int buffer_size) override;
-      void setSampleRate(int sample_rate) override;
+      void handleMidiEvent(const MidiEvent& event) noexcept override;
 
-      std::set<ModulationConnection*> getModulationConnections() { return mod_connections_; }
-      bool isModulationActive(ModulationConnection* connection);
-      CircularQueue<mopo::mopo_float>& getPressedNotes();
-      void connectModulation(ModulationConnection* connection);
-      void disconnectModulation(ModulationConnection* connection);
-      int getNumActiveVoices();
-      mopo_float getLastActiveNote() const;
+      const ModConnectionSet& getModulationConnections() const noexcept { return mod_connections_; }
+      bool isModulationActive(ModulationConnection* connection) const noexcept;
+      CircularQueue<mopo::mopo_float>& getPressedNotes() noexcept;
+      void connectModulation(ModulationConnection* connection) noexcept;
+      void disconnectModulation(ModulationConnection* connection) noexcept;
+      [[nodiscard]] int getNumActiveVoices() const noexcept;
+      [[nodiscard]] mopo_float getLastActiveNote() const noexcept;
 
       // Keyboard events.
-      void allNotesOff(int sample = 0) override;
+      void allNotesOff(int sample = 0) noexcept override;
       void noteOn(mopo_float note, mopo_float velocity = 1.0,
-                  int sample = 0, int channel = 0) override;
-      VoiceEvent noteOff(mopo_float note, int sample = 0) override;
-      void setModWheel(mopo_float value, int channel = 0);
-      void setPitchWheel(mopo_float value, int channel = 0);
-      void setBpm(mopo_float bpm);
-      void correctToTime(mopo_float samples) override;
-      void setAftertouch(mopo_float note, mopo_float value, int sample = 0);
-      void setChannelAftertouch(int channel, mopo_float value, int sample = 0);
+                  int sample = 0, int channel = 0) noexcept override;
+      [[nodiscard]] VoiceEvent noteOff(mopo_float note, int sample = 0) noexcept override;
+      void setModWheel(mopo_float value, int channel = 0) noexcept;
+      void setPitchWheel(mopo_float value, int channel = 0) noexcept;
+      void setBpm(mopo_float bpm) noexcept;
+      void correctToTime(mopo_float samples) noexcept override;
+      void setAftertouch(mopo_float note, mopo_float value, int sample = 0) noexcept;
+      void setChannelAftertouch(int channel, mopo_float value, int sample = 0) noexcept;
 
       // Sustain pedal events.
-      void sustainOn();
-      void sustainOff();
+      void sustainOn() noexcept;
+      void sustainOff() noexcept;
 
     private:
-      HelmVoiceHandler* voice_handler_;
-      Arpeggiator* arpeggiator_;
+  HelmVoiceHandler* voice_handler_;
+  Arpeggiator* arpeggiator_;
       ValueSwitch* arp_on_;
       bool was_playing_arp_;
 
@@ -76,10 +82,10 @@ namespace mopo {
       Value* lfo_2_retrigger_;
       Value* step_sequencer_retrigger_;
       Value* bps_;
-      HelmLfo* lfo_1_;
-      HelmLfo* lfo_2_;
-      PeakMeter* peak_meter_;
-      StepGenerator* step_sequencer_;
+  HelmLfo* lfo_1_;
+  HelmLfo* lfo_2_;
+  PeakMeter* peak_meter_;
+  StepGenerator* step_sequencer_;
 
       std::set<ModulationConnection*> mod_connections_;
   };

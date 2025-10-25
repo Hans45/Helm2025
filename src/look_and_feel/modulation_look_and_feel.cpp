@@ -170,43 +170,41 @@ void ModulationLookAndFeel::drawToggleButton(Graphics& g, ToggleButton& button,
                                              bool hover, bool is_down) {
   static const DropShadow shadow(Colour(0x88000000), 2, Point<int>(0, 0));
 
-  static const Image on_active_2x =
-      ImageCache::getFromMemory(BinaryData::modulation_selected_active_2x_png,
-                                BinaryData::modulation_selected_active_2x_pngSize);
-  static const Image on_active_1x =
-      ImageCache::getFromMemory(BinaryData::modulation_selected_active_1x_png,
-                                BinaryData::modulation_selected_active_1x_pngSize);
-  static const Image off_active_2x =
-      ImageCache::getFromMemory(BinaryData::modulation_unselected_active_2x_png,
-                                BinaryData::modulation_unselected_active_2x_pngSize);
-  static const Image on_inactive_2x =
-      ImageCache::getFromMemory(BinaryData::modulation_selected_inactive_2x_png,
-                                BinaryData::modulation_selected_inactive_2x_pngSize);
-  static const Image off_inactive_2x =
-      ImageCache::getFromMemory(BinaryData::modulation_unselected_inactive_2x_png,
-                                BinaryData::modulation_unselected_inactive_2x_pngSize);
+  static const Image on_active =
+      ImageCache::getFromMemory(BinaryData::modulation_selected_active_png,
+                                BinaryData::modulation_selected_active_pngSize);
+  static const Image off_active =
+      ImageCache::getFromMemory(BinaryData::modulation_unselected_active_png,
+                                BinaryData::modulation_unselected_active_pngSize);
+  static const Image on_inactive =
+      ImageCache::getFromMemory(BinaryData::modulation_selected_inactive_png,
+                                BinaryData::modulation_selected_inactive_pngSize);
+  static const Image off_inactive =
+      ImageCache::getFromMemory(BinaryData::modulation_unselected_inactive_png,
+                                BinaryData::modulation_unselected_inactive_pngSize);
 
-
-  g.saveState();
-  float ratio = (1.0f * button.getWidth()) / on_active_1x.getWidth();
-  g.addTransform(AffineTransform::scale(ratio, ratio));
-  shadow.drawForImage(g, on_active_1x);
-  g.restoreState();
 
   Image button_image;
   SynthGuiInterface* parent = button.findParentComponentOfClass<SynthGuiInterface>();
   if (parent && parent->getSynth()->getSourceConnections(button.getName().toStdString()).size()) {
     if (button.getToggleState())
-      button_image = on_active_2x;
+      button_image = on_active;
     else
-      button_image = off_active_2x;
+      button_image = off_active;
   }
   else {
     if (button.getToggleState())
-      button_image = on_inactive_2x;
+      button_image = on_inactive;
     else
-      button_image = off_inactive_2x;
+      button_image = off_inactive;
   }
+
+  g.saveState();
+  // Scale from high-resolution images (originally 2x resolution)
+  float ratio = (1.0f * button.getWidth()) / (button_image.getWidth() / 2.0f);
+  g.addTransform(AffineTransform::scale(ratio, ratio));
+  shadow.drawForImage(g, button_image);
+  g.restoreState();
 
   g.setColour(Colours::white);
   g.drawImage(button_image,
