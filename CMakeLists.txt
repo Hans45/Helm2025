@@ -39,9 +39,9 @@ endif()
 # It's "bad form" to set this globally, but it's convenient.
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
-set(VST3_SDK_PATH "G:/VST_SDK/vst3sdk")
-set(JUCE_VST3_SDK "${VST3_SDK_PATH}")
-set(JUCE_ASIO_SDK "G:/ASIOSDK")
+# VST3 SDK Handling
+set(JUCE_VST3_SDK "${CMAKE_CURRENT_SOURCE_DIR}/VST3_SDK")
+
 # ==================================================
 
 add_subdirectory(concurrentqueue)
@@ -257,15 +257,28 @@ target_sources(HelmStandalone PRIVATE
   src/standalone/main.cpp)
 
 target_include_directories(HelmStandalone PRIVATE
-  src/standalone
-  "G:/ASIOSDK/common"
-  "G:/ASIOSDK/host")
+  src/standalone)
+
+# Define a user-configurable path for the ASIO SDK
+set(HELM_ASIO_SDK_PATH "G:/ASIOSDK" CACHE PATH "Path to the Steinberg ASIO SDK")
+
+# Conditionally enable ASIO support
+if(EXISTS "${HELM_ASIO_SDK_PATH}/common/asiosys.h")
+    message(STATUS "ASIO SDK found at ${HELM_ASIO_SDK_PATH}. Enabling ASIO support.")
+    target_include_directories(HelmStandalone PRIVATE
+        "${HELM_ASIO_SDK_PATH}/common"
+        "${HELM_ASIO_SDK_PATH}/host")
+    target_compile_definitions(HelmStandalone PRIVATE
+        JUCE_ASIO=1
+        JUCE_ASIO_SDK="${HELM_ASIO_SDK_PATH}")
+else()
+    message(STATUS "ASIO SDK not found. Building without ASIO support. (Set HELM_ASIO_SDK_PATH to enable)")
+    target_compile_definitions(HelmStandalone PRIVATE JUCE_ASIO=0)
+endif()
 
 target_compile_definitions(HelmStandalone PRIVATE
   JUCE_WASAPI=1
   JUCE_DIRECTSOUND=1
-  JUCE_ASIO=1
-  JUCE_ASIO_SDK="G:/ASIOSDK"
   JUCE_JACK=0
   JUCE_ALSA=0
   JUCE_JACK_CLIENT_NAME="Helm"
