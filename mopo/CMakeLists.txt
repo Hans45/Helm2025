@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.15)
 
 project(MOPO
   VERSION 0.10.0
-  DESCRIPTION "A modular and polyphonic audio synthesis library, by Matt Tytel."
+  DESCRIPTION "A modular and polyphonic audio synthesis library, by Matt Tytel, updated using AI by Marc Scheffer (Hans45)."
   LANGUAGES CXX)
 
 add_library(mopo STATIC

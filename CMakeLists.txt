@@ -40,7 +40,7 @@ endif()
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 # VST3 SDK Handling
-set(JUCE_VST3_SDK "${CMAKE_CURRENT_SOURCE_DIR}/VST3_SDK")
+set(JUCE_VST3_SDK "${CMAKE_CURRENT_SOURCE_DIR}/external/VST3_SDK")
 
 # ==================================================
 
