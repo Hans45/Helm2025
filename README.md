@@ -70,10 +70,7 @@ This script automates all steps: it initializes the required dependencies (JUCE 
 
 - **Robust Build Script**: A new `build.ps1` script for Windows automates the entire process from cleaning to installer creation. It is fully translated into English and provides clear, color-coded output.
 
-- **Conditional ASIO Support**: The build system now automatically detects if you have the ASIO SDK. 
-    - If you do, it enables ASIO support for the standalone application.
-    - If you don't, it skips ASIO support and continues the build without errors.
-    - To use it, set the `HELM_ASIO_SDK_PATH` variable during CMake configuration: `cmake -S . -B build -DHELM_ASIO_SDK_PATH="C:/path/to/ASIOSDK"`
+- **ASIO Support**: The GPLv3 licensed version of Steinberg ASIO SDK is included in the projet. 
 
 ## Features
 

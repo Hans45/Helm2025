@@ -46,7 +46,7 @@ set(JUCE_VST3_SDK "${CMAKE_CURRENT_SOURCE_DIR}/external/VST3_SDK")
 
 add_subdirectory(concurrentqueue)
 add_subdirectory(mopo)
-add_subdirectory(JUCE)
+add_subdirectory(external/JUCE)
 
 juce_add_binary_data(HelmData SOURCES
   fonts/DroidSansMono.ttf
@@ -260,7 +260,7 @@ target_include_directories(HelmStandalone PRIVATE
   src/standalone)
 
 # Define a user-configurable path for the ASIO SDK
-set(HELM_ASIO_SDK_PATH "G:/ASIOSDK" CACHE PATH "Path to the Steinberg ASIO SDK")
+set(HELM_ASIO_SDK_PATH "${CMAKE_CURRENT_SOURCE_DIR}/external/ASIOSDK" CACHE PATH "Path to the Steinberg ASIO SDK")
 
 # Conditionally enable ASIO support
 if(EXISTS "${HELM_ASIO_SDK_PATH}/common/asiosys.h")
