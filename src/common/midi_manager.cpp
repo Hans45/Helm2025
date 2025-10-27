@@ -101,7 +101,7 @@ void MidiManager::processMidiMessage(const MidiMessage& midi_message, int sample
     File patch = LoadSave::loadPatch(current_bank_, current_folder_, current_patch_,
                                      synth_, *gui_state_);
     PatchLoadedCallback* callback = new PatchLoadedCallback(listener_, patch);
-    callback->post();
+    (void)callback->post();
     return;
   }
 

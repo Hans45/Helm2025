@@ -12,7 +12,7 @@ if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
     "Debug" "Release" "MinSizeRel" "RelWithDebInfo")
 endif()
 
-project(HELM
+project(Helm2025
   VERSION 0.10.0
   DESCRIPTION "A cross-platform polyphonic synthesizer, by Matt Tytel."
   LANGUAGES CXX)
@@ -68,7 +68,7 @@ juce_add_binary_data(HelmData SOURCES
 
 # ==================================================
 
-juce_add_plugin(HelmPlugin
+juce_add_plugin(Helm2025Plugin
   ICON_BIG images/helm_icon_512_2x.png
   ICON_SMALL images/helm_icon_128_2x.png
 
@@ -78,18 +78,18 @@ juce_add_plugin(HelmPlugin
   IS_MIDI_EFFECT FALSE
   EDITOR_WANTS_KEYBOARD_FOCUS TRUE
 
-  PRODUCT_NAME "helm"
+  PRODUCT_NAME "Helm2025"
   COMPANY_NAME "MattTytel"
-  BUNDLE_ID "com.matttytel.helm"
+  BUNDLE_ID "com.matttytel.helm2025"
   PLUGIN_MANUFACTURER_CODE "Tyte"
   FORMATS VST3 AU LV2
 
-  LV2URI "http://tytel.org/plugins/helm"
+  LV2URI "http://tytel.org/plugins/helm2025"
   LV2_WANTS_LATENCY FALSE)
 
-juce_generate_juce_header(HelmPlugin)
+juce_generate_juce_header(Helm2025Plugin)
 
-target_sources(HelmPlugin PRIVATE
+target_sources(Helm2025Plugin PRIVATE
   src/synthesis/helm_engine_simd.h
   src/plugin/helm_plugin_simd.h
   src/common/border_bounds_constrainer.cpp
@@ -126,6 +126,7 @@ target_sources(HelmPlugin PRIVATE
   src/editor_components/tempo_selector.cpp
   src/editor_components/text_selector.cpp
   src/editor_components/text_slider.cpp
+  src/editor_components/value_entry_component.cpp
   src/editor_components/wave_selector.cpp
   src/editor_components/wave_viewer.cpp
   src/editor_components/xy_pad.cpp
@@ -186,7 +187,7 @@ target_sources(HelmPlugin PRIVATE
   src/synthesis/trigger_random.cpp
   src/synthesis/value_switch.cpp)
 
-target_include_directories(HelmPlugin PUBLIC
+target_include_directories(Helm2025Plugin PUBLIC
   src/common
   src/editor_components
   src/editor_sections
@@ -194,7 +195,7 @@ target_include_directories(HelmPlugin PUBLIC
   src/plugin
   src/synthesis)
 
-target_compile_definitions(HelmPlugin PUBLIC
+target_compile_definitions(Helm2025Plugin PUBLIC
   # Helm tries to detect at runtime whether it's actually installed,
   # whether it's just being queried for its factory presets by
   # the LV2 .ttl generator. If it's the latter, Helm needs to know
@@ -214,7 +215,7 @@ target_compile_definitions(HelmPlugin PUBLIC
   JUCE_USE_CURL=0
   JUCE_USE_XRANDR=0)
 
-target_link_libraries(HelmPlugin
+target_link_libraries(Helm2025Plugin
   PUBLIC
     HelmData
     concurrentqueue
@@ -241,22 +242,22 @@ target_link_libraries(HelmPlugin
 
 # ==================================================
 
-juce_add_gui_app(HelmStandalone
+juce_add_gui_app(Helm2025Standalone
   ICON_BIG images/helm_icon_512_2x.png
   ICON_SMALL images/helm_icon_128_2x.png
 
-  PRODUCT_NAME "helm"
+  PRODUCT_NAME "Helm2025"
   COMPANY_NAME "MattTytel"
-  BUNDLE_ID "com.matttytel.helm.standalone")
+  BUNDLE_ID "com.matttytel.helm2025.standalone")
 
-juce_generate_juce_header(HelmStandalone)
+juce_generate_juce_header(Helm2025Standalone)
 
-target_sources(HelmStandalone PRIVATE
+target_sources(Helm2025Standalone PRIVATE
   src/standalone/helm_editor.cpp
   src/standalone/helm_computer_keyboard.cpp
   src/standalone/main.cpp)
 
-target_include_directories(HelmStandalone PRIVATE
+target_include_directories(Helm2025Standalone PRIVATE
   src/standalone)
 
 # Define a user-configurable path for the ASIO SDK
@@ -265,26 +266,26 @@ set(HELM_ASIO_SDK_PATH "${CMAKE_CURRENT_SOURCE_DIR}/external/ASIOSDK" CACHE PATH
 # Conditionally enable ASIO support
 if(EXISTS "${HELM_ASIO_SDK_PATH}/common/asiosys.h")
     message(STATUS "ASIO SDK found at ${HELM_ASIO_SDK_PATH}. Enabling ASIO support.")
-    target_include_directories(HelmStandalone PRIVATE
+    target_include_directories(Helm2025Standalone PRIVATE
         "${HELM_ASIO_SDK_PATH}/common"
         "${HELM_ASIO_SDK_PATH}/host")
-    target_compile_definitions(HelmStandalone PRIVATE
+    target_compile_definitions(Helm2025Standalone PRIVATE
         JUCE_ASIO=1
         JUCE_ASIO_SDK="${HELM_ASIO_SDK_PATH}")
 else()
     message(STATUS "ASIO SDK not found. Building without ASIO support. (Set HELM_ASIO_SDK_PATH to enable)")
-    target_compile_definitions(HelmStandalone PRIVATE JUCE_ASIO=0)
+    target_compile_definitions(Helm2025Standalone PRIVATE JUCE_ASIO=0)
 endif()
 
-target_compile_definitions(HelmStandalone PRIVATE
+target_compile_definitions(Helm2025Standalone PRIVATE
   JUCE_WASAPI=1
   JUCE_DIRECTSOUND=1
   JUCE_JACK=0
   JUCE_ALSA=0
-  JUCE_JACK_CLIENT_NAME="Helm"
-  JUCE_ALSA_MIDI_NAME="Helm")
+  JUCE_JACK_CLIENT_NAME="Helm2025"
+  JUCE_ALSA_MIDI_NAME="Helm2025")
 
-target_link_libraries(HelmStandalone PRIVATE HelmPlugin)
+target_link_libraries(Helm2025Standalone PRIVATE Helm2025Plugin)
 
 # Unit tests
 if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/tests")

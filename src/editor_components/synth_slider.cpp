@@ -21,6 +21,7 @@
 #include "helm_common.h"
 #include "synth_gui_interface.h"
 #include "text_look_and_feel.h"
+#include "value_entry_component.h"
 
 #define DEFAULT_POPUP_BUFFER 10
 
@@ -30,6 +31,7 @@ namespace {
     kArmMidiLearn,
     kClearMidiLearn,
     kDefaultValue,
+    kSetValue,
     kClearModulations,
     kModulationList
   };
@@ -92,6 +94,7 @@ void SynthSlider::mouseDown(const MouseEvent& e) {
     m.addItem(kArmMidiLearn, "Learn MIDI Assignment");
     if (parent->getSynth()->isMidiMapped(getName().toStdString()))
       m.addItem(kClearMidiLearn, "Clear MIDI Assignment");
+    m.addItem(kSetValue, "Set Value");
 
     connections = parent->getSynth()->getDestinationConnections(getName().toStdString());
 
@@ -296,6 +299,28 @@ void SynthSlider::notifyGuis() {
     listener->guiChanged(this);
 }
 
+void SynthSlider::showValueEntryBox()
+{
+    auto* entry = new value_entry_component(juce::String(this->getValue()),[this](juce::String valueText) {
+        double value = valueText.getDoubleValue();
+
+        if (value >= this->getMinimum() && value <= this->getMaximum())
+            this->setValue(value, juce::sendNotification);
+        else
+            juce::AlertWindow::showMessageBoxAsync(
+                juce::AlertWindow::WarningIcon,
+                "Invalid value",
+                "Please enter a number between " +
+                juce::String(this->getMinimum()) + " and " +
+                juce::String(this->getMaximum()) + "."
+            );
+    });
+
+    auto* box = new juce::CallOutBox(*entry, this->getScreenBounds(), nullptr);
+    entry->setCallOutBox(box);
+    box->enterModalState(true, nullptr, true);
+}
+
 void SynthSlider::handlePopupResult(int result) {
   SynthGuiInterface* parent = findParentComponentOfClass<SynthGuiInterface>();
   if (parent == nullptr)
@@ -319,6 +344,16 @@ void SynthSlider::handlePopupResult(int result) {
     for (SynthSlider::SliderListener* listener : slider_listeners_)
       listener->modulationsChanged(getName().toStdString());
   }
+  else if (result == kSetValue) {
+        auto* entry = new value_entry_component(juce::String(this->getValue()),[this](juce::String value) {
+            double newValue = value.getDoubleValue();
+            this->setValue(newValue, juce::sendNotification);
+        });
+
+        auto* box = new juce::CallOutBox(*entry, this->getScreenBounds(), nullptr);
+        entry->setCallOutBox(box);
+        box->enterModalState(true, nullptr, true);  }
+
   else if (result >= kModulationList) {
     int connection_index = result - kModulationList;
     std::string source = connections[connection_index]->source;
@@ -327,6 +362,11 @@ void SynthSlider::handlePopupResult(int result) {
     for (SynthSlider::SliderListener* listener : slider_listeners_)
       listener->modulationsChanged(getName().toStdString());
   }
+}
+
+void SynthSlider::mouseDoubleClick(const juce::MouseEvent& event)
+{
+    showValueEntryBox();
 }
 
 void SynthSlider::notifyTooltip() {

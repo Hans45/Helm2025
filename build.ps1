@@ -14,7 +14,7 @@ param(
 # Configuration
 $ProjectRoot = Split-Path -Parent $MyInvocation.MyCommand.Path
 $BuildDir = Join-Path $ProjectRoot "build"
-$InstallerScript = Join-Path $ProjectRoot "helm-installer.iss"
+$InstallerScript = Join-Path $ProjectRoot "helm2025-installer.iss"
 $InstallerOutput = Join-Path $ProjectRoot "installer"
 
 # Colors for output
@@ -146,9 +146,9 @@ function Invoke-BuildTargets {
     Write-ColorOutput "==> Compiling targets..." "Cyan"
 
     $targets = @(
-        @{Name = "HelmStandalone"; Description = "Standalone Application"},
-        @{Name = "HelmPlugin_VST3"; Description = "VST3 Plugin"},
-        @{Name = "HelmPlugin_LV2"; Description = "LV2 Plugin"}
+        @{Name = "Helm2025Standalone"; Description = "Standalone Application"},
+        @{Name = "Helm2025Plugin_VST3"; Description = "VST3 Plugin"},
+        @{Name = "Helm2025Plugin_LV2"; Description = "LV2 Plugin"}
     )
 
     foreach ($target in $targets) {
@@ -176,9 +176,9 @@ function Test-BuildArtifacts {
     Write-ColorOutput "==> Verifying build artifacts..." "Cyan"
 
     $artifacts = @(
-        @{Path = "build\HelmStandalone_artefacts\$Configuration\helm.exe"; Name = "Helm Standalone"},
-        @{Path = "build\HelmPlugin_artefacts\$Configuration\VST3\Helm.vst3"; Name = "VST3 Plugin"},
-        @{Path = "build\HelmPlugin_artefacts\$Configuration\LV2\Helm.lv2"; Name = "LV2 Plugin"}
+        @{Path = "build\Helm2025Standalone_artefacts\$Configuration\helm2025.exe"; Name = "Helm2025 Standalone"},
+        @{Path = "build\Helm2025Plugin_artefacts\$Configuration\VST3\Helm2025.vst3"; Name = "VST3 Plugin"},
+        @{Path = "build\Helm2025Plugin_artefacts\$Configuration\LV2\Helm2025.lv2"; Name = "LV2 Plugin"}
     )
 
     $allFound = $true
@@ -250,7 +250,7 @@ function Invoke-CreateInstaller {
     }
 
     # Verify that the installer was created
-    $installerFiles = Get-ChildItem -Path $InstallerOutput -Filter "helm-setup-*.exe"
+    $installerFiles = Get-ChildItem -Path $InstallerOutput -Filter "helm2025-setup-*.exe"
     if ($installerFiles.Count -gt 0) {
         $installerFile = $installerFiles[0]
         $size = "{0:N1} MB" -f ($installerFile.Length / 1MB)
@@ -265,7 +265,7 @@ function Invoke-CreateInstaller {
 function Main {
     $startTime = Get-Date
 
-    Write-ColorOutput "==> Helm Synthesizer Build Script" "Magenta"
+    Write-ColorOutput "==> Helm2025 Synthesizer Build Script" "Magenta"
     Write-ColorOutput "   Configuration: $Configuration" "White"
     Write-ColorOutput "   Start time: $($startTime.ToString('HH:mm:ss'))" "White"
     Write-ColorOutput ""
@@ -313,7 +313,7 @@ function Main {
 
 # Help parameter handling
 if ($args -contains "-?" -or $args -contains "-h" -or $args -contains "--help") {
-    Write-ColorOutput "Build Script for Helm Synthesizer" "Magenta"
+    Write-ColorOutput "Build Script for Helm2025 Synthesizer" "Magenta"
     Write-ColorOutput ""
     Write-ColorOutput "USAGE:" "White"
     Write-ColorOutput "  .\build.ps1 [OPTIONS]" "White"

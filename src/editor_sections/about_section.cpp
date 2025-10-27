@@ -24,8 +24,8 @@
 #include "text_look_and_feel.h"
 
 #define LOGO_WIDTH 128
-#define INFO_WIDTH 470
-#define STANDALONE_INFO_HEIGHT 550
+#define INFO_WIDTH 512
+#define STANDALONE_INFO_HEIGHT 640
 #define PLUGIN_INFO_HEIGHT 227
 #define PADDING_X 25
 #define PADDING_Y 15
@@ -34,6 +34,8 @@
 #define MULT_SMALL 0.75f
 #define MULT_LARGE 1.35f
 #define MULT_EXTRA_LARGE 2.0f
+#define MULT_EVEN_MORE_LARGE 2.5f
+
 
 AboutSection::AboutSection(String name) : Overlay(name) {
   developer_link_ = std::make_unique<HyperlinkButton>("Matt Tytel", URL("http://tytel.org"));
@@ -41,6 +43,12 @@ AboutSection::AboutSection(String name) : Overlay(name) {
                            false, Justification::right);
   developer_link_->setColour(HyperlinkButton::textColourId, Colour(0xffffd740));
   addAndMakeVisible(developer_link_.get());
+
+  developer2_link_ = std::make_unique<HyperlinkButton>("Hans45", URL("https://github.com/Hans45/Helm2025"));
+  developer2_link_->setFont(Fonts::instance()->proportional_light().withPointHeight(16.0f),
+                           false, Justification::right);
+  developer2_link_->setColour(HyperlinkButton::textColourId, Colour(0xffffd740));
+  addAndMakeVisible(developer2_link_.get());
 
   free_software_link_ = std::make_unique<HyperlinkButton>(TRANS("Read more about free software"),
                                             URL("http://www.gnu.org/philosophy/free-sw.html"));
@@ -79,6 +87,10 @@ AboutSection::AboutSection(String name) : Overlay(name) {
   addAndMakeVisible(size_button_extra_large_.get());
   size_button_extra_large_->addListener(this);
 
+  size_button_even_more_large_ = std::make_unique<TextButton>(String(100 * MULT_EVEN_MORE_LARGE) + "%");
+  addAndMakeVisible(size_button_even_more_large_.get());
+  size_button_even_more_large_->addListener(this);
+
   size_button_extra_large_->setLookAndFeel(DefaultLookAndFeel::instance());
 }
 
@@ -111,7 +123,7 @@ void AboutSection::paint(Graphics& g) {
 
   g.setFont(Fonts::instance()->proportional_regular().withPointHeight(32.0));
   g.setColour(Colour(0xff2196f3));
-  g.drawText(TRANS("HELM"),
+  g.drawText(TRANS("HELM2025"),
              0.0f, 0.0f,
              info_rect.getWidth() - 2 * PADDING_X, 32.0f, Justification::centredTop);
 
@@ -127,7 +139,7 @@ void AboutSection::paint(Graphics& g) {
              info_rect.getWidth() - 2 * PADDING_X, 20.0f, Justification::right);
 
   g.setColour(Colour(0xffaaaaaa));
-  g.drawText(TRANS("Helm is free software and"),
+  g.drawText(TRANS("Helm2025 is free software and"),
              0.0f, 62.0,
              info_rect.getWidth() - 2 * PADDING_X, 20.0f, Justification::topRight);
 
@@ -155,25 +167,31 @@ void AboutSection::paint(Graphics& g) {
 void AboutSection::resized() {
   static const float software_link_width = 200.0f;
   static const float developer_link_width = 120.0f;
+  float current_height_offset = 24.0f;
 
   Rectangle<int> info_rect = getInfoRect();
   developer_link_->setBounds(info_rect.getRight() - PADDING_X - developer_link_width,
-                             info_rect.getY() + PADDING_Y + 24.0f, developer_link_width, 20.0f);
-
+                             info_rect.getY() + PADDING_Y + current_height_offset, developer_link_width, 20.0f);
+  current_height_offset += 20.0f;
+  developer2_link_->setBounds(info_rect.getRight() - PADDING_X - developer_link_width,
+                             info_rect.getY() + PADDING_Y + current_height_offset, developer_link_width, 20.0f);
+  current_height_offset += 60.0f;
   free_software_link_->setBounds(info_rect.getRight() - PADDING_X - software_link_width,
-                                 info_rect.getY() + PADDING_Y + 105.0f, software_link_width, 20.0f);
-
+                                 info_rect.getY() + PADDING_Y + current_height_offset, software_link_width, 20.0f);
+  current_height_offset += 35.0f;
   check_for_updates_->setBounds(info_rect.getRight() - PADDING_X - BUTTON_WIDTH,
-                                info_rect.getY() + PADDING_Y + 140.0f, BUTTON_WIDTH, BUTTON_WIDTH);
+                                info_rect.getY() + PADDING_Y + current_height_offset, BUTTON_WIDTH, BUTTON_WIDTH);
 
   animate_->setBounds(info_rect.getX() + 273.0f,
-                      info_rect.getY() + PADDING_Y + 140.0f, BUTTON_WIDTH, BUTTON_WIDTH);
+                      info_rect.getY() + PADDING_Y + current_height_offset, BUTTON_WIDTH, BUTTON_WIDTH);
 
   int size_y = animate_->getBottom() + PADDING_Y;
   int size_height = 2 * BUTTON_WIDTH;
-  int size_width = 60;
-  int size_padding = 5;
-  size_button_extra_large_->setBounds(info_rect.getRight() - PADDING_X - size_width, size_y,
+  int size_width = 55;
+  int size_padding = 3;
+  size_button_even_more_large_->setBounds(info_rect.getRight() - PADDING_X - size_width, size_y,
+                                      size_width, size_height);
+  size_button_extra_large_->setBounds(size_button_even_more_large_->getX() - size_padding - size_width, size_y,
                                       size_width, size_height);
   size_button_large_->setBounds(size_button_extra_large_->getX() - size_padding - size_width,
                                 size_y, size_width, size_height);
@@ -235,6 +253,8 @@ void AboutSection::buttonClicked(Button* clicked_button) {
     setGuiSize(MULT_LARGE);
   else if (clicked_button == size_button_extra_large_.get())
     setGuiSize(MULT_EXTRA_LARGE);
+  else if (clicked_button == size_button_even_more_large_.get())
+    setGuiSize(MULT_EVEN_MORE_LARGE);
 }
 
 Rectangle<int> AboutSection::getInfoRect() {

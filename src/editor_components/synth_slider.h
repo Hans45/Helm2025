@@ -94,7 +94,9 @@ class SynthSlider : public Slider {
     void handlePopupResult(int result);
 
   protected:
+    void mouseDoubleClick(const juce::MouseEvent& event) override;
     void notifyTooltip();
+    void showValueEntryBox();
 
     bool bipolar_;
     bool flip_coloring_;

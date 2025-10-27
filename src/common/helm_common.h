@@ -192,7 +192,7 @@ namespace mopo {
   const wchar_t DEFAULT_KEYBOARD_OCTAVE_UP = 'x';
   const wchar_t DEFAULT_KEYBOARD_OCTAVE_DOWN = 'z';
 
-  const std::string PATCH_EXTENSION = "helm";
+  const std::string PATCH_EXTENSION = "helm2025";
 
   typedef std::map<std::string, Value*> control_map;
   typedef std::pair<Value*, mopo_float> control_change;

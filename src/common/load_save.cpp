@@ -1,11 +1,11 @@
-/* Copyright 2013-2017 Matt Tytel
+/* Copyright 2013-2025 Matt Tytel & Hans45
  *
- * helm is free software: you can redistribute it and/or modify
+ * helm2025 is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * helm is distributed in the hope that it will be useful,
+ * helm2025 is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
@@ -22,10 +22,10 @@
 #include "midi_manager.h"
 #include "synth_base.h"
 
-#define LINUX_FACTORY_PATCH_DIRECTORY "/usr/share/helm/patches"
+#define LINUX_FACTORY_PATCH_DIRECTORY "/usr/share/helm2025/patches"
 #define USER_BANK_NAME "User Patches"
-#define LINUX_BANK_DIRECTORY "~/.helm/patches"
-#define EXPORTED_BANK_EXTENSION "helmbank"
+#define LINUX_BANK_DIRECTORY "~/.helm2025/patches"
+#define EXPORTED_BANK_EXTENSION "helm2025bank"
 #define DID_PAY_FILE "thank_you.txt"
 #define PAY_WAIT_DAYS 4
 
@@ -39,7 +39,7 @@ namespace {
            "work.  If not, see <http://creativecommons.org/licenses/by/4.0/>.";
   }
 
-  const String DEFAULT_USER_FOLDERS[] = { "Lead", "Keys", "Pad", "Bass", "SFX" };
+  const String DEFAULT_USER_FOLDERS[] = { "Arp", "Bass", "Chip", "Harsh", "Keys", "Lead", "Pad", "Percussion", "SFX" };
 
   static const int MS_PER_DAY = 1000 * 60 * 60 * 24;
 
@@ -355,7 +355,7 @@ String LoadSave::getLicense(var state) {
 
 File LoadSave::getConfigFile() {
   PropertiesFile::Options config_options;
-  config_options.applicationName = "Helm";
+  config_options.applicationName = "Helm2025";
   config_options.osxLibrarySubFolder = "Application Support";
   config_options.filenameSuffix = "config";
 
@@ -703,10 +703,10 @@ File LoadSave::getFactoryBankDirectory() {
   patch_dir = File(LINUX_FACTORY_PATCH_DIRECTORY);
 #elif defined(__APPLE__)
   File data_dir = File::getSpecialLocation(File::commonApplicationDataDirectory);
-  patch_dir = data_dir.getChildFile(String("Audio/Presets/") + "Helm");
+  patch_dir = data_dir.getChildFile(String("Audio/Presets/") + "Helm2025");
 #elif defined(_WIN32)
   File data_dir = File::getSpecialLocation(File::commonDocumentsDirectory);
-  patch_dir = data_dir.getChildFile("Helm/Patches");
+  patch_dir = data_dir.getChildFile("Helm2025/Patches");
 #endif
 
   return patch_dir;
@@ -726,10 +726,10 @@ File LoadSave::getBankDirectory() {
   patch_dir = File(LINUX_BANK_DIRECTORY);
 #elif defined(__APPLE__)
   File data_dir = File::getSpecialLocation(File::userApplicationDataDirectory);
-  patch_dir = data_dir.getChildFile(String("Audio/Presets/") + "Helm");
+  patch_dir = data_dir.getChildFile(String("Audio/Presets/") + "Helm2025");
 #elif defined(_WIN32)
   File documents_dir = File::getSpecialLocation(File::userDocumentsDirectory);
-  File parent_dir = documents_dir.getChildFile("Helm");
+  File parent_dir = documents_dir.getChildFile("Helm2025");
   if (!parent_dir.exists())
     parent_dir.createDirectory();
   patch_dir = parent_dir.getChildFile("Patches");
