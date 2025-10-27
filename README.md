@@ -8,9 +8,9 @@ This particular codebase was started from the [bepzi/helm fork](https://github.c
 
 ---
 
-# Helm
+# Helm2025
 
-Helm is a free, cross-platform, polyphonic synthesizer that runs on
+Helm2025 is a free, cross-platform, polyphonic synthesizer that runs on
 GNU/Linux, Mac, and Windows as a standalone program and as a
 LV2/VST3/AU plugin.
 

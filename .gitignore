@@ -30,6 +30,3 @@ Debug
 Release
 
 # Custom ignores
-JUCE_backup/
-installer/
-VST3_SDK/

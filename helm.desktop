@@ -1,12 +1,12 @@
 [Desktop Entry]
-Name=Helm
+Name=Helm2025
 Comment=A free polyphonic synth with a lot of modulation
-Comment[fr]=Un synthétiseur polyphonique libre avec un tas de module
+Comment[fr]=Un synthétiseur polyphonique libre avec un tas de modules
 GenericName=Synth
 GenericName[fr]=Synthétiseur
-Exec=helm
-Icon=helm
+Exec=helm2025
+Icon=helm2025
 Terminal=false
 Type=Application
 Categories=Audio;AudioVideo;
-MimeType=text/helm;
+MimeType=text/helm2025;
