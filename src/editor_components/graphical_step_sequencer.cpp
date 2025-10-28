@@ -48,7 +48,7 @@ void GraphicalStepSequencer::paintBackground(Graphics& g) {
 
   // Draw shadows.
   float x = 0.0f;
-  for (int i = 0; i < num_steps_; ++i) {
+  for (int i = 0; i < num_steps_ && i < (int)sequence_.size(); ++i) {
     float val = sequence_[i]->getValue();
     float bar_position = (getHeight() - 1.0f) * ((1.0f - val) / 2.0f);
     Rectangle<int> rect(x, bar_position, x_inc, 1);
@@ -58,7 +58,7 @@ void GraphicalStepSequencer::paintBackground(Graphics& g) {
 
   // Draw bars.
   x = 0.0f;
-  for (int i = 0; i < num_steps_; ++i) {
+  for (int i = 0; i < num_steps_ && i < (int)sequence_.size(); ++i) {
     float val = sequence_[i]->getValue();
     float bar_position = (getHeight() - 1.0f) * ((1.0f - val) / 2.0f);
     g.setColour(Colors::graph_fill);
@@ -213,7 +213,7 @@ void GraphicalStepSequencer::changeStep(const MouseEvent& e) {
   float inc_x = next_x - x;
 
   for (int step = selected_step; step != from_step + direction; step += direction) {
-    if (step >= 0 && step < num_steps_) {
+    if (step >= 0 && step < num_steps_ && step < (int)sequence_.size()) {
       float new_value = -2.0f * y / getHeight() + 1.0f;
       new_value = std::max(std::min(new_value, 1.0f), -1.0f);
       new_value = sequence_[step]->snapValue(new_value, Slider::DragMode::absoluteDrag);

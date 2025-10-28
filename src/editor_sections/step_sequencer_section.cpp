@@ -126,6 +126,11 @@ void StepSequencerSection::resized() {
 }
 
 void StepSequencerSection::createStepSequencerSliders() {
+  // Supprimer les anciens sliders pour éviter les fuites/double free
+  for (Slider* slider : sequencer_sliders_)
+    delete slider;
+  sequencer_sliders_.clear();
+
   for (int i = 0; i < num_steps_->getMaximum(); ++i) {
     String num(i);
     if (num.length() == 1)

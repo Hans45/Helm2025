@@ -84,10 +84,15 @@ This script automates all steps: it initializes the required dependencies (JUCE 
 - Blending between 12 or 24dB low/band/high pass filter
 - Low/Band/High Shelf filters
 - 2 monophonic and 1 polyphonic LFO
-- Step sequencer
+- Step sequencer jusqu'à 64 pas
 - Lots of modulation sources including polyphonic aftertouch
 - Simple arpeggiator
 - Effects: Formant filter, stutter, delay, distortion, reverb
+
+## Nouveautés Step Sequencer (octobre 2025)
+
+- **Jusqu'à 64 pas** : Le step sequencer supporte désormais jusqu'à 64 pas, en édition, modulation et moteur audio, sans crash ni limitation cachée.
+- **Stabilité** : Correction d'un crash lors de l'édition des pas >32. Toute la chaîne (paramètres, UI, DSP) gère 64 pas réels.
 
 ## LFO Synchronization & Random Improvements (October 2025)
 

@@ -177,7 +177,7 @@ namespace mopo {
     };
   } // namespace strings
 
-  const mopo_float MAX_STEPS = 32;
+  const mopo_float MAX_STEPS = 64;
   const int NUM_FORMANTS = 4;
   const int NUM_CHANNELS = 2;
   const int MEMORY_SAMPLE_RATE = 22000;
