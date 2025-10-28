@@ -64,3 +64,5 @@ void FeedbackSection::resized() {
 
   SynthSection::resized();
 }
+
+

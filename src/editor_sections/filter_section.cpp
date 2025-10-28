@@ -218,3 +218,5 @@ void FilterSection::resizeHighPass(float x, float y, float width, float height) 
   high_pass_.lineTo(x + 2.0f * width / 6.0f, y + height / 4.0f);
   high_pass_.lineTo(x, y + height);
 }
+
+

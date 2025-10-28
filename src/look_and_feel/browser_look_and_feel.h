@@ -37,3 +37,5 @@ class BrowserLookAndFeel : public juce::LookAndFeel_V3 {
 };
 
 #endif // BROWSER_LOOK_AND_FEEL_H
+
+

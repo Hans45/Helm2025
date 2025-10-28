@@ -137,3 +137,5 @@ void ArpSection::resized() {
   frequency_->setPopupDisplayEnabled(false, false, nullptr);
   tempo_->setPopupDisplayEnabled(false, false, nullptr);
 }
+
+

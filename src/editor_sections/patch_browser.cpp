@@ -19,7 +19,7 @@
 #include "colors.h"
 #include "browser_look_and_feel.h"
 #include "fonts.h"
-#include "helm_common.h"
+#include "helm2025_common.h"
 #include "load_save.h"
 #include "synth_gui_interface.h"
 
@@ -292,7 +292,7 @@ void PatchBrowser::visibilityChanged() {
     gpl_license_link_->setVisible(isPatchSelected() && !is_cc);
   }
 
-  // Notifier le listener de changement de visibilité
+  // Notifier le listener de changement de visibilitï¿½
   if (visibility_listener_)
     visibility_listener_->browserVisibilityChanged(isVisible());
 }
@@ -524,13 +524,13 @@ void PatchBrowser::scanPatches() {
   Array<File> folders = getFoldersToScan(folders_view_.get(), folders_model_.get());
   Array<File> patches_selected = getSelectedFolders(patches_view_.get(), patches_model_.get());
 
-  // Si les catégories sont regroupées et qu'une catégorie est sélectionnée,
-  // il faut collecter tous les dossiers de cette catégorie à travers toutes les banques
+  // Si les catï¿½gories sont regroupï¿½es et qu'une catï¿½gorie est sï¿½lectionnï¿½e,
+  // il faut collecter tous les dossiers de cette catï¿½gorie ï¿½ travers toutes les banques
   if (folders_model_->areCategoriesGrouped() && folders_view_->getSelectedRows().size() > 0) {
     Array<File> selected_categories = getSelectedFolders(folders_view_.get(), folders_model_.get());
     Array<File> expanded_folders;
 
-    // Pour chaque catégorie sélectionnée
+    // Pour chaque catï¿½gorie sï¿½lectionnï¿½e
     for (File selected_category : selected_categories) {
       String category_name = selected_category.getFileName();
 
@@ -573,3 +573,5 @@ float PatchBrowser::getPatchesWidth() {
 float PatchBrowser::getPatchInfoWidth() {
   return (getWidth() - 5.0f * BROWSE_PADDING) * PATCH_INFO_WIDTH_PERCENT;
 }
+
+

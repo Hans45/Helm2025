@@ -44,3 +44,5 @@ class TempoSelector : public SynthSlider {
 };
 
 #endif // TEMPO_SELECTOR_H
+
+

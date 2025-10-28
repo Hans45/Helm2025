@@ -39,3 +39,5 @@ class FeedbackSection : public SynthSection {
 };
 
 #endif // FEEDBACK_SECTION_H
+
+

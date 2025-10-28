@@ -139,3 +139,5 @@ void TempoSelector::setTempoSlider(Slider* slider) {
   tempo_slider_ = slider;
   tempo_slider_->setVisible(!free_slider);
 }
+
+

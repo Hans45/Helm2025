@@ -36,3 +36,5 @@ class RetriggerSelector : public SynthSlider {
 };
 
 #endif // RETRIGGER_SELECTOR_H
+
+

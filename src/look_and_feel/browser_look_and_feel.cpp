@@ -69,3 +69,5 @@ Font BrowserLookAndFeel::getTextButtonFont(TextButton& button, int button_height
   int min = std::min(button_height, button.getWidth());
   return Fonts::instance()->monospace().withPointHeight(min * percent);
 }
+
+

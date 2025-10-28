@@ -18,7 +18,7 @@
 #define SYNTH_SLIDER_H
 
 #include <JuceHeader.h>
-#include "helm_common.h"
+#include "helm2025_common.h"
 
 class FullInterface;
 
@@ -119,3 +119,5 @@ class SynthSlider : public Slider {
 };
 
 #endif // SYNTH_SLIDER_H
+
+

@@ -150,3 +150,5 @@ void StepSequencerSection::reset() {
   step_sequencer_->resetBackground();
   SynthSection::reset();
 }
+
+

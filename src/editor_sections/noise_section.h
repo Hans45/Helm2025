@@ -37,3 +37,5 @@ class NoiseSection : public SynthSection {
 };
 
 #endif // NOISE_SECTION_H
+
+

@@ -51,3 +51,5 @@ class OpenGLOscilloscope : public OpenGLComponent {
 };
 
 #endif // OPEN_GL_OSCILLOSCOPE_H
+
+

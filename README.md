@@ -16,7 +16,7 @@ LV2/VST3/AU plugin.
 
 This is a **modernized fork** of Matt Tytel's original Helm synthesizer, featuring significant performance improvements and code modernization.
 
-![alt tag](http://tytel.org/static/images/helm_screenshot.png)
+![Helm2025 Screenshot](images/ScreenShot.png)
 
 ## Building The Project
 
@@ -88,3 +88,14 @@ This script automates all steps: it initializes the required dependencies (JUCE 
 - Lots of modulation sources including polyphonic aftertouch
 - Simple arpeggiator
 - Effects: Formant filter, stutter, delay, distortion, reverb
+
+## LFO Synchronization & Random Improvements (October 2025)
+
+- **Perfect LFO/Visualization Sync**: The modulation and the OpenGL waveform viewer are now perfectly synchronized for all LFOs, including S&H, S&G, and WhiteNoise, both in mono and polyphonic modes.
+- **Deterministic Randoms**: S&H, S&G, and WhiteNoise LFOs use a deterministic, cycle-synchronized random sequence. The random values are generated with a reproducible seed, ensuring that the modulation and the visual curve always match, even when the LFO frequency changes dynamically.
+- **Musical Step Count**: For S&H and S&G, the number of random steps per LFO cycle is now fixed to a musical value (16), ensuring a musically useful cadence regardless of LFO rate.
+- **Cycle-Accurate Renewal**: The random sequence is renewed at every LFO cycle, even in free-running mode (no external reset), guaranteeing a new random pattern for each cycle, both in sound and in the UI.
+- **Robust Polyphonic Support**: All improvements apply to both monophonic and polyphonic LFOs, with robust handling of all edge cases (UI switching, frequency changes, etc).
+- **Crash-Proof Visualization**: The OpenGL viewer is now robust against all edge cases (buffer underrun, null pointers, etc) and never crashes when switching LFO type or frequency.
+
+These improvements guarantee that what you see in the LFO viewer is always exactly what you hear, with a musical and reliable random modulation for all S&H/S&G/WhiteNoise LFOs.

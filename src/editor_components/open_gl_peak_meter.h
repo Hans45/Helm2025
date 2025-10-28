@@ -20,7 +20,7 @@
 
 #include <JuceHeader.h>
 
-#include "helm_common.h"
+#include "helm2025_common.h"
 #include "open_gl_component.h"
 
 class OpenGLPeakMeter : public OpenGLComponent {
@@ -53,3 +53,5 @@ class OpenGLPeakMeter : public OpenGLComponent {
 };
 
 #endif // OPEN_GL_PEAK_METER_H
+
+

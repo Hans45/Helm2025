@@ -18,7 +18,7 @@
 
 #include "default_look_and_feel.h"
 #include "full_interface.h"
-#include "helm_common.h"
+#include "helm2025_common.h"
 #include "synth_gui_interface.h"
 #include "text_look_and_feel.h"
 
@@ -132,3 +132,5 @@ void SynthButton::notifyTooltip() {
     parent_->setToolTipText(name, getTextFromValue(getToggleState()));
   }
 }
+
+

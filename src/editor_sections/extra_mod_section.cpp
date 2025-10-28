@@ -85,3 +85,5 @@ void ExtraModSection::resized() {
 
   SynthSection::resized();
 }
+
+

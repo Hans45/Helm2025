@@ -51,3 +51,5 @@ class StepSequencerSection : public SynthSection {
 };
 
 #endif // STEP_SEQUENCER_SECTION_H
+
+

@@ -20,7 +20,7 @@
 
 #include <JuceHeader.h>
 
-#include "helm_common.h"
+#include "helm2025_common.h"
 #include "modulation_button.h"
 #include "open_gl_component.h"
 #include "synth_slider.h"
@@ -97,3 +97,5 @@ class OpenGLModulationManager : public OpenGLComponent,
 };
 
 #endif // OPEN_GL_MODULATION_MANAGER_H
+
+

@@ -40,3 +40,5 @@ void MidiKeyboard::drawBlackNote(int midiNoteNumber, Graphics& g,
   g.setColour(color);
   g.fillRect(area);
 }
+
+

@@ -18,7 +18,7 @@
 #define SYNTH_BUTTON_H
 
 #include <JuceHeader.h>
-#include "helm_common.h"
+#include "helm2025_common.h"
 
 class FullInterface;
 
@@ -63,3 +63,5 @@ class SynthButton : public ToggleButton {
 };
 
 #endif // SYNTH_BUTTON_H
+
+

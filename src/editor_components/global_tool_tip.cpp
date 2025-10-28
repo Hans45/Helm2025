@@ -59,3 +59,5 @@ void GlobalToolTip::timerCallback() {
   else if (isVisible() && Time::currentTimeMillis() - time_updated_ > TIME_TO_STAY_VISIBLE)
     setVisible(false);
 }
+
+

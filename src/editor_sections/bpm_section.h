@@ -37,3 +37,5 @@ class BpmSection : public SynthSection {
 };
 
 #endif // BPM_SECTION_H
+
+

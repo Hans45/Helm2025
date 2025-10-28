@@ -19,7 +19,7 @@
 #define FILTER_RESPONSE_H
 
 #include <JuceHeader.h>
-#include "helm_common.h"
+#include "helm2025_common.h"
 #include "biquad_filter.h"
 #include "state_variable_filter.h"
 #include "synth_slider.h"
@@ -71,3 +71,5 @@ class FilterResponse : public Component, SynthSlider::SliderListener {
 };
 
 #endif // FILTER_RESPONSE_H
+
+

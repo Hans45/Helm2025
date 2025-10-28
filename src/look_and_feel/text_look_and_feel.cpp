@@ -103,3 +103,5 @@ void TextLookAndFeel::drawTickBox(Graphics& g, Component& component,
                w - 6 * border_width, h - 6 * border_width);
   }
 }
+
+

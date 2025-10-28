@@ -43,3 +43,5 @@ class SynthGuiInterface {
 };
 
 #endif // SYNTH_GUI_INTERFACE_H
+
+

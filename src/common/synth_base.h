@@ -20,8 +20,8 @@
 #include <JuceHeader.h>
 #include "concurrentqueue.h"
 
-#include "helm_common.h"
-#include "helm_engine.h"
+#include "helm2025_common.h"
+#include "helm2025_engine.h"
 #include "memory.h"
 #include "midi_manager.h"
 #include <string>
@@ -139,3 +139,5 @@ class SynthBase : public MidiManager::Listener {
 };
 
 #endif // SYNTH_BASE_H
+
+

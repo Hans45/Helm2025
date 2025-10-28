@@ -167,3 +167,5 @@ void OpenGLBackground::updateBackgroundImage(Image background) {
   background_image_ = background;
   new_background_ = true;
 }
+
+

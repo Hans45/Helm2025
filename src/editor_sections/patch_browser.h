@@ -123,3 +123,5 @@ class PatchBrowser : public Overlay,
 };
 
 #endif // PATCH_BROWSER_H
+
+

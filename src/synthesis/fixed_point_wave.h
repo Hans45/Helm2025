@@ -159,3 +159,5 @@ namespace mopo {
 } // namespace mopo
 
 #endif // FIXED_POINT_WAVE_H
+
+

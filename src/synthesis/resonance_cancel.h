@@ -40,3 +40,5 @@ namespace mopo {
 } // namespace mopo
 
 #endif // RESONANCE_CANCEL_H
+
+

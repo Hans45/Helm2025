@@ -39,3 +39,5 @@ namespace mopo {
     output()->buffer = input(kNumInputs + source)->source->buffer;
   }
 } // namespace mopo
+
+

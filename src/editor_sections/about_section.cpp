@@ -17,7 +17,7 @@
 #include "about_section.h"
 #include "colors.h"
 #include "fonts.h"
-#include "helm_common.h"
+#include "helm2025_common.h"
 #include "load_save.h"
 #include "synth_gui_interface.h"
 #include "synth_section.h"
@@ -107,15 +107,15 @@ void AboutSection::paint(Graphics& g) {
 
   g.saveState();
   g.setOrigin(info_rect.getX() + PADDING_X, info_rect.getY() + PADDING_Y);
-  Image helm_small = ImageCache::getFromMemory(BinaryData::helm_icon_128_1x_png,
-                                               BinaryData::helm_icon_128_1x_pngSize);
+  Image helm_small = ImageCache::getFromMemory(BinaryData::helm2025_icon_128_1x_png,
+                                               BinaryData::helm2025_icon_128_1x_pngSize);
   shadow.drawForImage(g, helm_small);
 
   auto *display = Desktop::getInstance().getDisplays().getPrimaryDisplay();
   jassert(display != nullptr);
   if (display->scale > 1.5) {
-    Image helm = ImageCache::getFromMemory(BinaryData::helm_icon_128_2x_png,
-                                           BinaryData::helm_icon_128_2x_pngSize);
+    Image helm = ImageCache::getFromMemory(BinaryData::helm2025_icon_128_2x_png,
+                                           BinaryData::helm2025_icon_128_2x_pngSize);
     g.drawImage(helm, 0, 0, 128, 128, 0, 0, 256, 256);
   }
   else
@@ -274,3 +274,5 @@ void AboutSection::setGuiSize(float multiplier) {
                        percent * mopo::DEFAULT_WINDOW_HEIGHT);
   }
 }
+
+

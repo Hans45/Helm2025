@@ -14,7 +14,7 @@ endif()
 
 project(Helm2025
   VERSION 0.10.0
-  DESCRIPTION "A cross-platform polyphonic synthesizer, by Matt Tytel."
+  DESCRIPTION "A cross-platform polyphonic synthesizer, built by Hans45 from the original Helm project by Matt Tytel."
   LANGUAGES CXX)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
@@ -53,14 +53,14 @@ juce_add_binary_data(HelmData SOURCES
   fonts/Roboto-Regular.ttf
   fonts/Roboto-Light.ttf
   fonts/Roboto-Thin.ttf
-  images/helm_icon_32_1x.png
-  images/helm_icon_32_2x.png
-  images/helm_icon_128_1x.png
-  images/helm_icon_128_2x.png
-  images/helm_icon_256_1x.png
-  images/helm_icon_256_2x.png
-  images/helm_icon_512_1x.png
-  images/helm_icon_512_2x.png
+  images/helm2025_icon_32_1x.png
+  images/helm2025_icon_32_2x.png
+  images/helm2025_icon_128_1x.png
+  images/helm2025_icon_128_2x.png
+  images/helm2025_icon_256_1x.png
+  images/helm2025_icon_256_2x.png
+  images/helm2025_icon_512_1x.png
+  images/helm2025_icon_512_2x.png
   images/modulation_selected_active.png
   images/modulation_selected_inactive.png
   images/modulation_unselected_active.png
@@ -69,8 +69,8 @@ juce_add_binary_data(HelmData SOURCES
 # ==================================================
 
 juce_add_plugin(Helm2025Plugin
-  ICON_BIG images/helm_icon_512_2x.png
-  ICON_SMALL images/helm_icon_128_2x.png
+  ICON_BIG images/helm2025_icon_512_2x.png
+  ICON_SMALL images/helm2025_icon_128_2x.png
 
   IS_SYNTH TRUE
   NEEDS_MIDI_INPUT TRUE
@@ -79,22 +79,22 @@ juce_add_plugin(Helm2025Plugin
   EDITOR_WANTS_KEYBOARD_FOCUS TRUE
 
   PRODUCT_NAME "Helm2025"
-  COMPANY_NAME "MattTytel"
-  BUNDLE_ID "com.matttytel.helm2025"
+  COMPANY_NAME "Hans45"
+  BUNDLE_ID "com.hans45.helm2025"
   PLUGIN_MANUFACTURER_CODE "Tyte"
   FORMATS VST3 AU LV2
 
-  LV2URI "http://tytel.org/plugins/helm2025"
+  LV2URI "https://github.com/Hans45/helm2025"
   LV2_WANTS_LATENCY FALSE)
 
 juce_generate_juce_header(Helm2025Plugin)
 
 target_sources(Helm2025Plugin PRIVATE
-  src/synthesis/helm_engine_simd.h
-  src/plugin/helm_plugin_simd.h
+  src/synthesis/helm2025_engine_simd.h
+  src/plugin/helm2025_plugin_simd.h
   src/common/border_bounds_constrainer.cpp
   src/common/file_list_box_model.cpp
-  src/common/helm_common.cpp
+  src/common/helm2025_common.cpp
   src/common/load_save.cpp
   src/common/midi_manager.cpp
   src/common/startup.cpp
@@ -168,19 +168,19 @@ target_sources(Helm2025Plugin PRIVATE
   src/look_and_feel/modulation_look_and_feel.cpp
   src/look_and_feel/shaders.cpp
   src/look_and_feel/text_look_and_feel.cpp
-  src/plugin/helm_editor.cpp
-  src/plugin/helm_plugin.cpp
+  src/plugin/helm2025_editor.cpp
+  src/plugin/helm2025_plugin.cpp
   src/synthesis/dc_filter.cpp
   src/synthesis/detune_lookup.cpp
   src/synthesis/fixed_point_oscillator.cpp
   src/synthesis/fixed_point_wave.cpp
   src/synthesis/gate.cpp
-  src/synthesis/helm_engine.cpp
-  src/synthesis/helm_midi_handler.cpp
-  src/synthesis/helm_lfo.cpp
-  src/synthesis/helm_module.cpp
-  src/synthesis/helm_oscillators.cpp
-  src/synthesis/helm_voice_handler.cpp
+  src/synthesis/helm2025_engine.cpp
+  src/synthesis/helm2025_midi_handler.cpp
+  src/synthesis/helm2025_lfo.cpp
+  src/synthesis/helm2025_module.cpp
+  src/synthesis/helm2025_oscillators.cpp
+  src/synthesis/helm2025_voice_handler.cpp
   src/synthesis/noise_oscillator.cpp
   src/synthesis/peak_meter.cpp
   src/synthesis/resonance_cancel.cpp
@@ -201,7 +201,7 @@ target_compile_definitions(Helm2025Plugin PUBLIC
   # the LV2 .ttl generator. If it's the latter, Helm needs to know
   # where its factory presets are on the developer's disk. Not ideal
   # for a number of reasons, but it'll have to do for now.
-  HELM_LV2GEN_FACTORY_PRESET_PATH="${CMAKE_CURRENT_SOURCE_DIR}/patches/Factory Presets"
+  HELM2025_LV2GEN_FACTORY_PRESET_PATH="${CMAKE_CURRENT_SOURCE_DIR}/patches/Factory Presets"
 
   # Enable SIMD optimizations
   MOPO_USE_SIMD=1
@@ -243,37 +243,37 @@ target_link_libraries(Helm2025Plugin
 # ==================================================
 
 juce_add_gui_app(Helm2025Standalone
-  ICON_BIG images/helm_icon_512_2x.png
-  ICON_SMALL images/helm_icon_128_2x.png
+  ICON_BIG images/helm2025_icon_512_2x.png
+  ICON_SMALL images/helm2025_icon_128_2x.png
 
   PRODUCT_NAME "Helm2025"
-  COMPANY_NAME "MattTytel"
-  BUNDLE_ID "com.matttytel.helm2025.standalone")
+  COMPANY_NAME "Hans45"
+  BUNDLE_ID "com.hans45.helm2025.standalone")
 
 juce_generate_juce_header(Helm2025Standalone)
 
 target_sources(Helm2025Standalone PRIVATE
-  src/standalone/helm_editor.cpp
-  src/standalone/helm_computer_keyboard.cpp
+  src/standalone/helm2025_editor.cpp
+  src/standalone/helm2025_computer_keyboard.cpp
   src/standalone/main.cpp)
 
 target_include_directories(Helm2025Standalone PRIVATE
   src/standalone)
 
 # Define a user-configurable path for the ASIO SDK
-set(HELM_ASIO_SDK_PATH "${CMAKE_CURRENT_SOURCE_DIR}/external/ASIOSDK" CACHE PATH "Path to the Steinberg ASIO SDK")
+set(HELM2025_ASIO_SDK_PATH "${CMAKE_CURRENT_SOURCE_DIR}/external/ASIOSDK" CACHE PATH "Path to the Steinberg ASIO SDK")
 
 # Conditionally enable ASIO support
-if(EXISTS "${HELM_ASIO_SDK_PATH}/common/asiosys.h")
-    message(STATUS "ASIO SDK found at ${HELM_ASIO_SDK_PATH}. Enabling ASIO support.")
+if(EXISTS "${HELM2025_ASIO_SDK_PATH}/common/asiosys.h")
+    message(STATUS "ASIO SDK found at ${HELM2025_ASIO_SDK_PATH}. Enabling ASIO support.")
     target_include_directories(Helm2025Standalone PRIVATE
-        "${HELM_ASIO_SDK_PATH}/common"
-        "${HELM_ASIO_SDK_PATH}/host")
+        "${HELM2025_ASIO_SDK_PATH}/common"
+        "${HELM2025_ASIO_SDK_PATH}/host")
     target_compile_definitions(Helm2025Standalone PRIVATE
         JUCE_ASIO=1
-        JUCE_ASIO_SDK="${HELM_ASIO_SDK_PATH}")
+        JUCE_ASIO_SDK="${HELM2025_ASIO_SDK_PATH}")
 else()
-    message(STATUS "ASIO SDK not found. Building without ASIO support. (Set HELM_ASIO_SDK_PATH to enable)")
+    message(STATUS "ASIO SDK not found. Building without ASIO support. (Set HELM2025_ASIO_SDK_PATH to enable)")
     target_compile_definitions(Helm2025Standalone PRIVATE JUCE_ASIO=0)
 endif()
 

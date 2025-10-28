@@ -19,7 +19,7 @@
 #define GRAPHICAL_ENVELOPE_H
 
 #include <JuceHeader.h>
-#include "helm_common.h"
+#include "helm2025_common.h"
 #include "synth_slider.h"
 
 class GraphicalEnvelope : public Component, SynthSlider::SliderListener {
@@ -70,3 +70,5 @@ class GraphicalEnvelope : public Component, SynthSlider::SliderListener {
 };
 
 #endif // GRAPHICAL_ENVELOPE_H
+
+

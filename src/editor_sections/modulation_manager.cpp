@@ -22,7 +22,7 @@
 #include "modulation_meter.h"
 #include "modulation_slider.h"
 #include "synth_gui_interface.h"
-#include "helm_common.h"
+#include "helm2025_common.h"
 
 #define FRAMES_PER_SECOND 60
 
@@ -289,3 +289,5 @@ void ModulationManager::changeModulator(std::string new_modulator) {
   monophonic_destinations_->setVisible(true);
   monophonic_destinations_->repaint();
 }
+
+

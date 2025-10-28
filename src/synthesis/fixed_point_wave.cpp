@@ -327,3 +327,5 @@ namespace mopo {
 
   const FixedPointWaveLookup FixedPointWave::lookup_;
 } // namespace mopo
+
+

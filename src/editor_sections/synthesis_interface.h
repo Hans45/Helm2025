@@ -19,7 +19,7 @@
 #define SYNTHESIS_INTERFACE_H
 
 #include <JuceHeader.h>
-#include "helm_engine.h"
+#include "helm2025_engine.h"
 
 #include "delay_section.h"
 #include "distortion_section.h"
@@ -88,3 +88,5 @@ class SynthesisInterface  : public SynthSection {
 };
 
 #endif // SYNTHESIS_INTERFACE_H
+
+

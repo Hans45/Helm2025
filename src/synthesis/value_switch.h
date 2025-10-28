@@ -48,3 +48,5 @@ namespace mopo {
 } // namespace mopo
 
 #endif // VALUE_SWITCH_H
+
+

@@ -20,3 +20,5 @@ namespace mopo {
 
   const DetuneLookupSingleton DetuneLookup::lookup_;
 } // namespace mopo
+
+

@@ -42,3 +42,5 @@ class FormantSection : public SynthSection {
 };
 
 #endif // FORMANT_SECTION_H
+
+

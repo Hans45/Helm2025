@@ -260,3 +260,5 @@ void SynthSection::setValue(const std::string& name, mopo::mopo_float value,
   if (all_buttons_.count(name))
     all_buttons_[name]->setToggleState(value, notification);
 }
+
+

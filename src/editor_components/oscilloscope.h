@@ -44,3 +44,5 @@ class Oscilloscope : public Component, public Timer {
 };
 
 #endif // OSCILLOSCOPE_H
+
+

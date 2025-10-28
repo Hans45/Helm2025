@@ -138,3 +138,5 @@ void StutterSection::resized() {
   resample_frequency_->setPopupDisplayEnabled(false, false, nullptr);
   resample_tempo_->setPopupDisplayEnabled(false, false, nullptr);
 }
+
+

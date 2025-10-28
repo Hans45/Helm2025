@@ -37,3 +37,5 @@ class BorderBoundsConstrainer : public ComponentBoundsConstrainer {
 };
 
 #endif // BORDER_BOUNDS_CONSTRAINER_H
+
+

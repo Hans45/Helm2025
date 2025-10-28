@@ -52,3 +52,5 @@ class FilterSelector : public SynthSlider {
 };
 
 #endif // FILTER_SELECTOR_H
+
+

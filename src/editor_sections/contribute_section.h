@@ -78,3 +78,5 @@ class ContributeSection : public Overlay, public Button::Listener, CustomAmountE
 };
 
 #endif // CONTRIBUTE_SECTION_H
+
+

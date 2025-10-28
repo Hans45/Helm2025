@@ -65,3 +65,5 @@ class PatchSelector : public SynthSection, public PatchBrowser::PatchSelectedLis
 };
 
 #endif // PATCH_SELECTOR_H
+
+

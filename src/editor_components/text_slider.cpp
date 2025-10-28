@@ -65,3 +65,5 @@ void TextSlider::mouseDown(const juce::MouseEvent &e) {
 void TextSlider::mouseDrag(const juce::MouseEvent &e) {
   mouseEvent(e);
 }
+
+

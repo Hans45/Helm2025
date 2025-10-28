@@ -53,3 +53,5 @@ class XYPad : public Component, public SynthSlider::SliderListener {
 };
 
 #endif // XY_PAD_H
+
+

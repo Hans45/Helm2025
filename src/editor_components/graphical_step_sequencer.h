@@ -66,3 +66,5 @@ class GraphicalStepSequencer : public Component, public Timer, public Slider::Li
 };
 
 #endif // GRAPHICAL_STEP_SEQUENCER_H
+
+

@@ -57,3 +57,5 @@ class UpdateCheckSection : public Component, public Button::Listener {
 };
 
 #endif // UPDATE_CHECK_SECTION_H
+
+

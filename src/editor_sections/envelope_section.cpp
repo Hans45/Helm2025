@@ -126,3 +126,5 @@ void EnvelopeSection::reset() {
   envelope_->repaint();
   SynthSection::reset();
 }
+
+

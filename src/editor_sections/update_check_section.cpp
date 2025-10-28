@@ -16,7 +16,7 @@
 
 #include "update_check_section.h"
 #include "fonts.h"
-#include "helm_common.h"
+#include "helm2025_common.h"
 #include "load_save.h"
 #include <JuceHeader.h>
 #include "text_look_and_feel.h"
@@ -128,3 +128,5 @@ Rectangle<int> UpdateCheckSection::getUpdateCheckRect() {
   int y = (getHeight() - UPDATE_CHECK_HEIGHT) / 2;
   return Rectangle<int>(x, y, UPDATE_CHECK_WIDTH, UPDATE_CHECK_HEIGHT);
 }
+
+

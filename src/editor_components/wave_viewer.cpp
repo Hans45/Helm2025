@@ -258,3 +258,5 @@ float WaveViewer::phaseToX(float phase) {
 float WaveViewer::getRatio() {
   return getHeight() / 80.0f;
 }
+
+

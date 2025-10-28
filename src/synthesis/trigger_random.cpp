@@ -29,3 +29,5 @@ namespace mopo {
     output()->buffer[0] = value_;
   }
 } // namespace mopo
+
+

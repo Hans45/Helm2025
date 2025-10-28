@@ -38,3 +38,5 @@ class VolumeSection : public SynthSection {
 };
 
 #endif // VOLUME_SECTION_H
+
+

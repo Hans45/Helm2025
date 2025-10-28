@@ -17,7 +17,7 @@
 #include "open_gl_modulation_manager.h"
 
 #include "full_interface.h"
-#include "helm_common.h"
+#include "helm2025_common.h"
 #include "modulation_highlight.h"
 #include "modulation_look_and_feel.h"
 #include "open_gl_modulation_meter.h"
@@ -402,3 +402,5 @@ void OpenGLModulationManager::changeModulator(std::string new_modulator) {
   monophonic_destinations_->setVisible(true);
   monophonic_destinations_->repaint();
 }
+
+

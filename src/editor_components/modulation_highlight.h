@@ -37,3 +37,5 @@ class ModulationHighlight : public Component {
 };
 
 #endif // MODULATION_HIGHLIGHT_H
+
+

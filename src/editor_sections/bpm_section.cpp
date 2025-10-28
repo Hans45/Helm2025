@@ -65,3 +65,5 @@ void BpmSection::resized() {
   bpm_->setBounds(title_width, 0, bpm_width, getHeight());
   SynthSection::resized();
 }
+
+

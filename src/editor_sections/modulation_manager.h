@@ -20,7 +20,7 @@
 
 #include <JuceHeader.h>
 
-#include "helm_common.h"
+#include "helm2025_common.h"
 #include "modulation_button.h"
 #include "synth_section.h"
 #include "synth_slider.h"
@@ -82,3 +82,5 @@ class ModulationManager : public SynthSection, public Timer,
 };
 
 #endif // MODULATION_MANAGER_H
+
+

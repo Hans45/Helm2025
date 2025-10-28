@@ -73,3 +73,5 @@ class WaveSelector : public SynthSlider {
 };
 
 #endif // WAVE_SELECTOR_H
+
+

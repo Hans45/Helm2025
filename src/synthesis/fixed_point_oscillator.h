@@ -47,3 +47,5 @@ namespace mopo {
 } // namespace mopo
 
 #endif // FIXED_POINT_OSCILLATOR_H
+
+

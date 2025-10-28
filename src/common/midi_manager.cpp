@@ -15,7 +15,7 @@
  */
 
 #include "midi_manager.h"
-#include "helm_engine.h"
+#include "helm2025_engine.h"
 #include "load_save.h"
 #include "synth_base.h"
 
@@ -111,7 +111,7 @@ void MidiManager::processMidiMessage(const MidiMessage& midi_message, int sample
                     0, midi_message.getChannel() - 1);
   }
   else if (midi_message.isNoteOff())
-    engine_->noteOff(midi_message.getNoteNumber());
+    (void)engine_->noteOff(midi_message.getNoteNumber());
   else if (midi_message.isAllNotesOff())
     (void)engine_->allNotesOff();
   else if (midi_message.isSustainPedalOn())
@@ -155,3 +155,4 @@ void MidiManager::handleIncomingMidiMessage(MidiInput *source,
 void MidiManager::replaceKeyboardMessages(MidiBuffer& buffer, int num_samples) {
   keyboard_state_->processNextMidiBuffer(buffer, 0, num_samples, true);
 }
+

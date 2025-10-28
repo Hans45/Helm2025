@@ -204,3 +204,5 @@ void SynthesisInterface::resized() {
 
   SynthSection::resized();
 }
+
+

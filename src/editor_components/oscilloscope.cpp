@@ -17,7 +17,7 @@
 #include "oscilloscope.h"
 
 #include "colors.h"
-#include "helm_common.h"
+#include "helm2025_common.h"
 
 #define FRAMES_PER_SECOND 15
 #define GRID_CELL_WIDTH 8
@@ -100,3 +100,5 @@ void Oscilloscope::showRealtimeFeedback(bool show_feedback) {
     repaint();
   }
 }
+
+

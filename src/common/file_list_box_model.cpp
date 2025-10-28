@@ -36,7 +36,7 @@ void FileListBoxModel::paintListBoxItem(int row_number, Graphics& g,
   g.setFont(Fonts::instance()->monospace().withPointHeight(12.0f));
   String display_name = files_[row_number].getFileNameWithoutExtension();
 
-  // Si les catégories sont regroupées, ajouter une indication visuelle
+  // Si les catï¿½gories sont regroupï¿½es, ajouter une indication visuelle
   if (categories_grouped_) {
     display_name += " (All)";
   }
@@ -72,8 +72,8 @@ void FileListBoxModel::rescanFiles(const Array<File>& folders,
   categories_grouped_ = false;
 
   if (!find_files && folders.size() > 1) {
-    // Si on scanne plusieurs banques pour les dossiers (catégories),
-    // regrouper les catégories ayant le même nom
+    // Si on scanne plusieurs banques pour les dossiers (catï¿½gories),
+    // regrouper les catï¿½gories ayant le mï¿½me nom
     StringArray category_names;
     HashMap<String, File> category_map;
 
@@ -92,7 +92,7 @@ void FileListBoxModel::rescanFiles(const Array<File>& folders,
       }
     }
 
-    // Trier les noms de catégories et ajouter les fichiers correspondants
+    // Trier les noms de catï¿½gories et ajouter les fichiers correspondants
     category_names.sort(true);
     for (String category_name : category_names) {
       if (category_map.contains(category_name)) {
@@ -117,3 +117,5 @@ void FileListBoxModel::rescanFiles(const Array<File>& folders,
     }
   }
 }
+
+

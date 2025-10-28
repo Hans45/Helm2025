@@ -41,3 +41,5 @@ void value_entry_component::textEditorReturnKeyPressed(juce::TextEditor& editor)
     if (callOutBox != nullptr)
         callOutBox->dismiss();
 }
+
+

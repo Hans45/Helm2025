@@ -18,7 +18,7 @@
 
 #include "colors.h"
 #include "fonts.h"
-#include "helm_common.h"
+#include "helm2025_common.h"
 #include "text_look_and_feel.h"
 
 #define DELETE_WIDTH 340
@@ -105,3 +105,5 @@ Rectangle<int> DeleteSection::getDeleteRect() {
   int y = (getHeight() - DELETE_HEIGHT) / 2;
   return Rectangle<int>(x, y, DELETE_WIDTH, DELETE_HEIGHT);
 }
+
+

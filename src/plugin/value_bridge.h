@@ -19,7 +19,7 @@
 
 #include <JuceHeader.h>
 #include "mopo.h"
-#include "helm_common.h"
+#include "helm2025_common.h"
 
 class ValueBridge : public AudioProcessorParameter {
   public:
@@ -124,3 +124,5 @@ class ValueBridge : public AudioProcessorParameter {
 };
 
 #endif // VALUE_BRIDGE_H
+
+

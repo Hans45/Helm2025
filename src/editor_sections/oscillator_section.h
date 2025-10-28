@@ -58,3 +58,5 @@ class OscillatorSection : public SynthSection {
 };
 
 #endif // OSCILLATOR_SECTION_H
+
+

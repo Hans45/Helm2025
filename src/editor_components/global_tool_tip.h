@@ -40,3 +40,5 @@ class GlobalToolTip  : public Component, public Timer {
 };
 
 #endif // GLOBAL_TOOL_TIP_H
+
+

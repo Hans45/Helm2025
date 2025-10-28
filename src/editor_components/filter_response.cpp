@@ -263,3 +263,5 @@ void FilterResponse::setActive(bool active) {
   active_ = active;
   repaint();
 }
+
+

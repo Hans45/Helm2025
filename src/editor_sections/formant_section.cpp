@@ -69,3 +69,5 @@ void FormantSection::setActive(bool active) {
   SynthSection::setActive(active);
   xy_pad_->setActive(active);
 }
+
+

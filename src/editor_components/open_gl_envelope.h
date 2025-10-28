@@ -19,7 +19,7 @@
 #define OPEN_GL_ENVELOPE_H
 
 #include <JuceHeader.h>
-#include "helm_common.h"
+#include "helm2025_common.h"
 #include "open_gl_background.h"
 #include "open_gl_component.h"
 #include "synth_slider.h"
@@ -96,3 +96,5 @@ class OpenGLEnvelope : public OpenGLComponent, public SynthSlider::SliderListene
 };
 
 #endif // OPEN_GL_ENVELOPE_H
+
+

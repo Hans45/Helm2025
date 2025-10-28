@@ -327,3 +327,5 @@ Font DefaultLookAndFeel::getPopupMenuFont() {
 Font DefaultLookAndFeel::getSliderPopupFont(Slider& slider) {
   return Fonts::instance()->proportional_regular().withPointHeight(14.0f);
 }
+
+

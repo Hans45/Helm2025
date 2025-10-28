@@ -42,3 +42,5 @@ namespace mopo {
 } // namespace mopo
 
 #endif // TRIGGER_RANDOM_H
+
+

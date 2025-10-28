@@ -40,3 +40,5 @@ class TextSlider : public SynthSlider {
 };
 
 #endif // TEXT_SLIDER_H
+
+

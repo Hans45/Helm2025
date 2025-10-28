@@ -267,3 +267,5 @@ void GraphicalEnvelope::resetEnvelopeLine() {
   envelope_line_.quadraticTo(0.5f * (getReleaseX() + getDecayX()), getHeight(),
                              getReleaseX(), getHeight());
 }
+
+

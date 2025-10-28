@@ -320,7 +320,7 @@ void WaveSelector::resizeFoldedSine(float x, float y, float width, float height)
   folded_sine_.clear();
   folded_sine_.startNewSubPath(x, y + height / 2.0f);
 
-  // Sine with folding at ±0.5
+  // Sine with folding at ï¿½0.5
   int points = 16;
   for (int i = 1; i < points; ++i) {
     float t = float(i) / points;
@@ -365,3 +365,5 @@ void WaveSelector::resizeChirp(float x, float y, float width, float height) {
   }
   chirp_.lineTo(x + width, y + height / 2.0f);
 }
+
+

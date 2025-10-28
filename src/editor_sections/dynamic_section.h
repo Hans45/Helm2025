@@ -41,3 +41,5 @@ class DynamicSection : public SynthSection {
 };
 
 #endif // DYNAMIC_SECTION_H
+
+

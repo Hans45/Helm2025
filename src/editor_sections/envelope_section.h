@@ -43,3 +43,5 @@ class EnvelopeSection : public SynthSection {
 };
 
 #endif // ENVELOPE_SECTION_H
+
+

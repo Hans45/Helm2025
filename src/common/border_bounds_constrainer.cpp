@@ -33,3 +33,5 @@ void BorderBoundsConstrainer::checkBounds(Rectangle<int>& bounds, const Rectangl
   border_.addTo(bounds);
   bounds.setY(std::max(screen_top, bounds.getY())); 
 }
+
+

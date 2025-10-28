@@ -38,3 +38,5 @@ class ModulationSlider : public SynthSlider, public Slider::Listener {
 };
 
 #endif // MODULATIONS_SLIDER_H
+
+

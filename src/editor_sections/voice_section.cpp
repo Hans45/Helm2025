@@ -71,3 +71,5 @@ void VoiceSection::resized() {
 
   SynthSection::resized();
 }
+
+

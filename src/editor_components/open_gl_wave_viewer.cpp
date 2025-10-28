@@ -1,7 +1,7 @@
 /* Copyright 2013-2017 Matt Tytel
- *
  * helm is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
+// Fin correcte de setWaveSlider, suppression de l'accolade en trop
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
@@ -31,16 +31,15 @@ using namespace ::juce::gl;
 #include "colors.h"
 #include "synth_gui_interface.h"
 #include "utils.h"
+#include "../synthesis/synced_random.h"
 
 #define GRID_CELL_WIDTH 8
+#include "../synthesis/helm2025_lfo.h"
+#include "../synthesis/synced_random.h"
 #define PADDING 5.0f
 #define MARKER_WIDTH 12.0f
 #define NOISE_RESOLUTION 6
 #define IMAGE_HEIGHT 256
-
-namespace {
-  static const float random_values[NOISE_RESOLUTION] = {0.3f, 0.9f, -0.9f, -0.2f, -0.5f, 0.7f };
-} // namespace
 
 OpenGLWaveViewer::OpenGLWaveViewer(int resolution) {
   wave_slider_ = nullptr;
@@ -48,6 +47,9 @@ OpenGLWaveViewer::OpenGLWaveViewer(int resolution) {
   resolution_ = resolution;
   wave_phase_ = nullptr;
   wave_amp_ = nullptr;
+  last_phase_ = 0.0f;
+
+  // synced_randoms_ sera généré dynamiquement selon le LFO
 
   position_vertices_ = new float[16] {
     0.0f, 1.0f, 0.0f, 1.0f,
@@ -55,6 +57,7 @@ OpenGLWaveViewer::OpenGLWaveViewer(int resolution) {
     0.1f, -1.0f, 1.0f, 0.0f,
     0.1f, 1.0f, 1.0f, 1.0f
   };
+
 
   position_triangles_ = new int[6] {
     0, 1, 2,
@@ -81,15 +84,13 @@ void OpenGLWaveViewer::paintBackground() {
   Graphics g(background_image_);
   g.addTransform(AffineTransform::scale(scale, scale));
 
+  // Fond neutre
   g.fillAll(Colour(0xff424242));
-
   g.setColour(Colour(0xff4a4a4a));
   for (int x = 0; x < getWidth(); x += GRID_CELL_WIDTH)
     g.drawLine(x, 0, x, getHeight());
   for (int y = 0; y < getHeight(); y += GRID_CELL_WIDTH)
     g.drawLine(0, y, getWidth(), y);
-
-  shadow.drawForPath(g, wave_path_);
 
   g.setColour(Colors::graph_fill);
   g.fillPath(wave_path_);
@@ -151,7 +152,8 @@ void OpenGLWaveViewer::resized() {
 
 void OpenGLWaveViewer::setWaveSlider(SynthSlider* slider) {
   wave_slider_ = slider;
-  wave_slider_->addSliderListener(this);
+  if (wave_slider_)
+    wave_slider_->addSliderListener(this);
   resetWavePath();
 }
 
@@ -162,20 +164,22 @@ void OpenGLWaveViewer::setAmplitudeSlider(SynthSlider* slider) {
 }
 
 void OpenGLWaveViewer::drawRandom() {
+  // Affichage S&H/S&G : n steps par cycle, chaque step = segment horizontal
   float amplitude = amplitude_slider_ ? amplitude_slider_->getValue() : 1.0f;
   float draw_width = getWidth();
   float padding = getRatio() * PADDING;
   float draw_height = getHeight() - 2.0f * padding;
-
+  int n = static_cast<int>(synced_randoms_.size());
+  float step_width = draw_width / n;
   wave_path_.startNewSubPath(0, getHeight() / 2.0f);
-  for (int i = 0; i < NOISE_RESOLUTION; ++i) {
-    float t1 = (1.0f * i) / NOISE_RESOLUTION;
-    float t2 = (1.0f + i) / NOISE_RESOLUTION;
-    float val = amplitude * random_values[i];
-    wave_path_.lineTo(t1 * draw_width, padding + draw_height * ((1.0f - val) / 2.0f));
-    wave_path_.lineTo(t2 * draw_width, padding + draw_height * ((1.0f - val) / 2.0f));
+  for (int i = 0; i < n; ++i) {
+    float val = amplitude * synced_randoms_[i];
+    float x1 = i * step_width;
+    float x2 = (i + 1) * step_width;
+    float y = padding + draw_height * ((1.0f - val) / 2.0f);
+    wave_path_.lineTo(x1, y);
+    wave_path_.lineTo(x2, y);
   }
-
   wave_path_.lineTo(getWidth(), getHeight() / 2.0f);
 }
 
@@ -184,26 +188,25 @@ void OpenGLWaveViewer::drawSmoothRandom() {
   float draw_width = getWidth();
   float padding = getRatio() * PADDING;
   float draw_height = getHeight() - 2.0f * padding;
-
-  float start_val = amplitude * random_values[0];
+  int n = cycle_resolution_;
   wave_path_.startNewSubPath(-50, getHeight() / 2.0f);
-  wave_path_.lineTo(0, PADDING + draw_height * ((1.0f - start_val) / 2.0f));
-  for (int i = 1; i < resolution_ - 1; ++i) {
+  for (int i = 0; i < resolution_; ++i) {
     float t = (1.0f * i) / resolution_;
-    float phase = t * (NOISE_RESOLUTION - 1);
+    float phase = t * (n - 1);
     int index = (int)phase;
-    phase = mopo::PI * (phase - index);
-    float val = amplitude * mopo::utils::interpolate(random_values[index],
-                                                     random_values[index + 1],
-                                                     0.5f - cosf(phase) / 2.0f);
+    float frac = phase - index;
+    float val = amplitude * mopo::utils::interpolate(
+      synced_randoms_[index % synced_randoms_.size()],
+      synced_randoms_[(index + 1) % synced_randoms_.size()],
+      static_cast<float>(frac));
     wave_path_.lineTo(t * draw_width, padding + draw_height * ((1.0f - val) / 2.0f));
   }
-
-  float end_val = amplitude * random_values[NOISE_RESOLUTION - 1];
+  float end_val = amplitude * synced_randoms_[(n - 1) % synced_randoms_.size()];
   wave_path_.lineTo(getWidth(), padding + draw_height * ((1.0f - end_val) / 2.0f));
   wave_path_.lineTo(getWidth() + 50, getHeight() / 2.0f);
-
 }
+
+
 
 void OpenGLWaveViewer::resetWavePath() {
   wave_path_.clear();
@@ -218,13 +221,44 @@ void OpenGLWaveViewer::resetWavePath() {
 
   mopo::Wave::Type type = static_cast<mopo::Wave::Type>(static_cast<int>(wave_slider_->getValue()));
 
-  if (type == mopo::Wave::kSampleAndHold || type == mopo::Wave::kWhiteNoise) {
-    drawRandom();
-  }
-  else if (type == mopo::Wave::kSampleAndGlide) {
-    drawSmoothRandom();
-  }
-  else {
+  if (type == mopo::Wave::kSampleAndHold || type == mopo::Wave::kWhiteNoise || type == mopo::Wave::kSampleAndGlide) {
+    // Synchronisation stricte avec le LFO
+    SynthGuiInterface* parent = findParentComponentOfClass<SynthGuiInterface>();
+    mopo::HelmLfo* lfo = nullptr;
+    if (parent) {
+      auto* synth = parent->getSynth();
+      if (getName().containsIgnoreCase("poly_lfo")) {
+        if (synth && synth->getEngine()) {
+          lfo = synth->getEngine()->getPolyLfo();
+        }
+      } else if (getName().containsIgnoreCase("lfo_1")) {
+        if (synth && synth->getEngine()) {
+          lfo = synth->getEngine()->getLfo1();
+        }
+      } else if (getName().containsIgnoreCase("lfo_2")) {
+        if (synth && synth->getEngine()) {
+          lfo = synth->getEngine()->getLfo2();
+        }
+      }
+    }
+    if (lfo) {
+      cycle_seed_ = lfo->getCycleSeed();
+      cycle_resolution_ = lfo->getCycleResolution();
+    } else {
+      cycle_seed_ = 0;
+      cycle_resolution_ = std::max(8, std::min(512, resolution_));
+    }
+    if (cycle_resolution_ <= 0) return;
+    synced_randoms_ = mopo::generateSyncedRandoms(cycle_seed_, cycle_resolution_);
+    if (synced_randoms_.empty() || !wave_phase_ || !amplitude_slider_) return;
+    if (type == mopo::Wave::kSampleAndGlide) {
+      drawSmoothRandom();
+    } else {
+      drawRandom();
+    }
+    paintBackground();
+    return;
+  } else {
     // All deterministic waveforms (original + new ones)
     wave_path_.startNewSubPath(0, getHeight() / 2.0f);
     for (int i = 1; i < resolution_ - 1; ++i) {
@@ -232,12 +266,12 @@ void OpenGLWaveViewer::resetWavePath() {
       float val = amplitude * mopo::Wave::wave(type, t);
       wave_path_.lineTo(t * draw_width, padding + draw_height * ((1.0f - val) / 2.0f));
     }
-
-    wave_path_.lineTo(getWidth(), getHeight() / 2.0f);
   }
 
-  paintBackground();
-}
+
+    wave_path_.lineTo(getWidth(), getHeight() / 2.0f);
+    paintBackground();
+  }
 
 void OpenGLWaveViewer::guiChanged(SynthSlider* slider) {
   resetWavePath();
@@ -271,12 +305,99 @@ void OpenGLWaveViewer::drawPosition(OpenGLContext& open_gl_context) {
   if (position_texture_.getWidth() != position_image_.getWidth())
     position_texture_.loadImage(position_image_);
 
+  // Protection : on ne dessine rien si le buffer random est vide ou si wave_phase_ ou amplitude_slider_ sont nuls
+
+  // --- Synchronisation stricte du random S&H/S&G : on vérifie le seed à chaque frame ---
+  if (wave_slider_) {
+    SynthGuiInterface* parent = findParentComponentOfClass<SynthGuiInterface>();
+    mopo::HelmLfo* lfo = nullptr;
+    if (parent) {
+      auto* synth = parent->getSynth();
+      if (getName().containsIgnoreCase("poly_lfo")) {
+        if (synth && synth->getEngine()) {
+          lfo = synth->getEngine()->getPolyLfo();
+        }
+      } else if (getName().containsIgnoreCase("lfo_1")) {
+        if (synth && synth->getEngine()) {
+          lfo = synth->getEngine()->getLfo1();
+        }
+      } else if (getName().containsIgnoreCase("lfo_2")) {
+        if (synth && synth->getEngine()) {
+          lfo = synth->getEngine()->getLfo2();
+        }
+      }
+    }
+    if (lfo) {
+      uint32_t new_seed = lfo->getCycleSeed();
+      int new_res = lfo->getCycleResolution();
+      if (new_seed != cycle_seed_ || new_res != cycle_resolution_) {
+        cycle_seed_ = new_seed;
+        cycle_resolution_ = new_res;
+        synced_randoms_ = mopo::generateSyncedRandoms(cycle_seed_, cycle_resolution_);
+      }
+    }
+  }
+  if (synced_randoms_.empty() || !wave_phase_ || !amplitude_slider_)
+    return;
+
   if (wave_phase_ == nullptr || wave_amp_ == nullptr || wave_phase_->buffer[0] <= 0.0)
     return;
 
+  // Detect cycle reset for Sample & Hold / Sample & Glide waveforms
+  float current_phase = wave_phase_->buffer[0];
+  if (wave_slider_ && (current_phase < last_phase_)) {
+    // Phase wrapped around - new cycle started
+    mopo::Wave::Type type = static_cast<mopo::Wave::Type>(static_cast<int>(wave_slider_->getValue()));
+    if (type == mopo::Wave::kSampleAndHold || type == mopo::Wave::kSampleAndGlide || type == mopo::Wave::kWhiteNoise) {
+  resetWavePath();
+    }
+  }
+  last_phase_ = current_phase;
+
   float x = 2.0f * wave_phase_->buffer[0] - 1.0f;
   float padding = getRatio() * PADDING;
-  float y = (getHeight() - 2 * padding) * wave_amp_->buffer[0] / getHeight();
+  
+  // For Sample & Hold/Glide, calculate Y from the visual random values
+  mopo::Wave::Type type = wave_slider_ ? static_cast<mopo::Wave::Type>(static_cast<int>(wave_slider_->getValue())) : mopo::Wave::kSin;
+  float visual_amp;
+  
+  if (type == mopo::Wave::kSampleAndHold || type == mopo::Wave::kWhiteNoise) {
+    // Pour S&H/WhiteNoise, la valeur doit rester constante sur chaque step audio
+    // On force l'index à être borné strictement à [0, n-1] (jamais n)
+    int n = static_cast<int>(synced_randoms_.size());
+    float phase = wave_phase_->buffer[0];
+    if (phase < 0.0f) phase = 0.0f;
+    if (phase >= 1.0f) phase = std::nextafter(1.0f, 0.0f); // Jamais 1.0f pile
+    int step = static_cast<int>(phase * n);
+    if (step >= n) step = n - 1;
+    float amplitude = amplitude_slider_ ? amplitude_slider_->getValue() : 1.0f;
+    visual_amp = amplitude * synced_randoms_[step];
+  }
+  else if (type == mopo::Wave::kSampleAndGlide) {
+    // Pour S&G, interpolation identique à l'audio (phase bornée)
+    int n = static_cast<int>(synced_randoms_.size());
+    float phase = wave_phase_->buffer[0];
+    if (phase < 0.0f) phase = 0.0f;
+    if (phase > 1.0f) phase = 1.0f;
+    float interp = phase * (n - 1);
+    int index = static_cast<int>(interp);
+    float frac = interp - index;
+    if (index >= n - 1) {
+      index = n - 2;
+      frac = 1.0f;
+    }
+    float t = (1.0f - cosf(mopo::PI * frac)) / 2.0f;
+    float amplitude = amplitude_slider_ ? amplitude_slider_->getValue() : 1.0f;
+    visual_amp = amplitude * mopo::utils::interpolate(synced_randoms_[index], synced_randoms_[index + 1], t);
+  }
+  else {
+    // Pour les autres formes, on affiche la valeur réelle du LFO
+    visual_amp = wave_amp_->buffer[0];
+  }
+  
+  // Convert amplitude from -1..1 to OpenGL coordinates -1..1, accounting for padding
+  float normalized_height = (getHeight() - 2 * padding) / (float)getHeight();
+  float y = visual_amp * normalized_height;  // Removed the minus sign - it was inverting the position
 
   glEnable(GL_BLEND);
   glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
@@ -350,3 +471,5 @@ void OpenGLWaveViewer::destroy(OpenGLContext& open_gl_context) {
 float OpenGLWaveViewer::getRatio() {
   return getHeight() / 80.0f;
 }
+
+

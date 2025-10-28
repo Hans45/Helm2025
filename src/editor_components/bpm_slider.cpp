@@ -34,3 +34,5 @@ void BpmSlider::timerCallback() {
   if (getValue() != bpm)
     setValue(bpm, NotificationType::dontSendNotification);
 }
+
+

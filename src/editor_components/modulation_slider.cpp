@@ -85,3 +85,5 @@ void ModulationSlider::mouseUp(const juce::MouseEvent &e) {
   if (!e.mods.isPopupMenu())
     SynthSlider::mouseUp(e);
 }
+
+

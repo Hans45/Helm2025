@@ -36,3 +36,5 @@ class TextSelector : public SynthSlider {
 };
 
 #endif // TEXT_SELECTOR_H
+
+

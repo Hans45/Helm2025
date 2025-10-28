@@ -75,3 +75,5 @@ void RetriggerSelector::resized() {
   arrow_.lineTo(3.0f * getWidth() / 8.0f, getHeight() / 8.0f);
   arrow_.lineTo(2.0f * getWidth() / 8.0f, 2.0f * getHeight() / 8.0f);
 }
+
+

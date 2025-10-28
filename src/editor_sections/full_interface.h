@@ -100,3 +100,5 @@ class FullInterface : public SynthSection, public OpenGLRenderer {
 };
 
 #endif // FULL_INTERFACE_H
+
+

@@ -20,7 +20,7 @@
 
 #include <JuceHeader.h>
 
-#include "helm_common.h"
+#include "helm2025_common.h"
 #include "open_gl_background.h"
 #include "open_gl_component.h"
 #include "synth_slider.h"
@@ -49,6 +49,7 @@ class OpenGLWaveViewer : public OpenGLComponent, public SynthSlider::SliderListe
     void drawPosition(OpenGLContext& open_gl_context);
     void paintPositionImage();
     void paintBackground();
+    void regenerateRandomValues();
     float phaseToX(float phase);
     float getRatio();
 
@@ -58,6 +59,11 @@ class OpenGLWaveViewer : public OpenGLComponent, public SynthSlider::SliderListe
     mopo::Output* wave_amp_;
     Path wave_path_;
     int resolution_;
+  // Pour la synchronisation des randoms avec le LFO
+  uint32_t cycle_seed_;
+  int cycle_resolution_;
+  std::vector<float> synced_randoms_;
+    float last_phase_;  // Pour détecter les resets de cycle
 
     OpenGLBackground background_;
   
@@ -75,3 +81,5 @@ class OpenGLWaveViewer : public OpenGLComponent, public SynthSlider::SliderListe
 };
 
 #endif // OPEN_GL_WAVE_VIEWER_H
+
+

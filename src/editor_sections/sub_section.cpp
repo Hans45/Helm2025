@@ -80,3 +80,5 @@ void SubSection::reset() {
   wave_viewer_->repaint();
   SynthSection::reset();
 }
+
+

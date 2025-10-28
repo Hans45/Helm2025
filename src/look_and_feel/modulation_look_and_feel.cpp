@@ -236,3 +236,5 @@ Font ModulationLookAndFeel::getPopupMenuFont() {
 Font ModulationLookAndFeel::getSliderPopupFont(Slider& slider) {
   return Fonts::instance()->proportional_regular().withPointHeight(14.0f);
 }
+
+

@@ -53,3 +53,5 @@ namespace mopo {
 } // namespace mopo
 
 #endif // NOISE_OSCILLATOR_H
+
+

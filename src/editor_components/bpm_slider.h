@@ -30,3 +30,5 @@ class BpmSlider : public SynthSlider, public Timer {
 };
 
 #endif // SYNTH_SLIDER_H
+
+

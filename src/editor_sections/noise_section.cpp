@@ -44,3 +44,5 @@ void NoiseSection::resized() {
                      KNOB_WIDTH, KNOB_WIDTH);
   SynthSection::resized();
 }
+
+

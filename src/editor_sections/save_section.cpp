@@ -18,7 +18,7 @@
 
 #include "colors.h"
 #include "fonts.h"
-#include "helm_common.h"
+#include "helm2025_common.h"
 #include "load_save.h"
 #include "synth_gui_interface.h"
 #include "text_look_and_feel.h"
@@ -317,3 +317,5 @@ void SaveSection::rescanFolders() {
   folders_model_->rescanFiles(folder_locations);
   folders_view_->updateContent();
 }
+
+

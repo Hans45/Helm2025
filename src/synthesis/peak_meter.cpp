@@ -46,3 +46,5 @@ namespace mopo {
     output()->buffer[1] = current_peak_right_;
   }
 } // namespace mopo
+
+

@@ -39,3 +39,5 @@ void OpenGLComponent::setViewPort(OpenGLContext& open_gl_context) {
              scale * (top_level_bounds.getHeight() - global_bounds.getBottom()),
              scale * global_bounds.getWidth(), scale * global_bounds.getHeight());
 }
+
+

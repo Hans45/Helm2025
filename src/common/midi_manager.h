@@ -19,7 +19,7 @@
 
 #include <JuceHeader.h>
 #include "common.h"
-#include "helm_common.h"
+#include "helm2025_common.h"
 #include <string>
 #include <map>
 
@@ -90,3 +90,5 @@ class MidiManager : public MidiInputCallback {
 };
 
 #endif // MIDI_MANAGER_H
+
+

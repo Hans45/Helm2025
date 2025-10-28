@@ -39,3 +39,5 @@ class MixerSection : public SynthSection {
 };
 
 #endif // MIXER_SECTION_H
+
+

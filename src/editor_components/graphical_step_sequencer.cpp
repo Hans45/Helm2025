@@ -252,3 +252,5 @@ void GraphicalStepSequencer::showRealtimeFeedback(bool show_feedback) {
     repaint();
   }
 }
+
+

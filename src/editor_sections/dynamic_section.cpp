@@ -81,3 +81,5 @@ void DynamicSection::resized() {
 
   SynthSection::resized();
 }
+
+

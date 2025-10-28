@@ -20,7 +20,7 @@
 
 #include <JuceHeader.h>
 #include "modulation_button.h"
-#include "helm_common.h"
+#include "helm2025_common.h"
 #include "synth_button.h"
 #include <map>
 
@@ -97,3 +97,5 @@ class SynthSection : public Component, public Slider::Listener,
 };
 
 #endif // SYNTH_SECTION_H
+
+

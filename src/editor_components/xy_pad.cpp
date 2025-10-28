@@ -137,3 +137,5 @@ void XYPad::setActive(bool active) {
   active_ = active;
   repaint();
 }
+
+

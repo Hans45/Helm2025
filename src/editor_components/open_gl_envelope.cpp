@@ -488,3 +488,5 @@ void OpenGLEnvelope::destroy(OpenGLContext& open_gl_context) {
   open_gl_context.extensions.glDeleteBuffers(1, &triangle_buffer_);
   background_.destroy(open_gl_context);
 }
+
+

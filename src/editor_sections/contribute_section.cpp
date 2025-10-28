@@ -170,15 +170,15 @@ void ContributeSection::paint(Graphics& g) {
   g.saveState();
   g.setOrigin(icon_x, icon_y);
 
-  Image helm_small = ImageCache::getFromMemory(BinaryData::helm_icon_256_1x_png,
-                                               BinaryData::helm_icon_256_1x_pngSize);
+  Image helm_small = ImageCache::getFromMemory(BinaryData::helm2025_icon_256_1x_png,
+                                               BinaryData::helm2025_icon_256_1x_pngSize);
   shadow.drawForImage(g, helm_small);
 
   auto *display = Desktop::getInstance().getDisplays().getPrimaryDisplay();
   jassert(display != nullptr);
   if (display->scale > 1.5) {
-    Image helm = ImageCache::getFromMemory(BinaryData::helm_icon_256_2x_png,
-                                           BinaryData::helm_icon_256_2x_pngSize);
+    Image helm = ImageCache::getFromMemory(BinaryData::helm2025_icon_256_2x_png,
+                                           BinaryData::helm2025_icon_256_2x_pngSize);
     g.drawImage(helm, 0, 0, logo_width, logo_width, 0, 0, 2 * logo_width, 2 * logo_width);
   }
   else
@@ -284,3 +284,5 @@ URL ContributeSection::getUrl() {
   amount = URL::addEscapeChars(amount.replace("$", ""), true);
   return URL(String("http://tytel.org/helm/paylater/?amount=") + amount);
 }
+
+

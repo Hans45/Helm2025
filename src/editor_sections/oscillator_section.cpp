@@ -261,3 +261,5 @@ void OscillatorSection::reset() {
   wave_viewer_2_->repaint();
   SynthSection::reset();
 }
+
+

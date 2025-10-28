@@ -90,3 +90,5 @@ void MixerSection::resized() {
   noise_->setBounds(3 * (slider_width + buffer), title_width, slider_width, slider_height);
   SynthSection::resized();
 }
+
+

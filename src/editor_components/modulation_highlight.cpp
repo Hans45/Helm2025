@@ -32,3 +32,5 @@ void ModulationHighlight::resized() {
   Component::resized();
   repaint();
 }
+
+

@@ -40,3 +40,5 @@ void VolumeSection::resized() {
 
   SynthSection::resized();
 }
+
+

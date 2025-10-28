@@ -154,3 +154,5 @@ void ModulationMeter::fillVerticalRect(Graphics& g, float y1, float y2, float wi
   float padding = (getWidth() - width) / 2.0f;
   g.fillRect(padding, y, width, height);
 }
+
+

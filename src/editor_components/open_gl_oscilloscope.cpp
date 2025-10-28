@@ -28,7 +28,7 @@
 
 using namespace ::juce::gl;
 
-#include "helm_common.h"
+#include "helm2025_common.h"
 #include "shaders.h"
 #include "utils.h"
 
@@ -152,3 +152,5 @@ void OpenGLOscilloscope::destroy(OpenGLContext& open_gl_context) {
   open_gl_context.extensions.glDeleteBuffers(1, &line_buffer_);
   open_gl_context.extensions.glDeleteBuffers(1, &line_indices_buffer_);
 }
+
+

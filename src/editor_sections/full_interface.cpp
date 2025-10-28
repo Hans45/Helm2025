@@ -18,8 +18,8 @@
 
 #include "colors.h"
 #include "fonts.h"
-#include "helm_engine.h"
-#include "helm_common.h"
+#include "helm2025_engine.h"
+#include "helm2025_common.h"
 #include "load_save.h"
 #include "synth_gui_interface.h"
 #include "text_look_and_feel.h"
@@ -56,16 +56,16 @@ FullInterface::FullInterface(mopo::control_map controls, mopo::output_map modula
   auto *display = Desktop::getInstance().getDisplays().getPrimaryDisplay();
   jassert(display != nullptr);
   if (display->scale > 1.5) {
-    Image helm = ImageCache::getFromMemory(BinaryData::helm_icon_128_2x_png,
-                                           BinaryData::helm_icon_128_2x_pngSize);
+    Image helm = ImageCache::getFromMemory(BinaryData::helm2025_icon_128_2x_png,
+                                           BinaryData::helm2025_icon_128_2x_pngSize);
     logo_button_->setImages(true, true, false,
                             helm, 1.0, Colours::transparentBlack,
                             helm, 1.0, Colour(0x11ffffff),
                             helm, 1.0, Colour(0x11000000));
   }
   else {
-    Image helm_small = ImageCache::getFromMemory(BinaryData::helm_icon_128_1x_png,
-                                                 BinaryData::helm_icon_128_1x_pngSize);
+    Image helm_small = ImageCache::getFromMemory(BinaryData::helm2025_icon_128_1x_png,
+                                                 BinaryData::helm2025_icon_128_1x_pngSize);
     logo_button_->setImages(true, true, false,
                             helm_small, 1.0, Colours::transparentBlack,
                             helm_small, 1.0, Colour(0x11ffffff),
@@ -129,8 +129,8 @@ void FullInterface::paintBackground(Graphics& g) {
   static const DropShadow shadow(Colour(0xcc000000), 3, Point<int>(0, 1));
   static const DropShadow logo_shadow(Colour(0xff000000), 8, Point<int>(0, 0));
   static const DropShadow component_shadow(Colour(0xcc000000), 5, Point<int>(0, 1));
-  Image helm_small = ImageCache::getFromMemory(BinaryData::helm_icon_32_2x_png,
-                                               BinaryData::helm_icon_32_2x_pngSize);
+  Image helm_small = ImageCache::getFromMemory(BinaryData::helm2025_icon_32_2x_png,
+                                               BinaryData::helm2025_icon_32_2x_pngSize);
   g.setColour(Colors::background);
   g.fillRect(getLocalBounds());
 
@@ -325,3 +325,5 @@ void FullInterface::notifyFresh() {
   global_tool_tip_->setVisible(false);
   patch_selector_->setModified(false);
 }
+
+

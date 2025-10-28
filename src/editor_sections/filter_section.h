@@ -60,3 +60,5 @@ class FilterSection : public SynthSection {
 };
 
 #endif // FILTER_SECTION_H
+
+

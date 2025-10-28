@@ -20,7 +20,7 @@
 
 #include <JuceHeader.h>
 #include "wave.h"
-#include "helm_common.h"
+#include "helm2025_common.h"
 
 class WaveViewer : public Component, public Timer, public Slider::Listener {
   public:
@@ -61,3 +61,5 @@ class WaveViewer : public Component, public Timer, public Slider::Listener {
 };
 
 #endif // WAVE_VIEWER_H
+
+

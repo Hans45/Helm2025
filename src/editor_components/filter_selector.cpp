@@ -125,3 +125,5 @@ void FilterSelector::resizeAllPass(float x, float y, float width, float height) 
   all_pass_.startNewSubPath(x, y + height / 2.0f);
   all_pass_.lineTo(x + width, y + height / 2.0f);
 }
+
+
