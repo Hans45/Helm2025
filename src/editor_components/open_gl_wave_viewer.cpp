@@ -125,12 +125,17 @@ void OpenGLWaveViewer::paintPositionImage() {
 void OpenGLWaveViewer::mouseDown(const MouseEvent& e) {
   if (wave_slider_) {
     int current_value = wave_slider_->getValue();
-    if (e.mods.isRightButtonDown())
-      current_value = current_value + wave_slider_->getMaximum();
-    else
-      current_value = current_value + 1;
-    wave_slider_->setValue(current_value % static_cast<int>(wave_slider_->getMaximum() + 1));
-
+    int max_value = static_cast<int>(wave_slider_->getMaximum());
+    int new_value = current_value;
+    // Clic gauche = précédent, clic droit = suivant
+    if (e.x < getWidth() / 2) {
+      // Précédent
+      new_value = (current_value - 1 + (max_value + 1)) % (max_value + 1);
+    } else {
+      // Suivant
+      new_value = (current_value + 1) % (max_value + 1);
+    }
+    wave_slider_->setValue(new_value);
     resetWavePath();
   }
 }

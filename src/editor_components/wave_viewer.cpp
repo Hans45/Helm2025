@@ -103,12 +103,15 @@ void WaveViewer::resized() {
 void WaveViewer::mouseDown(const MouseEvent& e) {
   if (wave_slider_) {
     int current_value = wave_slider_->getValue();
-    if (e.mods.isRightButtonDown())
-      current_value = current_value + wave_slider_->getMaximum();
-    else
-      current_value = current_value + 1;
-    wave_slider_->setValue(current_value % static_cast<int>(wave_slider_->getMaximum() + 1));
-
+    int max = static_cast<int>(wave_slider_->getMaximum());
+    float x = e.getPosition().getX();
+    float width = getWidth();
+    // Moitié gauche = précédent, moitié droite = suivant
+    if (x < width / 2.0f) {
+      wave_slider_->setValue((current_value - 1 + (max + 1)) % (max + 1));
+    } else {
+      wave_slider_->setValue((current_value + 1) % (max + 1));
+    }
     resetWavePath();
   }
 }

@@ -183,8 +183,15 @@ void WaveSelector::resized() {
 
 void WaveSelector::mouseEvent(const juce::MouseEvent &e) {
   float x = e.getPosition().getX();
-  int index = x * (getMaximum() + 1) / getWidth();
-  setValue(index);
+  float width = getWidth();
+  int current = getValue();
+  int max = getMaximum();
+  // Moitié gauche = précédent, moitié droite = suivant
+  if (x < width / 2.0f) {
+    setValue((current - 1 + (max + 1)) % (max + 1));
+  } else {
+    setValue((current + 1) % (max + 1));
+  }
 }
 
 void WaveSelector::mouseDown(const juce::MouseEvent &e) {

@@ -99,3 +99,13 @@ This script automates all steps: it initializes the required dependencies (JUCE 
 - **Crash-Proof Visualization**: The OpenGL viewer is now robust against all edge cases (buffer underrun, null pointers, etc) and never crashes when switching LFO type or frequency.
 
 These improvements guarantee that what you see in the LFO viewer is always exactly what you hear, with a musical and reliable random modulation for all S&H/S&G/WhiteNoise LFOs.
+
+## Ergonomie : sélection de forme d’onde simplifiée (octobre 2025)
+
+- **Navigation intuitive sur les sélecteurs d’onde** : Sur tous les composants de sélection de forme d’onde (LFO, oscillateurs, sub, etc.), un clic sur la moitié gauche de la zone sélectionne la forme précédente, un clic sur la moitié droite sélectionne la suivante. Cela fonctionne dans :
+    - le visualiseur OpenGL (LFO)
+    - le WaveSelector (oscillateurs, sub)
+    - le WaveViewer (aperçu d’onde)
+- Ce comportement accélère la navigation et rend le workflow plus fluide, sans menus contextuels ni clics multiples.
+
+Le composant TextSlider conserve la sélection directe par position du clic (comportement d’origine).
