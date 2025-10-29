@@ -175,6 +175,7 @@ void OpenGLWaveViewer::drawRandom() {
   float padding = getRatio() * PADDING;
   float draw_height = getHeight() - 2.0f * padding;
   int n = static_cast<int>(synced_randoms_.size());
+  if (n <= 0) return; // <-- AJOUT DU GARDE-FOU
   float step_width = draw_width / n;
   wave_path_.startNewSubPath(0, getHeight() / 2.0f);
   for (int i = 0; i < n; ++i) {
@@ -194,6 +195,7 @@ void OpenGLWaveViewer::drawSmoothRandom() {
   float padding = getRatio() * PADDING;
   float draw_height = getHeight() - 2.0f * padding;
   int n = cycle_resolution_;
+  if (n <= 0 || synced_randoms_.empty()) return;
   wave_path_.startNewSubPath(-50, getHeight() / 2.0f);
   for (int i = 0; i < resolution_; ++i) {
     float t = (1.0f * i) / resolution_;
@@ -215,7 +217,8 @@ void OpenGLWaveViewer::drawSmoothRandom() {
 
 void OpenGLWaveViewer::resetWavePath() {
   wave_path_.clear();
-
+  // Toujours clear le chemin pour éviter l'affichage résiduel
+  wave_path_.clear();
   if (wave_slider_ == nullptr)
     return;
 
@@ -226,6 +229,33 @@ void OpenGLWaveViewer::resetWavePath() {
 
   mopo::Wave::Type type = static_cast<mopo::Wave::Type>(static_cast<int>(wave_slider_->getValue()));
 
+  // --- NOUVEAU : visualisation statique pour Poly LFO S&H/S&G ---
+  bool isPolyLfo = getName().containsIgnoreCase("poly_lfo");
+  static mopo::Wave::Type lastType = mopo::Wave::kSin;
+  static bool lastIsPoly = false;
+  if (isPolyLfo && (type == mopo::Wave::kSampleAndHold || type == mopo::Wave::kSampleAndGlide)) {
+    // Toujours régénérer la séquence random statique à chaque appel
+    static uint32_t static_seed = 123456;
+    static int static_res = 16;
+    cycle_seed_ = static_seed;
+    cycle_resolution_ = static_res;
+    synced_randoms_ = mopo::generateSyncedRandoms(cycle_seed_, cycle_resolution_);
+    lastType = type;
+    lastIsPoly = true;
+    if (cycle_resolution_ > 0 && !synced_randoms_.empty()) {
+      if (type == mopo::Wave::kSampleAndGlide)
+        drawSmoothRandom();
+      else
+        drawRandom();
+    }
+    paintBackground();
+    repaint();
+    return;
+  } else {
+    lastIsPoly = false;
+  }
+
+  // --- Cas dynamique normal (synchro LFO) ---
   if (type == mopo::Wave::kSampleAndHold || type == mopo::Wave::kWhiteNoise || type == mopo::Wave::kSampleAndGlide) {
     // Synchronisation stricte avec le LFO
     SynthGuiInterface* parent = findParentComponentOfClass<SynthGuiInterface>();
@@ -256,10 +286,11 @@ void OpenGLWaveViewer::resetWavePath() {
     if (cycle_resolution_ <= 0) return;
     synced_randoms_ = mopo::generateSyncedRandoms(cycle_seed_, cycle_resolution_);
     if (synced_randoms_.empty() || !wave_phase_ || !amplitude_slider_) return;
-    if (type == mopo::Wave::kSampleAndGlide) {
-      drawSmoothRandom();
-    } else {
-      drawRandom();
+  if (cycle_resolution_ > 0 && !synced_randoms_.empty()) {
+        if (type == mopo::Wave::kSampleAndGlide)
+            drawSmoothRandom();
+        else
+            drawRandom();
     }
     paintBackground();
     return;
@@ -273,10 +304,9 @@ void OpenGLWaveViewer::resetWavePath() {
     }
   }
 
-
-    wave_path_.lineTo(getWidth(), getHeight() / 2.0f);
-    paintBackground();
-  }
+  wave_path_.lineTo(getWidth(), getHeight() / 2.0f);
+  paintBackground();
+}
 
 void OpenGLWaveViewer::guiChanged(SynthSlider* slider) {
   resetWavePath();
