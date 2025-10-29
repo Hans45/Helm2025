@@ -255,7 +255,8 @@ juce_generate_juce_header(Helm2025Standalone)
 target_sources(Helm2025Standalone PRIVATE
   src/standalone/helm2025_editor.cpp
   src/standalone/helm2025_computer_keyboard.cpp
-  src/standalone/main.cpp)
+  src/standalone/main.cpp
+  src/common/user_preferences.cpp)
 
 target_include_directories(Helm2025Standalone PRIVATE
   src/standalone)

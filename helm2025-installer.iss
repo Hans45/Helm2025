@@ -240,3 +240,44 @@ Root: HKCR; Subkey: "Helm2025Patch\shell\open\command"; ValueType: string; Value
 
 [UninstallDelete]
 Type: filesandordirs; Name: "{app}"
+
+
+; Suppression conditionnelle des préférences utilisateur (JSON)
+
+[Code]
+function DeleteUserPrefs: Boolean;
+var
+  msg: String;
+  userPrefsDir, userPrefsFile: String;
+  res: Integer;
+begin
+  userPrefsDir := ExpandConstant('{userappdata}\\Helm2025');
+  userPrefsFile := userPrefsDir + '\\user_prefs.json';
+  if not FileExists(userPrefsFile) then
+    exit;
+
+  if ActiveLanguage = 'french' then
+    msg := 'Voulez-vous supprimer les informations de configuration existantes ? (Préférences utilisateur, historique, etc.)'
+  else
+    msg := 'Do you want to delete existing configuration information? (User preferences, history, etc.)';
+
+  res := MsgBox(msg, mbConfirmation, MB_YESNO or MB_DEFBUTTON2);
+  if res = IDYES then
+  begin
+    if FileExists(userPrefsFile) then
+      DeleteFile(userPrefsFile);
+    if DirExists(userPrefsDir) then
+      RemoveDir(userPrefsDir);
+    Result := True;
+  end
+  else
+    Result := False;
+end;
+
+procedure CurUninstallStepChanged(CurUninstallStep: TUninstallStep);
+begin
+  if CurUninstallStep = usUninstall then
+  begin
+    DeleteUserPrefs;
+  end;
+end;
