@@ -1,3 +1,4 @@
+
 # Helm2025
 
 Helm2025 is a modern, cross-platform, polyphonic synthesizer for GNU/Linux, macOS, and Windows. It is available as a standalone application and as LV2, VST3, and AU plugins.
@@ -6,48 +7,105 @@ Helm2025 is a modern, cross-platform, polyphonic synthesizer for GNU/Linux, macO
 
 ---
 
-## About This Project
+## About This Project / À propos du projet
 
 Helm2025 is a significantly modernized and independent fork of Matt Tytel's original [Helm synthesizer](https://github.com/mtytel/helm), started from the [bepzi/helm fork](https://github.com/bepzi/helm). It features major performance, stability, and usability improvements, as well as new synthesis and UI features.
 
----
-
-## Key Features
-
-- Up to **32-voice polyphony**
-- **Step sequencer up to 64 steps** (editing, modulation, audio engine, and patch save/load)
-- Interactive, real-time visual interface
-- Powerful modulation system with live feedback
-- Dual oscillators with cross-modulation and up to 15 unison voices each
-- Sub oscillator with shuffle waveshaping
-- Oscillator feedback and saturation
-- 21 waveforms, including advanced and hybrid shapes
-- Blendable 12/24dB low/band/high pass and shelf filters
-- 2 monophonic and 1 polyphonic LFO
-- Many modulation sources, including polyphonic aftertouch
-- Simple arpeggiator
-- Effects: formant filter, stutter, delay, distortion, reverb
+Helm2025 est un fork moderne et indépendant du synthétiseur Helm original de Matt Tytel, basé sur le fork [bepzi/helm](https://github.com/bepzi/helm). Il apporte de nombreuses améliorations de performance, de stabilité, d’ergonomie et de nouvelles fonctionnalités de synthèse et d’interface.
 
 ---
 
-## Recent Improvements (October 2025)
+## Key Features / Fonctionnalités principales
 
-### Step Sequencer
-- **Up to 64 steps**: The step sequencer now supports up to 64 steps throughout the UI, modulation system, audio engine, and patch management.
-- **Stability**: Fixed all crashes and limitations when editing or automating steps above 32. All code paths (parameters, UI, DSP) now handle 64 steps reliably.
-
-### LFO Synchronization & Randoms
-- **Perfect LFO/Visualization Sync**: LFO modulation and the OpenGL waveform viewer are now always perfectly synchronized, for all LFO types (including S&H, S&G, WhiteNoise) in both mono and poly modes.
-- **Deterministic Randoms**: S&H, S&G, and WhiteNoise LFOs use a deterministic, cycle-synchronized random sequence. The random values are generated with a reproducible seed, so modulation and visual curve always match, even with dynamic LFO rate changes.
-- **Musical Step Count**: S&H and S&G LFOs use a fixed, musically useful number of random steps per cycle (16), regardless of LFO rate.
-- **Cycle-Accurate Renewal**: The random sequence is renewed every LFO cycle, even in free-running mode, ensuring a new random pattern for each cycle in both sound and UI.
-- **Robust Polyphonic Support**: All improvements apply to both monophonic and polyphonic LFOs, with robust handling of all edge cases (UI switching, frequency changes, etc).
-- **Crash-Proof Visualization**: The OpenGL viewer is robust against all edge cases (buffer underrun, null pointers, etc) and never crashes when switching LFO type or frequency.
-
-### UI & Workflow
-- **Intuitive waveform selection**: On all waveform selectors (LFO, oscillators, sub, etc.), clicking the left half selects the previous waveform, clicking the right half selects the next. This works in the OpenGL viewer, WaveSelector, and WaveViewer. The TextSlider retains direct selection by click position.
+- Up to **32-voice polyphony** / Jusqu’à **32 voix de polyphonie**
+- **Step sequencer up to 64 steps** (editing, modulation, audio engine, and patch save/load) / **Séquenceur jusqu’à 64 pas** (édition, modulation, moteur audio, sauvegarde de patch)
+- Interactive, real-time visual interface / Interface visuelle interactive en temps réel
+- Powerful modulation system with live feedback / Système de modulation puissant avec retour visuel
+- Dual oscillators with cross-modulation and up to 15 unison voices each / Deux oscillateurs avec cross-modulation et jusqu’à 15 voix d’unisson chacun
+- Sub oscillator with shuffle waveshaping / Oscillateur sub avec waveshaping shuffle
+- Oscillator feedback and saturation / Feedback et saturation d’oscillateur
+- 21 waveforms, including advanced and hybrid shapes / 21 formes d’onde, y compris des formes avancées et hybrides
+- Blendable 12/24dB low/band/high pass and shelf filters / Filtres passe-bas, passe-haut, passe-bande et shelf 12/24dB
+- 2 monophonic and 1 polyphonic LFO / 2 LFO monophoniques et 1 polyphonique
+- Many modulation sources, including polyphonic aftertouch / Nombreuses sources de modulation, aftertouch polyphonique inclus
+- Simple arpeggiator / Arpégiateur simple
+- Effects: formant filter, stutter, delay, distortion, reverb / Effets : filtre formant, stutter, delay, distorsion, réverbe
 
 ---
+
+## Major Improvements – October 2025 / Améliorations majeures – Octobre 2025
+
+### Robust User Preferences Persistence / Persistance robuste des préférences utilisateur
+
+- All UI and audio settings (window size, UI zoom, audio/MIDI device, sample rate, buffer size, audio ports, etc.) are now saved and restored independently and robustly.
+- Preferences are never overwritten by defaults at startup; only the actually applied values are saved.
+- Immediate save on any change (window resize, device/port/sample rate/buffer change, etc.).
+- The system works for all device types, including ASIO on Windows.
+- Preferences are stored in a JSON file in the user’s application data directory.
+
+---
+
+### Audio Configuration Restoration & Warning / Restauration de la configuration audio & avertissement
+
+- At startup, the app restores the audio device, type, sample rate, buffer size, and ports as saved in the JSON preferences.
+- If the applied audio configuration differs from the saved preferences (e.g., device unavailable, ASIO fallback), a warning is shown to the user (in English) before any overwrite.
+- This ensures the user is always aware if their configuration could not be fully restored.
+
+---
+
+### Uninstall Option: Remove Preferences / Option de désinstallation : suppression des préférences
+
+- The Windows installer (Inno Setup) now asks, during uninstall, if you want to delete your configuration/preferences (JSON file and folder).
+- The message is shown in English or French, matching the installer language.
+- Preferences are only deleted if the user confirms.
+
+---
+
+### Multilingual User Experience / Expérience utilisateur multilingue
+
+- All new dialogs and uninstall options are available in both English and French.
+- The installer and all user-facing messages adapt to the selected language.
+
+---
+
+## Build Instructions / Instructions de compilation
+
+### Prerequisites / Prérequis
+- **Git** (for cloning the repository and submodules) / pour cloner le dépôt et les sous-modules
+- **CMake** (version 3.15 or higher) / version 3.15 ou supérieure
+- **C++17 compiler** (e.g., Visual Studio 2019/2022, GCC 7+, Clang 6+) / compilateur C++17
+- **PowerShell** (for Windows users running the build script) / pour le script Windows
+- **(Optional) ASIO SDK** (for professional low-latency audio on Windows) / optionnel pour l’audio pro sous Windows
+
+### Quick Start (EN)
+1. Open PowerShell in the project directory.
+2. Run:
+   ```powershell
+   .\build.ps1
+   ```
+   This script will initialize dependencies, run CMake, build all targets, and create an installer.
+
+### Démarrage rapide (FR)
+1. Ouvrez PowerShell dans le dossier du projet.
+2. Lancez :
+   ```powershell
+   .\build.ps1
+   ```
+   Ce script initialise les dépendances, lance CMake, compile tout et crée l’installateur.
+
+---
+
+## License & Credits / Licence & crédits
+
+Helm2025 is free software, released under the GNU GPLv3. It is based on the original Helm synthesizer by Matt Tytel, with major modifications and new features by Hans45 and contributors. See the source code and [COPYING](COPYING) for details.
+
+Helm2025 est un logiciel libre sous licence GNU GPLv3, basé sur Helm de Matt Tytel, avec de nombreuses modifications et nouveautés par Hans45 et contributeurs. Voir le code source et [COPYING](COPYING) pour plus de détails.
+
+---
+
+For more information, screenshots, and updates, visit the project repository.
+
+Pour plus d’informations, de captures d’écran et de mises à jour, consultez le dépôt du projet.
 
 ## Building Helm2025
 
