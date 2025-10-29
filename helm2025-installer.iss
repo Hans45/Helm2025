@@ -52,10 +52,10 @@ Name: "{commondocs}\Helm2025\Patches"; Flags: uninsneveruninstall
 Source: "build\Helm2025Standalone_artefacts\Release\helm2025.exe"; DestDir: "{app}"; Components: standalone; Flags: ignoreversion
 
 ; Plugin VST3
-Source: "build\Helm2025Plugin_artefacts\Release\VST3\helm2025.vst3\Contents\x86_64-win\helm2025.vst3"; DestDir: "{commoncf}\VST3\Helm2025.vst3"; Components: vst3; Flags: ignoreversion
+Source: "build\Helm2025Plugin_artefacts\Release\VST3\helm2025.vst3\Contents\x86_64-win\helm2025.vst3"; DestDir: "{commonpf}\VST3"; Components: vst3; Flags: ignoreversion
 
 ; Plugin LV2
-Source: "build\Helm2025Plugin_artefacts\Release\LV2\Helm2025.lv2\*"; DestDir: "{commoncf}\LV2\Helm2025.lv2"; Components: lv2; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "build\Helm2025Plugin_artefacts\Release\LV2\Helm2025.lv2\*"; DestDir: "{commonpf}\LV2"; Components: lv2; Flags: ignoreversion recursesubdirs createallsubdirs
 
 ; Documentation et licence
 Source: "README.md"; DestDir: "{commondocs}\Helm2025"; Flags: ignoreversion
