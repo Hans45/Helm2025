@@ -1,8 +1,27 @@
 
 
+
 # Helm2025
 
 ![Helm2025 Screenshot](images/ScreenShot.png)
+
+---
+
+## Table of Contents / Sommaire
+
+### English
+- [About This Project](#about-this-project)
+- [Key Features](#key-features)
+- [Major Improvements – October 2025](#major-improvements--october-2025)
+- [Build Instructions](#build-instructions)
+- [License & Credits](#license--credits)
+
+### Français
+- [À propos du projet](#à-propos-du-projet)
+- [Fonctionnalités principales](#fonctionnalités-principales)
+- [Améliorations majeures – Octobre 2025](#améliorations-majeures--octobre-2025)
+- [Instructions de compilation](#instructions-de-compilation)
+- [Licence & crédits](#licence--crédits)
 
 ---
 
