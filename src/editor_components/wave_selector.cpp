@@ -182,20 +182,28 @@ void WaveSelector::resized() {
 }
 
 void WaveSelector::mouseEvent(const juce::MouseEvent &e) {
-  float x = e.getPosition().getX();
-  float width = getWidth();
-  int current = getValue();
-  int max = getMaximum();
-  // Moitié gauche = précédent, moitié droite = suivant
-  if (x < width / 2.0f) {
-    setValue((current - 1 + (max + 1)) % (max + 1));
-  } else {
-    setValue((current + 1) % (max + 1));
+  // Sélection directe par clic : chaque cellule correspond à un type
+  if (e.mods.isLeftButtonDown()) {
+    int numTypes = static_cast<int>(getMaximum()) + 1;
+    if (numTypes > 0) {
+      float x = static_cast<float>(e.x);
+      float w = static_cast<float>(getWidth());
+      int index = static_cast<int>(x / w * numTypes);
+      if (index < 0) index = 0;
+      if (index >= numTypes) index = numTypes - 1;
+      setValue(index);
+      return;
+    }
   }
+  // Pas d'action pour les autres boutons
 }
 
 void WaveSelector::mouseDown(const juce::MouseEvent &e) {
   mouseEvent(e);
+}
+
+void WaveSelector::mouseDoubleClick(const juce::MouseEvent &e) {
+  // Désactivé : aucun effet sur double-clic
 }
 
 void WaveSelector::mouseDrag(const juce::MouseEvent &e) {

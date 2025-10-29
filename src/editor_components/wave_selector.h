@@ -28,9 +28,10 @@ class WaveSelector : public SynthSlider {
     void paint(Graphics& g) override;
     void resized() override;
 
-    void mouseEvent(const MouseEvent& e);
-    void mouseDown(const MouseEvent& e) override;
-    void mouseDrag(const MouseEvent& e) override;
+  void mouseEvent(const MouseEvent& e);
+  void mouseDown(const MouseEvent& e) override;
+  void mouseDrag(const MouseEvent& e) override;
+  void mouseDoubleClick(const MouseEvent& e) override;
 
   private:
     void resizeSin(float x, float y, float width, float height);

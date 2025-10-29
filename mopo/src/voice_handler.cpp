@@ -294,7 +294,20 @@ namespace mopo {
     MOPO_ASSERT(sample >= 0 && sample < buffer_size_);
     MOPO_ASSERT(channel >= 0 && channel < NUM_MIDI_CHANNELS);
 
-    Voice* voice = grabVoice();
+    // Chercher d'abord une voix relâchée correspondant à la note
+    Voice* voice = nullptr;
+    for (auto iter = active_voices_.begin(); iter != active_voices_.end(); ++iter) {
+      Voice* v = *iter;
+      if (v->key_state() == Voice::kReleased && v->state().note == note) {
+        voice = v;
+        active_voices_.erase(iter);
+        break;
+      }
+    }
+    // Sinon, comportement normal
+    if (!voice) {
+      voice = grabVoice();
+    }
     pressed_notes_.remove(note);
     pressed_notes_.push_front(note);
 

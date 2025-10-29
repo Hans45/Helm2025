@@ -34,6 +34,22 @@ void TextSelector::mouseDown(const juce::MouseEvent &e) {
     return;
   }
 
+  // Sélection directe par clic gauche
+  if (e.mods.isLeftButtonDown()) {
+    // Calculer l'index en fonction de la position X du clic
+    int numTypes = static_cast<int>(getMaximum()) + 1;
+    if (numTypes > 0) {
+      float x = static_cast<float>(e.x);
+      float w = static_cast<float>(getWidth());
+      int index = static_cast<int>(x / w * numTypes);
+      if (index < 0) index = 0;
+      if (index >= numTypes) index = numTypes - 1;
+      setValue(index);
+      return;
+    }
+  }
+
+  // Fallback : menu contextuel si pas de sélection directe
   const std::string* lookup = string_lookup_;
   if (long_lookup_)
     lookup = long_lookup_;
@@ -43,7 +59,6 @@ void TextSelector::mouseDown(const juce::MouseEvent &e) {
 
   for (int i = 0; i <= getMaximum(); ++i)
     m.addItem(i + 1, lookup[i]);
-
 
   m.showMenuAsync(PopupMenu::Options().withTargetComponent(this),
                   ModalCallbackFunction::forComponent(textSelectedCallback, this));

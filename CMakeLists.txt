@@ -286,6 +286,7 @@ target_compile_definitions(Helm2025Standalone PRIVATE
   JUCE_ALSA_MIDI_NAME="Helm2025")
 
 target_link_libraries(Helm2025Standalone PRIVATE Helm2025Plugin)
+target_link_libraries(Helm2025Standalone PRIVATE HelmData)
 
 # Unit tests
 if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/tests")

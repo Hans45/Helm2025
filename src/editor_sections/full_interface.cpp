@@ -103,7 +103,7 @@ FullInterface::FullInterface(mopo::control_map controls, mopo::output_map modula
   save_section_->toFront(false);
   delete_section_->toFront(false);
 
-  setOpaque(true);
+  setOpaque(false);
 }
 
 FullInterface::~FullInterface() {
@@ -131,7 +131,7 @@ void FullInterface::paintBackground(Graphics& g) {
   static const DropShadow component_shadow(Colour(0xcc000000), 5, Point<int>(0, 1));
   Image helm_small = ImageCache::getFromMemory(BinaryData::helm2025_icon_32_2x_png,
                                                BinaryData::helm2025_icon_32_2x_pngSize);
-  g.setColour(Colors::background);
+  g.setColour(Colours::transparentBlack);
   g.fillRect(getLocalBounds());
 
   shadow.drawForRectangle(g, arp_section_->getBounds());
