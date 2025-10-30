@@ -64,7 +64,7 @@ Helm2025 is a significantly modernized and independent fork of Matt Tytel's orig
 #### Prerequisites
 - **Git** (for cloning the repository and submodules)
 - **CMake** (version 3.15 or higher)
-- **C++17 compiler** (e.g., Visual Studio 2019/2022, GCC 7+, Clang 6+)
+- **C++20 compiler** (e.g., Visual Studio 2022, GCC 10+, Clang 12+)
 - **PowerShell** (for Windows users running the build script)
 - **(Optional) ASIO SDK** (for professional low-latency audio on Windows)
 
@@ -139,9 +139,20 @@ Helm2025 est un fork moderne et indépendant du synthétiseur Helm original de M
 #### Prérequis
 - **Git** (pour cloner le dépôt et les sous-modules)
 - **CMake** (version 3.15 ou supérieure)
-- **Compilateur C++17** (Visual Studio 2019/2022, GCC 7+, Clang 6+)
+- **Compilateur C++20** (Visual Studio 2022, GCC 10+, Clang 12+)
 - **PowerShell** (pour le script Windows)
 - **(Optionnel) SDK ASIO** (pour l’audio pro sous Windows)
+---
+
+## ⚡️ C++20 Migration / Migration C++20
+
+**English**
+
+Helm2025 now requires a C++20 compatible compiler and toolchain. All build scripts and CMake files have been updated. If you encounter build errors, please check your compiler version and update if necessary.
+
+**Français**
+
+Helm2025 nécessite désormais un compilateur et une chaîne d’outils compatibles C++20. Tous les scripts de build et fichiers CMake ont été mis à jour. En cas d’erreur de compilation, vérifiez la version de votre compilateur et mettez-le à jour si besoin.
 
 #### Démarrage rapide
 1. Ouvrez PowerShell dans le dossier du projet.
