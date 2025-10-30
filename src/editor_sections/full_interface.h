@@ -23,7 +23,6 @@
 #include "about_section.h"
 #include "arp_section.h"
 #include "bpm_section.h"
-#include "contribute_section.h"
 #include "global_tool_tip.h"
 #include "open_gl_modulation_manager.h"
 #include "oscilloscope.h"
@@ -38,6 +37,7 @@
 #include "update_check_section.h"
 
 class FullInterface : public SynthSection, public OpenGLRenderer {
+#include <JuceHeader.h>
   public:
     FullInterface(mopo::control_map controls, mopo::output_map modulation_sources,
                   mopo::output_map mono_modulations, mopo::output_map poly_modulations,
@@ -76,7 +76,7 @@ class FullInterface : public SynthSection, public OpenGLRenderer {
     std::unique_ptr<SynthSlider> arp_tempo_;
 
     std::unique_ptr<AboutSection> about_section_;
-    std::unique_ptr<ContributeSection> contribute_section_;
+
     std::unique_ptr<UpdateCheckSection> update_check_section_;
     std::unique_ptr<Component> standalone_settings_section_;
     std::unique_ptr<ImageButton> logo_button_;

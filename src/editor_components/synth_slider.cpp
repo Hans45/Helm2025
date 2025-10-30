@@ -21,7 +21,6 @@
 #include "helm2025_common.h"
 #include "synth_gui_interface.h"
 #include "text_look_and_feel.h"
-#include "value_entry_component.h"
 
 #define DEFAULT_POPUP_BUFFER 10
 
@@ -31,7 +30,6 @@ namespace {
     kArmMidiLearn,
     kClearMidiLearn,
     kDefaultValue,
-    kSetValue,
     kClearModulations,
     kModulationList
   };
@@ -94,7 +92,6 @@ void SynthSlider::mouseDown(const MouseEvent& e) {
     m.addItem(kArmMidiLearn, "Learn MIDI Assignment");
     if (parent->getSynth()->isMidiMapped(getName().toStdString()))
       m.addItem(kClearMidiLearn, "Clear MIDI Assignment");
-    m.addItem(kSetValue, "Set Value");
 
     connections = parent->getSynth()->getDestinationConnections(getName().toStdString());
 
@@ -324,15 +321,6 @@ void SynthSlider::handlePopupResult(int result) {
     for (SynthSlider::SliderListener* listener : slider_listeners_)
       listener->modulationsChanged(getName().toStdString());
   }
-  else if (result == kSetValue) {
-        auto* entry = new value_entry_component(juce::String(this->getValue()),[this](juce::String value) {
-            double newValue = value.getDoubleValue();
-            this->setValue(newValue, juce::sendNotification);
-        });
-
-        auto* box = new juce::CallOutBox(*entry, this->getScreenBounds(), nullptr);
-        entry->setCallOutBox(box);
-        box->enterModalState(true, nullptr, true);  }
 
   else if (result >= kModulationList) {
     int connection_index = result - kModulationList;

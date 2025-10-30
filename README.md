@@ -1,4 +1,3 @@
-
 # Helm2025
 
 ![Helm2025 Screenshot](images/ScreenShot.png)
@@ -73,6 +72,9 @@ Helm2025 is a significantly modernized and independent fork of Matt Tytel's orig
 - **Uninstall option: remove preferences:** The Windows installer (Inno Setup) now asks, during uninstall, if you want to delete your configuration/preferences (JSON file and folder). The message is shown in English or French, matching the installer language. Preferences are only deleted if the user confirms.
 - **Multilingual user experience:** All new dialogs and uninstall options are available in both English and French. The installer and all user-facing messages adapt to the selected language.
 - **Poly LFO S&H/S&G static visualization:** The Poly LFO S&H and S&G modes now always display a static, representative random curve in the UI, never blank or flat, and never crash.
+- **Donation window and ContributeSection removed:** All donation prompt logic and the ContributeSection component have been fully removed from the codebase.
+- **Obsolete component cleanup:** All files and references related to `value_entry_component` have been deleted from the code and build system.
+- **CMake cleanup:** All references to removed files (`contribute_section.cpp`, `value_entry_component.cpp`) have been deleted from CMakeLists.txt, preventing build errors.
 
 ---
 
@@ -179,7 +181,10 @@ Helm2025 est un fork moderne et indépendant du synthétiseur Helm original de M
 - **Restauration de la configuration audio & avertissement :** Au démarrage, l’application restaure le périphérique audio, le type, la fréquence, le buffer et les ports selon les préférences JSON. Si la configuration appliquée diffère (périphérique indisponible, fallback ASIO, etc.), un avertissement s’affiche (en anglais) avant tout écrasement.
 - **Option de désinstallation : suppression des préférences :** L’installateur Windows (Inno Setup) propose, lors de la désinstallation, de supprimer la configuration/préférences (fichier et dossier JSON). Le message s’affiche en anglais ou en français selon la langue de l’installateur. Suppression uniquement si l’utilisateur confirme.
 - **Expérience utilisateur multilingue :** Tous les nouveaux dialogues et options de désinstallation sont disponibles en anglais et en français. L’installateur et tous les messages utilisateur s’adaptent à la langue choisie.
-- **Visualisation statique Poly LFO S&H/S&G :** Les modes Poly LFO S&H et S&G affichent désormais toujours une courbe aléatoire représentative statique dans l’interface, jamais vide ou plate, et sans crash.
+- **Poly LFO S&H/S&G static visualization:** Les modes Poly LFO S&H et S&G affichent désormais toujours une courbe aléatoire représentative statique dans l’interface, jamais vide ou plate, et sans crash.
+- **Suppression de la fenêtre de don et du composant ContributeSection :** Toute la logique d’affichage de la fenêtre de don a été retirée. Le code source ne contient plus aucune référence à `ContributeSection` ou à la demande de contribution.
+- **Nettoyage des composants obsolètes :** Les fichiers et références liés à `value_entry_component` ont été supprimés du code et du système de build (CMake).
+- **Nettoyage CMake :** Toutes les références aux fichiers supprimés (`contribute_section.cpp`, `value_entry_component.cpp`) ont été retirées du CMakeLists.txt, évitant les erreurs de compilation.
 
 ---
 

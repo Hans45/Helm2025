@@ -88,7 +88,7 @@ FullInterface::FullInterface(mopo::control_map controls, mopo::output_map modula
 
 #if PAY_NAG
   if (LoadSave::shouldAskForPayment()) {
-    addAndMakeVisible((contribute_section_ = std::make_unique<ContributeSection>("contribute")).get());
+
   }
 #endif
 
@@ -98,8 +98,6 @@ FullInterface::FullInterface(mopo::control_map controls, mopo::output_map modula
   modulation_manager_->toFront(false);
   patch_browser_->toFront(false);
   about_section_->toFront(false);
-  if (contribute_section_)
-    contribute_section_->toFront(false);
   save_section_->toFront(false);
   delete_section_->toFront(false);
 
@@ -110,7 +108,6 @@ FullInterface::~FullInterface() {
   open_gl_context.detach();
   open_gl_context.setRenderer(nullptr);
   about_section_ = nullptr;
-  contribute_section_ = nullptr;
   update_check_section_ = nullptr;
   arp_section_ = nullptr;
   oscilloscope_ = nullptr;
@@ -183,8 +180,6 @@ void FullInterface::resized() {
   delete_section_->setSizeRatio(ratio);
   patch_browser_->setSizeRatio(ratio);
   about_section_->setSizeRatio(ratio);
-  if (contribute_section_)
-    contribute_section_->setSizeRatio(ratio);
   int padding = 8 * ratio;
   int top_height = TOP_HEIGHT * ratio;
 
@@ -230,8 +225,6 @@ void FullInterface::resized() {
                                   width, height - top_height - padding);
 
   about_section_->setBounds(getBounds());
-  if (contribute_section_)
-    contribute_section_->setBounds(getBounds());
   update_check_section_->setBounds(getBounds());
   save_section_->setBounds(getBounds());
   delete_section_->setBounds(getBounds());

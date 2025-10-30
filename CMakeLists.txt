@@ -137,14 +137,12 @@ target_sources(Helm2025Plugin PRIVATE
   src/editor_components/tempo_selector.cpp
   src/editor_components/text_selector.cpp
   src/editor_components/text_slider.cpp
-  src/editor_components/value_entry_component.cpp
   src/editor_components/wave_selector.cpp
   src/editor_components/wave_viewer.cpp
   src/editor_components/xy_pad.cpp
   src/editor_sections/about_section.cpp
   src/editor_sections/arp_section.cpp
   src/editor_sections/bpm_section.cpp
-  src/editor_sections/contribute_section.cpp
   src/editor_sections/delay_section.cpp
   src/editor_sections/delete_section.cpp
   src/editor_sections/distortion_section.cpp
