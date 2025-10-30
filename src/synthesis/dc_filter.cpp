@@ -29,8 +29,8 @@ namespace mopo {
     const mopo_float* source = input(kAudio)->source->buffer;
     mopo_float* dest = output()->buffer;
     int i = 0;
-    if (inputs_->at(kReset)->source->triggered &&
-        inputs_->at(kReset)->source->trigger_value == kVoiceReset) {
+  if (inputs_->at(kReset)->source->triggered &&
+    static_cast<int>(inputs_->at(kReset)->source->trigger_value) == kVoiceReset) {
       int trigger_offset = inputs_->at(kReset)->source->trigger_offset;
       for (; i < trigger_offset; ++i)
         tick(i, dest, source);
