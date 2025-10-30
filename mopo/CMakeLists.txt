@@ -44,7 +44,7 @@ add_library(mopo STATIC
 
 target_include_directories(mopo PUBLIC src)
 
-target_compile_features(mopo PUBLIC cxx_std_17)
+target_compile_features(mopo PUBLIC cxx_std_20)
 
 set_target_properties(mopo PROPERTIES
   CXX_EXTENSIONS OFF

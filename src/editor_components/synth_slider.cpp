@@ -299,27 +299,7 @@ void SynthSlider::notifyGuis() {
     listener->guiChanged(this);
 }
 
-void SynthSlider::showValueEntryBox()
-{
-    auto* entry = new value_entry_component(juce::String(this->getValue()),[this](juce::String valueText) {
-        double value = valueText.getDoubleValue();
-
-        if (value >= this->getMinimum() && value <= this->getMaximum())
-            this->setValue(value, juce::sendNotification);
-        else
-            juce::AlertWindow::showMessageBoxAsync(
-                juce::AlertWindow::WarningIcon,
-                "Invalid value",
-                "Please enter a number between " +
-                juce::String(this->getMinimum()) + " and " +
-                juce::String(this->getMaximum()) + "."
-            );
-    });
-
-    auto* box = new juce::CallOutBox(*entry, this->getScreenBounds(), nullptr);
-    entry->setCallOutBox(box);
-    box->enterModalState(true, nullptr, true);
-}
+// Saisie directe désactivée : showValueEntryBox supprimée
 
 void SynthSlider::handlePopupResult(int result) {
   SynthGuiInterface* parent = findParentComponentOfClass<SynthGuiInterface>();
@@ -364,10 +344,7 @@ void SynthSlider::handlePopupResult(int result) {
   }
 }
 
-void SynthSlider::mouseDoubleClick(const juce::MouseEvent& event)
-{
-    showValueEntryBox();
-}
+// Saisie directe désactivée : mouseDoubleClick supprimée
 
 void SynthSlider::notifyTooltip() {
   if (parent_ == nullptr)
