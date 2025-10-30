@@ -145,6 +145,21 @@ Helm2025 est un fork moderne et indépendant du synthétiseur Helm original de M
 ---
 
 ## ⚡️ C++20 Migration / Migration C++20
+### Migration steps / Étapes de migration
+
+**English**
+
+1. All CMake and build scripts updated to require C++20 for the main project and all internal modules (including mopo, concurrentqueue, tests).
+2. All legacy C++11/14/17 flags replaced by C++20 equivalents in internal CMakeLists.txt.
+3. Manual and automated tests performed to ensure full compatibility and stability.
+4. Documentation and prerequisites updated accordingly.
+
+**Français**
+
+1. Tous les scripts CMake et de build ont été mis à jour pour exiger C++20 pour le projet principal et tous les modules internes (y compris mopo, concurrentqueue, tests).
+2. Tous les anciens flags C++11/14/17 ont été remplacés par leurs équivalents C++20 dans les CMakeLists.txt internes.
+3. Des tests manuels et automatisés ont été réalisés pour garantir la compatibilité et la stabilité.
+4. La documentation et les prérequis ont été mis à jour en conséquence.
 
 **English**
 

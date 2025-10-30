@@ -7,6 +7,6 @@ add_library(concurrentqueue INTERFACE)
 
 target_include_directories(concurrentqueue INTERFACE .)
 
-target_compile_features(concurrentqueue INTERFACE cxx_std_11)
+target_compile_features(concurrentqueue INTERFACE cxx_std_20)
 
 set_target_properties(concurrentqueue PROPERTIES CXX_EXTENSIONS OFF)
