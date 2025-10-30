@@ -44,13 +44,14 @@ namespace mopo {
     const mopo_float* audio_buffer = input(kAudio)->source->buffer;
     mopo_float* dest = output()->buffer;
 
-    if (input(kOn)->at(0) == 0.0) {
+    // Cast explicite pour éviter la comparaison enum <-> float
+    if (static_cast<int>(input(kOn)->at(0)) == 0) {
       processAllPass(audio_buffer, dest);
       return;
     }
 
-    Styles style = static_cast<Styles>(static_cast<int>(input(kStyle)->at(0)));
-    bool db24 = style == k24dB;
+  Styles style = static_cast<Styles>(static_cast<int>(input(kStyle)->at(0)));
+  bool db24 = (style == k24dB);
 
     mopo_float cutoff = utils::clamp(input(kCutoff)->at(0), MIN_CUTTOFF, sample_rate_);
     mopo_float resonance = utils::clamp(input(kResonance)->at(0),
@@ -84,7 +85,7 @@ namespace mopo {
     mopo_float delta_drive = (target_drive_ - drive_) / buffer_size_;
 
     if (input(kReset)->source->triggered &&
-        input(kReset)->source->trigger_value == kVoiceReset) {
+        static_cast<int>(input(kReset)->source->trigger_value) == static_cast<int>(kVoiceReset)) {
       int trigger_offset = input(kReset)->source->trigger_offset;
       int i = 0;
       for (; i < trigger_offset; ++i) {
@@ -119,7 +120,7 @@ namespace mopo {
     mopo_float delta_drive = (target_drive_ - drive_) / buffer_size_;
 
     if (inputs_->at(kReset)->source->triggered &&
-        inputs_->at(kReset)->source->trigger_value == kVoiceReset) {
+        static_cast<int>(inputs_->at(kReset)->source->trigger_value) == static_cast<int>(kVoiceReset)) {
       int trigger_offset = inputs_->at(kReset)->source->trigger_offset;
       int i = 0;
       for (; i < trigger_offset; ++i) {

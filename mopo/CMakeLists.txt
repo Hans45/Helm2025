@@ -5,6 +5,7 @@ project(MOPO
   DESCRIPTION "A modular and polyphonic audio synthesis library, by Matt Tytel, updated using AI by Marc Scheffer (Hans45)."
   LANGUAGES CXX)
 
+
 add_library(mopo STATIC
   src/alias.cpp
   src/arpeggiator.cpp
@@ -44,8 +45,13 @@ add_library(mopo STATIC
 
 target_include_directories(mopo PUBLIC src)
 
-target_compile_features(mopo PUBLIC cxx_std_17)
+target_compile_features(mopo PUBLIC cxx_std_20)
 
 set_target_properties(mopo PROPERTIES
   CXX_EXTENSIONS OFF
   CXX_STANDARD_REQUIRED ON)
+
+# Correction MSVC : forcer la macro __cplusplus correcte pour la détection du standard
+if (MSVC)
+  target_compile_options(mopo PRIVATE /Zc:__cplusplus)
+endif()

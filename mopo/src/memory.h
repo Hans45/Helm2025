@@ -1,3 +1,20 @@
+
+#pragma once
+#ifndef MEMORY_H
+#define MEMORY_H
+
+#include <span>
+#include <algorithm>
+#include <cmath>
+#include "common.h"
+#include "utils.h"
+
+#if !defined(_MSC_VER)
+#  if __cplusplus < 202002L
+#    error "Helm2025 now requires C++20 for std::span support. Please update your compiler and ensure C++20 is enabled."
+#  endif
+#endif
+
 /* Copyright 2013-2017 Matt Tytel
  *
  * mopo is free software: you can redistribute it and/or modify
@@ -14,17 +31,6 @@
  * along with mopo.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#pragma once
-#ifndef MEMORY_H
-#define MEMORY_H
-
-#include "common.h"
-
-#include <algorithm>
-#include <cmath>
-
-#include "utils.h"
-
 namespace mopo {
 
   // A processor utility to store a stream of data for later lookup.
@@ -39,17 +45,24 @@ namespace mopo {
         memory_[offset_] = sample;
       }
 
-      void pushBlock(const mopo_float* samples, int num) {
+
+      void pushBlock(std::span<const mopo_float> samples) {
+        int num = static_cast<int>(samples.size());
         int next_offset = (offset_ + num) & bitmask_;
         if (next_offset < offset_) {
           int block1 = num - next_offset - 1;
-          memcpy(memory_ + offset_ + 1, samples, sizeof(mopo_float) * block1);
-          memcpy(memory_, samples + block1, sizeof(mopo_float) * next_offset);
+          std::copy(samples.begin(), samples.begin() + block1, memory_ + offset_ + 1);
+          std::copy(samples.begin() + block1, samples.end(), memory_);
         }
-        else
-          memcpy(memory_ + offset_ + 1, samples, sizeof(mopo_float) * num);
-
+        else {
+          std::copy(samples.begin(), samples.end(), memory_ + offset_ + 1);
+        }
         offset_ = next_offset;
+      }
+
+      // Surcharge rétrocompatible pour les anciens appels (pointeur + taille)
+      void pushBlock(const mopo_float* samples, int num) {
+        pushBlock(std::span<const mopo_float>(samples, num));
       }
 
       void pushZero(int num) {
@@ -85,12 +98,15 @@ namespace mopo {
 
       void setOffset(int offset) { offset_ = offset; }
 
-      const mopo_float* getPointer(int past) const {
-        return memory_ + ((offset_ - past) & bitmask_);
+
+      std::span<const mopo_float> getPointer(int past, int count) const {
+        // Attention : ne gère pas le wrap-around, pour usage simple
+        return std::span<const mopo_float>(memory_ + ((offset_ - past) & bitmask_), count);
       }
 
-      const mopo_float* getBuffer() const {
-        return memory_;
+
+      std::span<const mopo_float> getBuffer() const {
+        return std::span<const mopo_float>(memory_, size_);
       }
 
       int getSize() const {

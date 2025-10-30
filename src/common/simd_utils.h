@@ -1,3 +1,4 @@
+#include <span>
 #pragma once
 
 #include <immintrin.h>
@@ -121,6 +122,9 @@ public:
     [[nodiscard]] T* data() noexcept { return data_; }
     [[nodiscard]] const T* data() const noexcept { return data_; }
     [[nodiscard]] size_t size() const noexcept { return size_; }
+
+    [[nodiscard]] std::span<T> span() noexcept { return std::span<T>(data_, size_); }
+    [[nodiscard]] std::span<const T> span() const noexcept { return std::span<const T>(data_, size_); }
 
 private:
     size_t size_;

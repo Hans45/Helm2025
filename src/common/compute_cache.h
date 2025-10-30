@@ -78,20 +78,20 @@ public:
     static constexpr size_t TABLE_SIZE = 2048;
     using WaveTable = std::array<T, TABLE_SIZE>;
 
-    [[nodiscard]] const WaveTable& getSineTable() const noexcept {
-        return sine_table_;
+    [[nodiscard]] std::span<const T> getSineTable() const noexcept {
+        return std::span<const T>(sine_table_.data(), sine_table_.size());
     }
 
-    [[nodiscard]] const WaveTable& getSawTable() const noexcept {
-        return saw_table_;
+    [[nodiscard]] std::span<const T> getSawTable() const noexcept {
+        return std::span<const T>(saw_table_.data(), saw_table_.size());
     }
 
-    [[nodiscard]] const WaveTable& getSquareTable() const noexcept {
-        return square_table_;
+    [[nodiscard]] std::span<const T> getSquareTable() const noexcept {
+        return std::span<const T>(square_table_.data(), square_table_.size());
     }
 
-    [[nodiscard]] const WaveTable& getTriangleTable() const noexcept {
-        return triangle_table_;
+    [[nodiscard]] std::span<const T> getTriangleTable() const noexcept {
+        return std::span<const T>(triangle_table_.data(), triangle_table_.size());
     }
 
 private:

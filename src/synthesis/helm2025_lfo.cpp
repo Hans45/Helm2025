@@ -20,6 +20,8 @@
 #include "utils.h"
 #include "synced_random.h"
 
+
+#include <span>
 #include <cmath>
 
 namespace mopo {
@@ -62,11 +64,14 @@ namespace mopo {
     for (int i = 0; i < samples_to_process_; ++i) {
       // Reset if triggered at this sample
       if (i == reset_offset) {
-        offset_ = 0.0;
-        // Nouveau cycle : seed unique basé sur le compteur de cycles
-        cycle_seed_ = static_cast<uint32_t>(cycle_count_++);
-        randoms_ = mopo::generateSyncedRandoms(cycle_seed_, cycle_resolution);
-        random_index_ = 0;
+  offset_ = 0.0;
+  // Nouveau cycle : seed unique basé sur le compteur de cycles
+  cycle_seed_ = static_cast<uint32_t>(cycle_count_++);
+  randoms_ = mopo::generateSyncedRandoms(cycle_seed_, cycle_resolution);
+  random_index_ = 0;
+#if HAS_STD_SPAN
+  std::span<float> randoms_span(randoms_);
+#endif
       }
 
       mopo_float offset_integral;
@@ -86,25 +91,41 @@ namespace mopo {
 
       // Pour S&H/S&G/WhiteNoise, utiliser la séquence synchronisée
       if (waveform == Wave::kWhiteNoise) {
-        // White noise : nouvelle valeur à chaque sample
-        if (randoms_.empty()) randoms_ = mopo::generateSyncedRandoms(cycle_seed_, cycle_resolution);
-        value_buffer[i] = randoms_[(random_index_++) % cycle_resolution];
+  // White noise : nouvelle valeur à chaque sample
+  if (randoms_.empty()) randoms_ = mopo::generateSyncedRandoms(cycle_seed_, cycle_resolution);
+#if HAS_STD_SPAN
+  std::span<float> randoms_span(randoms_);
+  value_buffer[i] = randoms_span[(random_index_++) % cycle_resolution];
+#else
+  value_buffer[i] = randoms_[(random_index_++) % cycle_resolution];
+#endif
       }
       else if (waveform == Wave::kSampleAndHold) {
-        // S&H : valeur constante sur chaque step
-        int step = static_cast<int>(phased_offset * cycle_resolution);
-        if (randoms_.empty()) randoms_ = mopo::generateSyncedRandoms(cycle_seed_, cycle_resolution);
-        value_buffer[i] = randoms_[std::min(step, cycle_resolution - 1)];
+  // S&H : valeur constante sur chaque step
+  int step = static_cast<int>(phased_offset * cycle_resolution);
+  if (randoms_.empty()) randoms_ = mopo::generateSyncedRandoms(cycle_seed_, cycle_resolution);
+#if HAS_STD_SPAN
+  std::span<float> randoms_span(randoms_);
+  value_buffer[i] = randoms_span[std::min(step, cycle_resolution - 1)];
+#else
+  value_buffer[i] = randoms_[std::min(step, cycle_resolution - 1)];
+#endif
       }
       else if (waveform == Wave::kSampleAndGlide) {
-        // S&G : interpolation entre deux randoms synchronisés
-        float phasef = phased_offset * (cycle_resolution - 1);
-        int index = static_cast<int>(phasef);
-        float t = phasef - index;
-        if (randoms_.empty()) randoms_ = mopo::generateSyncedRandoms(cycle_seed_, cycle_resolution);
-        float r1 = randoms_[std::min(index, cycle_resolution - 1)];
-        float r2 = randoms_[std::min(index + 1, cycle_resolution - 1)];
-        value_buffer[i] = utils::interpolate(r1, r2, t);
+  // S&G : interpolation entre deux randoms synchronisés
+  float phasef = phased_offset * (cycle_resolution - 1);
+  int index = static_cast<int>(phasef);
+  float t = phasef - index;
+  if (randoms_.empty()) randoms_ = mopo::generateSyncedRandoms(cycle_seed_, cycle_resolution);
+#if HAS_STD_SPAN
+  std::span<float> randoms_span(randoms_);
+  float r1 = randoms_span[std::min(index, cycle_resolution - 1)];
+  float r2 = randoms_span[std::min(index + 1, cycle_resolution - 1)];
+#else
+  float r1 = randoms_[std::min(index, cycle_resolution - 1)];
+  float r2 = randoms_[std::min(index + 1, cycle_resolution - 1)];
+#endif
+  value_buffer[i] = utils::interpolate(r1, r2, t);
       }
       else {
         value_buffer[i] = Wave::wave(waveform, phased_offset);

@@ -24,6 +24,8 @@ namespace mopo {
                              offset_(0.0), waveform_(Wave::kSin) { }
 
   void Oscillator::preprocess() {
+  // Cast explicite pour éviter la comparaison enum <-> float
+    // Cast explicite pour éviter la comparaison enum <-> float
     int int_wave = static_cast<int>(input(kWaveform)->at(0) + 0.5);
     waveform_ = static_cast<Wave::Type>(int_wave);
   }
@@ -36,7 +38,7 @@ namespace mopo {
 
     int i = 0;
     if (input(kReset)->source->triggered &&
-        input(kReset)->source->trigger_value == kVoiceReset) {
+        static_cast<int>(input(kReset)->source->trigger_value) == static_cast<int>(kVoiceReset)) {
       int trigger_offset = input(kReset)->source->trigger_offset;
       for (; i < trigger_offset; ++i)
         tick(i);

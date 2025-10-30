@@ -54,6 +54,8 @@ namespace mopo {
   void BiquadFilter::process() {
     MOPO_ASSERT(inputMatchesBufferSize(kAudio));
 
+  // Cast explicite pour éviter la comparaison enum <-> float
+    // Cast explicite pour éviter la comparaison enum <-> float
     current_type_ = static_cast<Type>(static_cast<int>(input(kType)->at(0)));
     mopo_float cutoff = utils::clamp(input(kCutoff)->at(0), MIN_CUTTOFF, sample_rate_);
     mopo_float resonance = utils::clamp(input(kResonance)->at(0),
@@ -69,7 +71,7 @@ namespace mopo {
     const mopo_float* audio_buffer = input(kAudio)->source->buffer;
     mopo_float* dest = output()->buffer;
     if (input(kReset)->source->triggered &&
-        input(kReset)->source->trigger_value == kVoiceReset) {
+        static_cast<int>(input(kReset)->source->trigger_value) == static_cast<int>(kVoiceReset)) {
       int trigger_offset = input(kReset)->source->trigger_offset;
       int i = 0;
       for (; i < trigger_offset; ++i) {

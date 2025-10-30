@@ -78,7 +78,7 @@ namespace mopo {
 
     if (input(kTrigger)->source->triggered) {
       mopo_float trigger_value = input(kTrigger)->source->trigger_value;
-      if (trigger_value == trigger_filter_) {
+      if (std::abs(trigger_value - trigger_filter_) < 1e-6) {
         output()->trigger(trigger_value,
                           input(kTrigger)->source->trigger_offset);
       }
@@ -88,7 +88,7 @@ namespace mopo {
   void TriggerEquals::process() {
     output()->clearTrigger();
 
-    if (input(kTrigger)->source->triggered && input(kCondition)->at(0) == value_) {
+    if (input(kTrigger)->source->triggered && std::abs(input(kCondition)->at(0) - value_) < 1e-6) {
       mopo_float trigger_value = input(kTrigger)->source->trigger_value;
       output()->trigger(trigger_value,
                         input(kTrigger)->source->trigger_offset);
@@ -114,8 +114,9 @@ namespace mopo {
     if (!input(kTrigger)->source->triggered)
       return;
 
-    if (input(kTrigger)->source->trigger_value == kVoiceOn &&
-        last_value_ == kVoiceOn && input(kLegato)->at(0)) {
+  // Cast explicite pour éviter la comparaison enum <-> float
+  if (static_cast<int>(input(kTrigger)->source->trigger_value) == static_cast<int>(kVoiceOn) &&
+    static_cast<int>(last_value_) == static_cast<int>(kVoiceOn) && input(kLegato)->at(0)) {
       output(kRemain)->trigger(
           input(kTrigger)->source->trigger_value,
           input(kTrigger)->source->trigger_offset);

@@ -29,15 +29,16 @@ namespace mopo {
       state_(kReleasing), current_value_(0.0) { }
 
   void Envelope::trigger(mopo_float event) {
-    if (event == kVoiceOn || event == kVoiceReset) {
+  // Comparaison robuste : cast explicite
+  if (static_cast<int>(event) == static_cast<int>(kVoiceOn) || static_cast<int>(event) == static_cast<int>(kVoiceReset)) {
       state_ = kAttacking;
       current_value_ = 0.0;
 
       output(kFinished)->trigger(kVoiceReset);
     }
-    else if (event == kVoiceOff)
+    else if (static_cast<int>(event) == static_cast<int>(kVoiceOff))
       state_ = kReleasing;
-    else if (event == kVoiceKill) {
+    else if (static_cast<int>(event) == static_cast<int>(kVoiceKill)) {
       state_ = kKilling;
     }
   }
@@ -52,7 +53,7 @@ namespace mopo {
 
     int samples = 0;
 
-    if (state_ == kAttacking) {
+  if (state_ == kAttacking) {
       mopo_float attack = utils::max(input(kAttack)->at(0), 0.000000001);
       mopo_float attack_increment = 1.0 / (sample_rate_ * attack);
       samples = (ATTACK_DONE - current_value_) / attack_increment;

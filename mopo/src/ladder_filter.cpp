@@ -40,8 +40,9 @@ namespace mopo {
 
     mopo_float g = g_;
     computeCoefficients(cutoff);
-    mopo_float resonance = utils::clamp(resonance_multiple_ * input(kResonance)->at(0) / 4.0,
-                                        MIN_RESONANCE, MAX_RESONANCE);
+  // Cast explicite pour éviter la comparaison enum <-> float
+  mopo_float resonance = utils::clamp(resonance_multiple_ * static_cast<mopo_float>(input(kResonance)->at(0)) / 4.0,
+                    MIN_RESONANCE, MAX_RESONANCE);
     mopo_float drive = -input(kDrive)->at(0);
     mopo_float delta_drive = (drive - current_drive_) / buffer_size_;
 
@@ -53,7 +54,7 @@ namespace mopo {
     mopo_float* dest = output()->buffer;
     double two_sr = sample_rate_ * 2.0;
     if (input(kReset)->source->triggered &&
-        input(kReset)->source->trigger_value == kVoiceReset) {
+        static_cast<int>(input(kReset)->source->trigger_value) == static_cast<int>(kVoiceReset)) {
 
       int trigger_offset = input(kReset)->source->trigger_offset;
       int i = 0;

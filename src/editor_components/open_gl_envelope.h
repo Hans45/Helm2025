@@ -87,8 +87,8 @@ class OpenGLEnvelope : public OpenGLComponent, public SynthSlider::SliderListene
     OpenGLTexture position_texture_;
     std::unique_ptr<OpenGLShaderProgram::Uniform> texture_;
 
-    float* position_vertices_;
-    int* position_triangles_;
+  std::array<float, 16> position_vertices_{};
+  std::array<int, 6> position_triangles_{};
     GLuint vertex_buffer_;
     GLuint triangle_buffer_;
 

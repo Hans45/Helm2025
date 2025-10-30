@@ -57,23 +57,16 @@ OpenGLEnvelope::OpenGLEnvelope() {
   envelope_amp_ = nullptr;
   envelope_phase_ = nullptr;
 
-  position_vertices_ = new float[16] {
-    0.0f, 1.0f, 0.0f, 1.0f,
-    0.0f, -1.0f, 0.0f, 0.0f,
-    0.1f, -1.0f, 1.0f, 0.0f,
-    0.1f, 1.0f, 1.0f, 1.0f
-  };
+  position_vertices_ = { 0.0f, 1.0f, 0.0f, 1.0f,
+                         0.0f, -1.0f, 0.0f, 0.0f,
+                         0.1f, -1.0f, 1.0f, 0.0f,
+                         0.1f, 1.0f, 1.0f, 1.0f };
 
-  position_triangles_ = new int[6] {
-    0, 1, 2,
-    2, 3, 0
-  };
+  position_triangles_ = { 0, 1, 2, 2, 3, 0 };
 }
 
-OpenGLEnvelope::~OpenGLEnvelope() {
-  delete[] position_vertices_;
-  delete[] position_triangles_;
-}
+
+OpenGLEnvelope::~OpenGLEnvelope() = default;
 
 void OpenGLEnvelope::paintBackground() {
   static const DropShadow shadow(Colour(0xbb000000), 5, Point<int>(0, 0));
@@ -397,14 +390,14 @@ void OpenGLEnvelope::init(OpenGLContext& open_gl_context) {
 
   GLsizeiptr vert_size = static_cast<GLsizeiptr>(static_cast<size_t>(16 * sizeof(float)));
   open_gl_context.extensions.glBufferData(GL_ARRAY_BUFFER, vert_size,
-                                          position_vertices_, GL_STATIC_DRAW);
+                                          position_vertices_.data(), GL_STATIC_DRAW);
 
   open_gl_context.extensions.glGenBuffers(1, &triangle_buffer_);
   open_gl_context.extensions.glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, triangle_buffer_);
 
   GLsizeiptr tri_size = static_cast<GLsizeiptr>(static_cast<size_t>(6 * sizeof(float)));
   open_gl_context.extensions.glBufferData(GL_ELEMENT_ARRAY_BUFFER, tri_size,
-                                          position_triangles_, GL_STATIC_DRAW);
+                                          position_triangles_.data(), GL_STATIC_DRAW);
 
   background_.init(open_gl_context);
 }
@@ -445,7 +438,7 @@ void OpenGLEnvelope::drawPosition(OpenGLContext& open_gl_context) {
   open_gl_context.extensions.glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer_);
   GLsizeiptr vert_size = static_cast<GLsizeiptr>(static_cast<size_t>(16 * sizeof(float)));
   open_gl_context.extensions.glBufferData(GL_ARRAY_BUFFER, vert_size,
-                                          position_vertices_, GL_STATIC_DRAW);
+                                          position_vertices_.data(), GL_STATIC_DRAW);
 
   open_gl_context.extensions.glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, triangle_buffer_);
   position_texture_.bind();

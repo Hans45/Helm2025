@@ -1,3 +1,7 @@
+# Correction MSVC : forcer la macro __cplusplus correcte pour la détection du standard
+if (MSVC)
+  add_compile_options(/Zc:__cplusplus)
+endif()
 cmake_minimum_required(VERSION 3.15)
 
 # Set a default build type if none was specified
@@ -18,9 +22,16 @@ project(Helm2025
   LANGUAGES CXX)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-set(CMAKE_CXX_STANDARD 17)
+
+# Forcer C++20 globalement
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
+
+# Vérification explicite de la version du compilateur
+if (CMAKE_CXX_STANDARD LESS 20)
+  message(FATAL_ERROR "Helm2025 now requires C++20. Please use a compiler and toolchain that support C++20.")
+endif()
 
 # Enable SIMD optimizations
 include(CheckCXXCompilerFlag)
