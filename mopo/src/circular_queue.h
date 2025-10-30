@@ -25,8 +25,12 @@
 
 namespace mopo {
 
-  template <class T>
+  #include <type_traits>
+  template <typename T>
   class CircularQueue {
+  public:
+    static_assert(std::is_move_constructible_v<T> && std::is_move_assignable_v<T>,
+                  "CircularQueue requires movable types (move constructible and move assignable)");
     public:
 
       class iterator {

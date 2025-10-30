@@ -1,3 +1,4 @@
+
 # Helm2025
 
 ![Helm2025 Screenshot](images/ScreenShot.png)
@@ -6,23 +7,37 @@
 
 ## Table of Contents / Sommaire
 
-### English
-- [About This Project](#about-this-project)
-- [Key Features](#key-features)
-- [Major Improvements – October 2025](#major-improvements--october-2025)
-- [Build Instructions](#build-instructions)
-- [License & Credits](#license--credits)
-
-### Français
-- [À propos du projet](#à-propos-du-projet)
-- [Fonctionnalités principales](#fonctionnalités-principales)
-- [Améliorations majeures – Octobre 2025](#améliorations-majeures--octobre-2025)
-- [Instructions de compilation](#instructions-de-compilation)
-- [Licence & crédits](#licence--crédits)
+- [English](#english)
+   - [About This Project](#about-this-project)
+   - [Key Features](#key-features)
+   - [Major Improvements – October 2025](#major-improvements--october-2025)
+   - [C++20 Template Safety](#c20-template-safety)
+   - [Modern C++20: std::span migration](#modern-c20-stdspan-migration-october-2025)
+   - [Build Instructions](#build-instructions)
+   - [License & Credits](#license--credits)
+- [Français](#français)
+   - [À propos du projet](#à-propos-du-projet)
+   - [Fonctionnalités principales](#fonctionnalités-principales)
+   - [Améliorations majeures – Octobre 2025](#améliorations-majeures--octobre-2025)
+   - [Sécurisation des templates avec C++20](#sécurisation-des-templates-avec-c20-fin-octobre-2025)
+   - [Modern C++20: std::span migration](#modern-c20-stdspan-migration-octobre-2025)
+   - [Instructions de compilation](#instructions-de-compilation)
+   - [Licence & crédits](#licence--crédits)
 
 ---
 
+
 ## English
+### C++20 Template Safety
+
+As part of the C++20 modernization, all critical templates (CircularQueue, ComputeCache, ObjectPool, MidiEventPool, etc.) have been secured using C++20 concepts and compile-time checks:
+
+- **C++20 Concepts:** Where possible, standard concepts (`std::copyable`, `std::floating_point`, etc.) are used to restrict template types, preventing subtle usage errors.
+- **MSVC Compatibility:** Some concepts (`requires` in the template declaration) are not yet fully portable with MSVC. For cross-platform compatibility, templates use classic declarations, and a `static_assert` is added inside classes to enforce constraints (e.g., movability, constructibility, etc.).
+- **Concrete Example:** In `CircularQueue`, a `static_assert` ensures that type T is move-constructible and move-assignable; compilation fails immediately if not, preventing runtime bugs or undefined behavior.
+- **Benefits:** This approach combines the robustness of C++20 concepts with portability, securing all critical DSP and event management modules.
+
+This step finalizes the migration to modern, safe, and maintainable code, while ensuring optimal support on all development environments (MSVC, GCC, Clang).
 
 ### About This Project
 
@@ -118,7 +133,18 @@ For more information, screenshots, and updates, visit the project repository.
 
 ---
 
+
 ## Français
+### Sécurisation des templates avec C++20 (fin octobre 2025)
+
+Dans le cadre de la modernisation C++20, les principaux templates critiques (CircularQueue, ComputeCache, ObjectPool, MidiEventPool, etc.) ont été sécurisés à l’aide des concepts C++20 et de vérifications à la compilation :
+
+- **Concepts C++20** : là où possible, des concepts standards (`std::copyable`, `std::floating_point`, etc.) ont été utilisés pour restreindre les types acceptés par les templates, évitant ainsi des erreurs subtiles à l’utilisation.
+- **Compatibilité MSVC** : certains concepts (`requires` dans la déclaration du template) ne sont pas encore supportés de façon portable par MSVC. Pour garantir la compatibilité multiplateforme, la déclaration des templates a été conservée classique, et un `static_assert` a été ajouté à l’intérieur des classes pour vérifier les contraintes (ex : mobilité, constructibilité, etc.).
+- **Exemple concret** : dans `CircularQueue`, un `static_assert` garantit que le type T est move-constructible et move-assignable ; la compilation échoue immédiatement si ce n’est pas le cas, évitant des bugs d’exécution ou des comportements indéfinis.
+- **Bénéfices** : cette approche combine la robustesse des concepts C++20 avec la portabilité, et sécurise l’ensemble des modules critiques du DSP et de la gestion d’événements.
+
+Cette étape finalise la migration vers un code moderne, sûr et maintenable, tout en assurant un support optimal sur tous les environnements de développement (MSVC, GCC, Clang).
 
 ### À propos du projet
 

@@ -96,7 +96,10 @@ private:
 };
 
 // Pool d'allocation alignée pour les tableaux audio
+// C++20 concept pour garantir un type flottant
+#include <concepts>
 template<typename T, size_t Alignment = 32>
+requires std::floating_point<T>
 class AlignedAudioBuffer {
 public:
     explicit AlignedAudioBuffer(size_t size) 

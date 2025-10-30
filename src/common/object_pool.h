@@ -7,7 +7,10 @@
 
 namespace mopo {
 
+// C++20 concepts pour sécuriser l'utilisation de Pool
+#include <concepts>
 template<typename T, size_t PoolSize = 1024>
+requires std::default_initializable<T>
 class ObjectPool {
 public:
     template<typename... Args>
@@ -48,6 +51,7 @@ private:
 
 // Pool spécialisé pour les événements MIDI
 template<typename T>
+requires std::default_initializable<T>
 class MidiEventPool {
 public:
     static MidiEventPool& instance() {

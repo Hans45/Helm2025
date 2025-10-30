@@ -9,7 +9,10 @@
 
 namespace mopo {
 
+// C++20 concepts pour sécuriser les types de clé et valeur
+#include <concepts>
 template<typename Key, typename Value, size_t CacheSize = 1024>
+requires std::copyable<Key> && std::copyable<Value>
 class ComputeCache {
 public:
     using ComputeFunction = std::function<Value(const Key&)>;
@@ -73,6 +76,7 @@ private:
 
 // Cache spécialisé pour les calculs de forme d'onde
 template<typename T = float>
+requires std::floating_point<T>
 class WaveTableCache {
 public:
     static constexpr size_t TABLE_SIZE = 2048;

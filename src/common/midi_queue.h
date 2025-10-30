@@ -15,11 +15,13 @@ public:
         : queue_(capacity) {}
 
     template<typename T>
+    requires std::same_as<std::decay_t<T>, MidiEvent>
     bool enqueue(T&& event) noexcept {
         return queue_.enqueue(std::forward<T>(event));
     }
 
     template<typename T>
+    requires std::same_as<std::decay_t<T>, MidiEvent>
     bool tryEnqueue(T&& event) noexcept {
         return queue_.try_enqueue(std::forward<T>(event));
     }
@@ -29,6 +31,7 @@ public:
     }
 
     template<typename Handler>
+    requires requires(Handler h, MidiEvent& e) { h.handleMidiEvent(e); }
     void processEvents(Handler& handler) noexcept {
         MidiEvent event;
         while (queue_.try_dequeue(event)) {
